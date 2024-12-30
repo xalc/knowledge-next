@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 const linkVariants = cva(
-  "underline decoration-primary"
+  "underline decoration-primary text-primary",
 )
 const CustomLink = (props) => {
   const { children, className, ref, ...rest } = props

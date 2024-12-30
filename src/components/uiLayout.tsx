@@ -4,6 +4,8 @@ import { ModeToggle } from './header/theme-selector';
 import Link from 'next/link'
 import Header from './header/header';
 
+import { UserContext } from '@/context/UserContext';
+
 export default function UILayout({ children }) {
   const pathname = usePathname()
   const landingPage = pathname === '/';

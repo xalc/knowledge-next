@@ -19,7 +19,7 @@ export default async function NotesPage() {
   const posts = await getPosts();
   return (
     <div className='flex flex-col items-center gap-8  '>
-      <h1>Notes</h1>
+      <h1>Blogs</h1>
       {
         posts.map((post) => (
           <BlogItem key={post.slug} blog={post} />))

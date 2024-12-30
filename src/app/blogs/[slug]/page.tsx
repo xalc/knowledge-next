@@ -23,6 +23,8 @@ export default async function BlogPage({ params }) {
     const post = await getPost(slug);
     return (
       <div className='flex flex-col '>
+        <title>{post.title}</title>
+        <h1>{post.title}</h1>
         <Link href={'/blogs'}>Back</Link>
         <div className='w-5/6 self-center pb-16'>
           <TiptapEditor content={post.postcontent.content} />

@@ -2,15 +2,11 @@
 
 import { signup } from '@/actions/auth'
 import { useActionState } from 'react'
-import { SignupFormSchema, FormState } from './signup'
-
-
-
 
 export function SignupForm() {
   const [state, action, pending] = useActionState(signup, undefined)
   return (
-    <form >
+    <form action={action}>
       <div>
         <label htmlFor="name">Name</label>
         <input id="name" name="name" placeholder="Name" />
@@ -35,7 +31,7 @@ export function SignupForm() {
           </ul>
         </div>
       )}
-      <button formAction={action}>{pending ? "pending" : "sigh up"}</button>
+      <button type='submit'>{pending ? "pending" : "sigh up"}</button>
       {state?.message && <p>{state.message}</p>}
     </form>
   )

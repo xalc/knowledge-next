@@ -4,6 +4,9 @@ import type { Metadata } from 'next'
 import '@/globals.css'
 import { ThemeProvider } from "@/components/theme-provider"
 import UILayout from '@/components/uiLayout'
+import UserProfile from '@/components/user-profile'
+
+
 
 export const metadata: Metadata = {
   title: 'knowledge backup',
@@ -11,11 +14,12 @@ export const metadata: Metadata = {
 }
 
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body>
@@ -25,12 +29,13 @@ export default function RootLayout({
           disableTransitionOnChange
           themes={['green', 'zinc', 'dark', 'light', 'system']}
         >
-
-          <UILayout>
-            {children}
-          </UILayout>
-
-        </ThemeProvider></body>
+          <UserProfile>
+            <UILayout>
+              {children}
+            </UILayout>
+          </UserProfile>
+        </ThemeProvider>
+      </body >
     </html >
   )
 }

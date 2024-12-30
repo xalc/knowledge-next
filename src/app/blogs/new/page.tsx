@@ -3,7 +3,7 @@
 import { useEditor, EditorContent } from '@tiptap/react'
 import { extensions } from '@/components/tiptap/extension'
 
-import useLocalStorage from '@/hooks/use-localstorage'
+import { useLocalStorage } from 'usehooks-ts'
 import { useDebounce } from 'use-debounce';
 import Placeholder from '@tiptap/extension-placeholder'
 
@@ -22,10 +22,11 @@ import {
 } from "@/components/ui/dialog"
 
 const Tiptap = () => {
-  const [storageValue, setStorageValue] = useLocalStorage('content', null);
-  const [value] = useDebounce(storageValue, 1000);
+  const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage('ttcontent', null)
+
+  const [deBouncedValue] = useDebounce(storageValue, 1000);
   const debouncedUpdates = (editor) => {
-    if (value !== editor.getHTML()) {
+    if (deBouncedValue !== editor.getHTML()) {
       setStorageValue(editor.getHTML());
     }
   };
@@ -44,7 +45,7 @@ const Tiptap = () => {
     onUpdate: ({ editor }) => {
       debouncedUpdates(editor);
     },
-    content: value,
+    content: deBouncedValue,
   })
   if (!editor) {
     return null
@@ -64,7 +65,7 @@ const Tiptap = () => {
   }
 
   const reset = () => {
-    setStorageValue(null);
+    removeStorageValue();
     editor.commands.clearContent();
   }
 

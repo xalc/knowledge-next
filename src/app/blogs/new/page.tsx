@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import BlogMetaPopup from '@/components/blogs/BlogMetaPopup';
 
 const Tiptap = () => {
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage('ttcontent', null)
@@ -70,21 +71,10 @@ const Tiptap = () => {
 
   return <>
     <div className='flex gap-4 justify-end'>
-      <Dialog>
-        <DialogTrigger asChild><Button disabled={editor.isEmpty} >Save it</Button></DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Add meta infomation</DialogTitle>
-            {/* 
-              investigate why direct send json failed with heading node 
-              tempory using json strings
-             */}
-            <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
-
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
-      {/* <Button onClick={saveArticle}>Save it</Button> */}
+      <BlogMetaPopup editor={editor}>
+        <DialogTitle>Add meta infomation</DialogTitle>
+        <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
+      </BlogMetaPopup>
       <Button disabled={editor.isEmpty} onClick={reset}>Empty Content</Button>
       <Button disabled={editor.isEmpty} onClick={() => handleExport(true)}>export JSON</Button>
       <Button disabled={editor.isEmpty} onClick={() => handleExport(false)}>export HTML</Button>

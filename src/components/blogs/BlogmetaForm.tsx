@@ -19,6 +19,7 @@ import { saveArticleAction } from '@/actions/article';
 import { useRouter } from 'next/navigation'
 import { useState } from "react"
 
+
 export const formSchema = z.object({
   title: z.string().min(2, {
     message: "Username must be at least 2 characters.",
@@ -26,19 +27,22 @@ export const formSchema = z.object({
   slug: z.string(),
   description: z.string(),
   tags: z.array(z.string()),
-  author: z.string()
+  author: z.string(),
+  id: z.string().optional()
 })
-// { value: z.string() } [0]
 
-export function BlogMetaForm({ content }) {
+
+
+export function BlogMetaForm({ content, meta }: { content: string, meta?: any }) {
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: "",
-      slug: "",
-      description: "",
-      author: "HunterX",
-      tags: []
+      title: meta?.title || "",
+      slug: meta?.slug || "",
+      description: meta?.description || "",
+      author: meta?.author || "HunterX",
+      tags: meta?.metadata?.tags || []
     },
   })
 
@@ -51,10 +55,10 @@ export function BlogMetaForm({ content }) {
   const [isPending, setPending] = useState(false)
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log('onsubmit')
+
     try {
       setPending(true)
-      await saveArticleAction(content, JSON.stringify(values))
+      await saveArticleAction(content, JSON.stringify({ ...meta, ...values }))
     } catch (err) {
       console.error(`error submit blog ${err}`);
     } finally {
@@ -76,7 +80,7 @@ export function BlogMetaForm({ content }) {
             <FormItem>
               <FormLabel>title</FormLabel>
               <FormControl>
-                <Input placeholder="article title" {...field} />
+                <Input placeholder="article title" {...field} autoComplete="off" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -89,7 +93,7 @@ export function BlogMetaForm({ content }) {
             <FormItem>
               <FormLabel>Slug</FormLabel>
               <FormControl>
-                <Input placeholder="the name shown on url" {...field} />
+                <Input placeholder="the name shown on url" {...field} autoComplete="off" />
               </FormControl>
               <FormDescription>This is your public display name.</FormDescription>
               <FormMessage />
@@ -103,7 +107,7 @@ export function BlogMetaForm({ content }) {
             <FormItem>
               <FormLabel>description</FormLabel>
               <FormControl>
-                <Input placeholder="Description" {...field} />
+                <Input placeholder="Description" autoComplete="off" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -121,7 +125,7 @@ export function BlogMetaForm({ content }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="add tag" {...field} />
+                    <Input placeholder="add tag" autoComplete="off" {...field} />
                   </FormControl>
                   <FormMessage />
                   <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
@@ -142,7 +146,7 @@ export function BlogMetaForm({ content }) {
             <FormItem>
               <FormLabel>Author</FormLabel>
               <FormControl>
-                <Input placeholder="ahthor" {...field} />
+                <Input placeholder="ahthor" autoComplete="off" {...field} />
               </FormControl>
 
               <FormMessage />

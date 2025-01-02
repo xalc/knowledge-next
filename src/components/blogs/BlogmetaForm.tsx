@@ -19,20 +19,19 @@ import { saveArticleAction } from '@/actions/article';
 import { useRouter } from 'next/navigation'
 import { useState } from "react"
 
-
-
 export const formSchema = z.object({
   title: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
   slug: z.string(),
   description: z.string(),
-  tags: { value: z.string() }[0],
+  tags: z.array(z.string()),
   author: z.string()
 })
+// { value: z.string() } [0]
 
 export function BlogMetaForm({ content }) {
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: "",
@@ -52,7 +51,7 @@ export function BlogMetaForm({ content }) {
   const [isPending, setPending] = useState(false)
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
+    console.log('onsubmit')
     try {
       setPending(true)
       await saveArticleAction(content, JSON.stringify(values))
@@ -64,6 +63,7 @@ export function BlogMetaForm({ content }) {
     }
 
   }
+
 
   return (
 

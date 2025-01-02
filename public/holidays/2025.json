@@ -1,0 +1,200 @@
+[
+  {
+    "date": "2025-01-01",
+    "type": "holiday",
+    "holidayname": "元旦",
+    "highway_free": false
+  },
+  {
+    "date": "2025-01-28",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-01-29",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-01-30",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-01-31",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-02-01",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-02-02",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-02-03",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-02-04",
+    "type": "holiday",
+    "holidayname": "春节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-01-26",
+    "type": "adjusttowork",
+    "holidayname": "春节调班",
+    "highway_free": false
+  },
+  {
+    "date": "2025-02-08",
+    "type": "adjusttowork",
+    "holidayname": "春节调班",
+    "highway_free": false
+  },
+  {
+    "date": "2025-04-04",
+    "type": "holiday",
+    "holidayname": "清明节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-04-05",
+    "type": "holiday",
+    "holidayname": "清明节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-04-06",
+    "type": "holiday",
+    "holidayname": "清明节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-05-01",
+    "type": "holiday",
+    "holidayname": "劳动节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-05-02",
+    "type": "holiday",
+    "holidayname": "劳动节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-05-03",
+    "type": "holiday",
+    "holidayname": "劳动节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-05-04",
+    "type": "holiday",
+    "holidayname": "劳动节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-05-05",
+    "type": "holiday",
+    "holidayname": "劳动节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-04-27",
+    "type": "adjusttowork",
+    "holidayname": "劳动节调班",
+    "highway_free": false
+  },
+  {
+    "date": "2025-05-31",
+    "type": "holiday",
+    "holidayname": "端午节",
+    "highway_free": false
+  },
+  {
+    "date": "2025-06-01",
+    "type": "holiday",
+    "holidayname": "端午节",
+    "highway_free": false
+  },
+  {
+    "date": "2025-06-02",
+    "type": "holiday",
+    "holidayname": "端午节",
+    "highway_free": false
+  },
+  {
+    "date": "2025-10-01",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-02",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-03",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-04",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-05",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-06",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-07",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-10-08",
+    "type": "holiday",
+    "holidayname": "国庆节、中秋节",
+    "highway_free": true
+  },
+  {
+    "date": "2025-09-28",
+    "type": "adjusttowork",
+    "holidayname": "国庆节、中秋节调班",
+    "highway_free": false
+  },
+  {
+    "date": "2025-10-11",
+    "type": "adjusttowork",
+    "holidayname": "国庆节、中秋节调班",
+    "highway_free": false
+  }
+]

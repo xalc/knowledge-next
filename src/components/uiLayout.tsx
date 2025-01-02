@@ -1,7 +1,6 @@
 'use client';
 import { usePathname } from 'next/navigation'
-import { ModeToggle } from './header/theme-selector';
-import Link from 'next/link'
+
 import Header from './header/header';
 
 import { UserContext } from '@/context/UserContext';
@@ -22,7 +21,7 @@ export default function UILayout({ children }) {
       </main>
 
       <footer className='flex w-full basis-12 shadow-xl border justify-center items-center'>
-        <div>Hunterx</div>
+        <div>HunterX</div>
       </footer>
     </div>
   )

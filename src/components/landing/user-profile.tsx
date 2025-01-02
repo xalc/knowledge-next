@@ -1,7 +1,7 @@
 import { verifySession } from '@/lib/dal';
 
 import { UserContext } from '@/context/UserContext';
-import UserProvider from './user-provider';
+import UserProvider from '../../context/user-provider';
 
 const verifyUser = async () => {
   const verify = await verifySession();
@@ -10,7 +10,7 @@ const verifyUser = async () => {
   }
   return null;
 }
-const UserProfile = async ({ children }: {
+const WrapUserProfile = async ({ children }: {
   children: React.ReactNode
 }) => {
   const User = await verifyUser();
@@ -23,4 +23,4 @@ const UserProfile = async ({ children }: {
 
   );
 }
-export default UserProfile;
+export default WrapUserProfile;

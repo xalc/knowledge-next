@@ -1,3 +1,4 @@
+
 import { Link } from '@/components/ui/link';
 type Blog = {
   title: string;

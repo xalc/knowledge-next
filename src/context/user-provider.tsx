@@ -1,7 +1,6 @@
 'use client'
 import { UserContext } from '@/context/UserContext';
 
-
 const UserProvider = ({ children, user }: {
   children: React.ReactNode,
   user: any

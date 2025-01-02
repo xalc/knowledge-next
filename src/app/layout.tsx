@@ -2,9 +2,9 @@ import type { Metadata } from 'next'
 
 // These styles apply to every route in the application
 import '@/globals.css'
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "@/context/theme-provider"
 import UILayout from '@/components/uiLayout'
-import UserProfile from '@/components/user-profile'
+import WrapUserProfile from '@/components/landing/user-profile'
 
 
 
@@ -29,11 +29,11 @@ export default async function RootLayout({
           disableTransitionOnChange
           themes={['green', 'zinc', 'dark', 'light', 'system']}
         >
-          <UserProfile>
+          <WrapUserProfile>
             <UILayout>
               {children}
             </UILayout>
-          </UserProfile>
+          </WrapUserProfile>
         </ThemeProvider>
       </body >
     </html >

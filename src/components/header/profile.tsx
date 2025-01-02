@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { User } from "lucide-react"
-import { useTheme } from "next-themes"
+
 import { useContext } from 'react';
 import { UserContext } from '@/context/UserContext';
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ import {
 import { signoff } from "@/actions/auth";
 
 export default function UserProfile() {
-  const { setTheme } = useTheme()
+
   const user = useContext(UserContext);
   const router = useRouter();
 
@@ -37,8 +37,9 @@ export default function UserProfile() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <p>{user?.email}</p>
-
+        <DropdownMenuItem>
+          {user?.name || 'Guest'}
+        </DropdownMenuItem>
         <DropdownMenuItem onClick={logInorOut}>
           {user ? 'Logout' : 'Login'}
         </DropdownMenuItem>

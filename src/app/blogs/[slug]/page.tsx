@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 
-import TiptapEditor from '@/components/editor';
+import BlogEditor from '@/components/blogs/BlogEditor';
 import { Link } from '@/components/ui/link';
 const prisma = new PrismaClient()
 
@@ -24,11 +24,12 @@ export default async function BlogPage({ params }) {
     return (
       <div className='flex flex-col '>
         <title>{post.title}</title>
-        <h1>{post.title}</h1>
+        <h1 className='mb-8 text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100'>{post.title}</h1>
         <Link href={'/blogs'}>Back</Link>
-        <div className='w-5/6 self-center pb-16'>
-          <TiptapEditor content={post.postcontent.content} />
-        </div>
+
+        <article className='w-5/6 self-center pb-16'>
+          <BlogEditor post={post} />
+        </article>
 
       </div>
     );

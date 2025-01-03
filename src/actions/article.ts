@@ -1,11 +1,34 @@
 "use server";
 import { PrismaClient } from "@prisma/client";
+import { verifySession } from "@/lib/dal";
 
 const prisma = new PrismaClient();
-
-export async function saveArticleAction(jsonContnet: string, metadata: string) {
+interface ResponseType {
+  code: number;
+  message: string;
+  data?: object
+}
+export async function saveArticleAction(jsonContnet: string, metadata: string): Promise<ResponseType> {
   //TODO user validation
+  const user = await verifySession();
+  if (!user || !(user.isAuth)) {
+    return {
+      code: 401,
+      message: "Unauthorized",
+    };
+  }
   const { title, description, slug, tags, author, contentId, id } = JSON.parse(metadata);
+  const existSlug = await prisma.post.findUnique({
+    where: {
+      slug: slug,
+    },
+  })
+  if (existSlug) {
+    return {
+      code: 400,
+      message: "slug already in use,change one"
+    }
+  }
   if (contentId) {
     try {
       await prisma.postContent.update({
@@ -37,7 +60,10 @@ export async function saveArticleAction(jsonContnet: string, metadata: string) {
     } finally {
       await prisma.$disconnect();
     }
-    return;
+    return {
+      code: 200,
+      message: "update success",
+    };
   }
 
   try {
@@ -50,7 +76,7 @@ export async function saveArticleAction(jsonContnet: string, metadata: string) {
 
     await prisma.post.create({
       data: {
-        userId: "676d0d0cb2af57dd1dcdd3ca",
+        userId: user.id,
         contentId: postId,
         slug: slug,
         title: title,
@@ -73,4 +99,8 @@ export async function saveArticleAction(jsonContnet: string, metadata: string) {
   } finally {
     await prisma.$disconnect();
   }
+  return {
+    code: 200,
+    message: "create success",
+  };
 }

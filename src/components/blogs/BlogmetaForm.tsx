@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useToast } from "@/hooks/use-toast"
 
 export const formSchema = z.object({
   title: z.string().min(2, {
@@ -36,6 +37,7 @@ export const formSchema = z.object({
 // }
 /* eslint-disable-next-line */
 export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
+  const { toast } = useToast()
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,14 +57,23 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
   const [isPending, setPending] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    let resp = null;
     try {
       setPending(true);
-      await saveArticleAction(content, JSON.stringify({ ...meta, ...values }));
+      resp = await saveArticleAction(content, JSON.stringify({ ...meta, ...values }));
     } catch (err) {
       console.error(`error submit blog ${err}`);
     } finally {
-      router.push("/blogs");
+
       setPending(false);
+      toast({
+        title: resp.code,
+        description: resp.message,
+      })
+      if (resp.code === 200) {
+        router.push("/blogs");
+      }
+
     }
   }
 

@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { decrypt } from "./session";
 import { cache } from "react";
 import { PrismaClient } from "@prisma/client";
+import { UserType } from "@/context/user-provider";
 const prisma = new PrismaClient();
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
@@ -18,7 +19,7 @@ export const verifySession = cache(async () => {
     },
   });
   if (!user) {
-    return { isAuth: false };
+    return { isAuth: false } as UserType;
   }
-  return { isAuth: true, ...user, password: undefined };
-});
+  return { isAuth: true, ...user, password: undefined } as UserType;
+}) as () => Promise<UserType>;

@@ -22,7 +22,7 @@ export async function decrypt(session: string | undefined = ""): Promise<JWTPayl
     });
     return payload as JWTPayload;
   } catch (error) {
-    console.log("Failed to verify session" + error);
+    console.log("Failed to verify session " + error);
   }
 }
 export async function createSession(userId: string) {

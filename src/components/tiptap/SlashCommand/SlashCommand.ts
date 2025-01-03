@@ -71,7 +71,7 @@ export const SlashCommand = Extension.create({
           const end = $from.pos;
           const from = $head?.nodeBefore
             ? end -
-            ($head.nodeBefore.text?.substring($head.nodeBefore.text?.indexOf("/")).length ?? 0)
+              ($head.nodeBefore.text?.substring($head.nodeBefore.text?.indexOf("/")).length ?? 0)
             : $from.start();
 
           const tr = state.tr.deleteRange(from, end);
@@ -135,7 +135,6 @@ export const SlashCommand = Extension.create({
 
               const { view } = props.editor;
 
-
               const getReferenceClientRect = () => {
                 if (!props.clientRect) {
                   return props.editor.storage[extensionName].rect;
@@ -179,7 +178,6 @@ export const SlashCommand = Extension.create({
 
               const { view } = props.editor;
 
-
               const getReferenceClientRect = () => {
                 if (!props.clientRect) {
                   return props.editor.storage[extensionName].rect;
@@ -213,13 +211,13 @@ export const SlashCommand = Extension.create({
               props.editor.storage[extensionName].rect = props.clientRect
                 ? getReferenceClientRect()
                 : {
-                  width: 0,
-                  height: 0,
-                  left: 0,
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                };
+                    width: 0,
+                    height: 0,
+                    left: 0,
+                    top: 0,
+                    right: 0,
+                    bottom: 0,
+                  };
               popup?.[0].setProps({
                 getReferenceClientRect,
               });

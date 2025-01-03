@@ -1,10 +1,9 @@
-"use client"
+"use client";
 
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useFieldArray, useForm } from "react-hook-form"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useFieldArray, useForm } from "react-hook-form";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -13,12 +12,11 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { saveArticleAction } from '@/actions/article';
-import { useRouter } from 'next/navigation'
-import { useState } from "react"
-
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { saveArticleAction } from "@/actions/article";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export const formSchema = z.object({
   title: z.string().min(2, {
@@ -28,13 +26,10 @@ export const formSchema = z.object({
   description: z.string(),
   tags: z.array(z.string()),
   author: z.string(),
-  id: z.string().optional()
-})
+  id: z.string().optional(),
+});
 
-
-
-export function BlogMetaForm({ content, meta }: { content: string, meta?: any }) {
-
+export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,37 +37,32 @@ export function BlogMetaForm({ content, meta }: { content: string, meta?: any })
       slug: meta?.slug || "",
       description: meta?.description || "",
       author: meta?.author || "HunterX",
-      tags: meta?.metadata?.tags || []
+      tags: meta?.metadata?.tags || [],
     },
-  })
+  });
 
   const { fields, append, remove } = useFieldArray({
     name: "tags",
     control: form.control,
-
-  })
-  const router = useRouter()
-  const [isPending, setPending] = useState(false)
+  });
+  const router = useRouter();
+  const [isPending, setPending] = useState(false);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-
     try {
-      setPending(true)
-      await saveArticleAction(content, JSON.stringify({ ...meta, ...values }))
+      setPending(true);
+      await saveArticleAction(content, JSON.stringify({ ...meta, ...values }));
     } catch (err) {
       console.error(`error submit blog ${err}`);
     } finally {
-      router.push('/blogs')
-      setPending(false)
+      router.push("/blogs");
+      setPending(false);
     }
-
   }
 
-
   return (
-
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 my-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="my-8 space-y-8">
         <FormField
           control={form.control}
           name="title"
@@ -115,8 +105,7 @@ export function BlogMetaForm({ content, meta }: { content: string, meta?: any })
           )}
         />
         <FormLabel>Article tags</FormLabel>
-        <div className="flex gap-4 flex-wrap">
-
+        <div className="flex flex-wrap gap-4">
           {fields.map((field, index) => (
             <FormField
               key={field.id}
@@ -128,16 +117,22 @@ export function BlogMetaForm({ content, meta }: { content: string, meta?: any })
                     <Input placeholder="add tag" autoComplete="off" {...field} />
                   </FormControl>
                   <FormMessage />
-                  <Button type="button" variant="destructive" size="sm" onClick={() => remove(index)}>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => remove(index)}
+                  >
                     delete
                   </Button>
                 </FormItem>
               )}
             />
           ))}
-          <Button type="button" onClick={() => append('')}>Add tag</Button>
+          <Button type="button" onClick={() => append("")}>
+            Add tag
+          </Button>
         </div>
-
 
         <FormField
           control={form.control}
@@ -156,6 +151,5 @@ export function BlogMetaForm({ content, meta }: { content: string, meta?: any })
         <Button type="submit">{isPending ? "submiting..." : "submit"}</Button>
       </form>
     </Form>
-
   );
 }

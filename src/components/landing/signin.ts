@@ -1,18 +1,16 @@
-import { z } from 'zod'
+import { z } from "zod";
 export const SigninFormSchema = z.object({
-
-  email: z.string().email({ message: 'Please enter a valid email.' }).trim(),
+  email: z.string().email({ message: "Please enter a valid email." }).trim(),
   password: z.string().trim(),
-})
+});
 
 export type SignInFormState =
   | {
-    errors?: {
-      name?: string[]
-      email?: string[]
-      password?: string[]
+      errors?: {
+        name?: string[];
+        email?: string[];
+        password?: string[];
+      };
+      message?: string;
     }
-    message?: string
-  }
-  | undefined
-
+  | undefined;

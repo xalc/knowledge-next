@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { signup } from '@/actions/auth'
-import { useActionState } from 'react'
+import { signup } from "@/actions/auth";
+import { useActionState } from "react";
 
 export function SignupForm() {
-  const [state, action, pending] = useActionState(signup, undefined)
+  const [state, action, pending] = useActionState(signup, undefined);
   return (
     <form action={action}>
       <div>
@@ -25,14 +25,14 @@ export function SignupForm() {
         <div>
           <p>Password must:</p>
           <ul>
-            {state.errors.password.map((error) => (
+            {state.errors.password.map(error => (
               <li key={error}>- {error}</li>
             ))}
           </ul>
         </div>
       )}
-      <button type='submit'>{pending ? "pending" : "sigh up"}</button>
+      <button type="submit">{pending ? "pending" : "sigh up"}</button>
       {state?.message && <p>{state.message}</p>}
     </form>
-  )
+  );
 }

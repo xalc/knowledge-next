@@ -1,9 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-
 import Header from "./header/header";
-
-import { UserContext } from "@/context/UserContext";
 
 export default function UILayout({ children }) {
   const pathname = usePathname();

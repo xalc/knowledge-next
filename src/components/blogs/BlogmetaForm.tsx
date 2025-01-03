@@ -28,8 +28,17 @@ export const formSchema = z.object({
   author: z.string(),
   id: z.string().optional(),
 });
+interface BlogMeta {
+  title: string;
+  slug: string;
+  description: string;
+  author: string;
+  metadata: {
+    tags: string[];
+  };
+}
 
-export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
+export function BlogMetaForm({ content, meta }: { content: string; meta?: BlogMeta }) {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {

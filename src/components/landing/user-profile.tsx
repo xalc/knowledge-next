@@ -1,6 +1,4 @@
 import { verifySession } from "@/lib/dal";
-
-import { UserContext } from "@/context/UserContext";
 import UserProvider from "../../context/user-provider";
 
 const verifyUser = async () => {

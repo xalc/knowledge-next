@@ -4,15 +4,13 @@ import { clsx } from "clsx";
 import {
   NavigationMenu,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
   navigationMenuTriggerStyle,
   NavigationMenuItem,
   NavigationMenuLink,
 } from "@/components/ui/navigation-menu";
 
 import UserProfile from "./profile";
-export default function () {
+export default function NewPost() {
   return (
     <header className="flex basis-12 items-center justify-between border px-8 shadow-xl">
       <h1> Knowledge center </h1>

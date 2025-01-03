@@ -11,13 +11,7 @@ import { Button } from "@/components/ui/button";
 
 import { BlogMetaForm } from "@/components/blogs/BlogmetaForm";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { DialogTitle } from "@/components/ui/dialog";
 import BlogMetaPopup from "@/components/blogs/BlogMetaPopup";
 
 const Tiptap = () => {

@@ -19,25 +19,20 @@ const getPost = async (slug: string) => {
 
 export default async function BlogPage({ params }) {
   const slug = (await params).slug;
+  const post = await getPost(slug);
+  return (
+    <div className="flex flex-col">
+      <title>{post.title}</title>
+      <h1 className="mb-8 text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
+        {post.title}
+      </h1>
+      <Link href={"/blogs"}>
+        <ChevronLeft />
+      </Link>
 
-  try {
-    const post = await getPost(slug);
-    return (
-      <div className="flex flex-col">
-        <title>{post.title}</title>
-        <h1 className="mb-8 text-5xl font-bold tracking-tight text-gray-900 dark:text-gray-100">
-          {post.title}
-        </h1>
-        <Link href={"/blogs"}>
-          <ChevronLeft />
-        </Link>
-
-        <article className="w-5/6 self-center pb-16">
-          <BlogEditor post={post} />
-        </article>
-      </div>
-    );
-  } catch (error) {
-    throw error;
-  }
+      <article className="w-5/6 self-center pb-16">
+        <BlogEditor post={post} />
+      </article>
+    </div>
+  );
 }

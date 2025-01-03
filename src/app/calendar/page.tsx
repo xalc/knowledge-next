@@ -11,6 +11,7 @@ async function getHolidays() {
     const holidays = JSON.parse(jsonData);
     return { holidays, year };
   } catch (error) {
+    console.log("error fetching holidays", error);
     throw error;
   }
 }

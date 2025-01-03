@@ -1,10 +1,10 @@
 import { verifySession } from "@/lib/dal";
 import UserProvider from "../../context/user-provider";
-
+import { UserType } from "../../context/user-provider";
 const verifyUser = async () => {
   const verify = await verifySession();
   if (verify.isAuth) {
-    return verify;
+    return verify as UserType;
   }
   return null;
 };

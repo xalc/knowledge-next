@@ -1,8 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Github, Mail, Twitter, BookOpen, Code, Coffee, Wrench } from "lucide-react";
-import Link from "next/link";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { BookOpen, Code, Coffee, Wrench } from "lucide-react";
 
 const SECTIONS = [
   {

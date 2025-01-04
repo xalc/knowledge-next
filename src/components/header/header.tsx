@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ModeToggle } from "./theme-selector";
 import { clsx } from "clsx";
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import {
   NavigationMenu,
   NavigationMenuList,
@@ -9,7 +9,7 @@ import {
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuTrigger,
-  NavigationMenuContent
+  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 
 import UserProfile from "./profile";
@@ -25,18 +25,17 @@ export default function NewPost() {
                 Welcome
               </NavigationMenuLink>
             </Link>
-            <Link href="/blogs" legacyBehavior passHref className='w-full'>
+            <Link href="/blogs" legacyBehavior passHref className="w-full">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Blogs
               </NavigationMenuLink>
             </Link>
-            <Link href="/blogs/new" legacyBehavior passHref className='w-full'>
+            <Link href="/blogs/new" legacyBehavior passHref className="w-full">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 New Blog
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-
 
           <NavigationMenuItem>
             <Link href="/calendar" legacyBehavior passHref>
@@ -50,7 +49,6 @@ export default function NewPost() {
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
-
         </NavigationMenuList>
       </NavigationMenu>
 

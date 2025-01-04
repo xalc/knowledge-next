@@ -15,11 +15,9 @@ export default function UILayout({ children }) {
       <main className="w-auto flex-1">{children}</main>
 
       <footer className="flex w-full basis-12 items-center justify-center border shadow-xl">
-        <p><Link
-          href="mailto:huntxalc@gmail.com"
-        >
-          HunterX
-        </Link> © 	陕ICP备2024057216号-1</p>
+        <p>
+          <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+        </p>
       </footer>
     </div>
   );

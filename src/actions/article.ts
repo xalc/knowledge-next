@@ -6,12 +6,15 @@ const prisma = new PrismaClient();
 interface ResponseType {
   code: number;
   message: string;
-  data?: object
+  data?: object;
 }
-export async function saveArticleAction(jsonContnet: string, metadata: string): Promise<ResponseType> {
+export async function saveArticleAction(
+  jsonContnet: string,
+  metadata: string,
+): Promise<ResponseType> {
   //TODO user validation
   const user = await verifySession();
-  if (!user || !(user.isAuth)) {
+  if (!user || !user.isAuth) {
     return {
       code: 401,
       message: "Unauthorized",
@@ -22,12 +25,12 @@ export async function saveArticleAction(jsonContnet: string, metadata: string): 
     where: {
       slug: slug,
     },
-  })
+  });
   if (existSlug) {
     return {
       code: 400,
-      message: "slug already in use,change one"
-    }
+      message: "slug already in use,change one",
+    };
   }
   if (contentId) {
     try {

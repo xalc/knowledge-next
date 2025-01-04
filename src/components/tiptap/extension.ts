@@ -12,6 +12,9 @@ import DetailsContent from "@tiptap-pro/extension-details-content";
 import DetailsSummary from "@tiptap-pro/extension-details-summary";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
+import Image from "@tiptap/extension-image";
+import ImageUpload from "./extensions/ImageUpload/ImageUpload";
+import { ImageBlock } from "./extensions/ImageBlock";
 import CharacterCount from "@tiptap/extension-character-count";
 
 import { CodeBlock } from "./codeblock";
@@ -69,7 +72,12 @@ const starterKit = StarterKit.configure({
   gapcursor: false,
 });
 export const extensions = [
-  starterKit,
+  starterKit.configure({
+    document: false,
+    heading: false,
+    paragraph: false,
+    codeBlock: false,
+  }),
   Heading,
   taskList,
   taskItem,
@@ -88,6 +96,9 @@ export const extensions = [
   }),
   DetailsContent,
   DetailsSummary,
+  Image,
+  ImageUpload,
+  ImageBlock,
   CharacterCount.configure({
     limit: 100000,
     wordCounter: text => {

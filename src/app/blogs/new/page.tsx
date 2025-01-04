@@ -40,6 +40,7 @@ const Tiptap = () => {
       debouncedUpdates(editor);
     },
     content: deBouncedValue,
+    immediatelyRender: false,
   });
   if (!editor) {
     return null;

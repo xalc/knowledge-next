@@ -1,15 +1,13 @@
 import Link from "next/link";
 import { ModeToggle } from "./theme-selector";
 import { clsx } from "clsx";
-import { cn } from "@/lib/utils";
+
 import {
   NavigationMenu,
   NavigationMenuList,
   navigationMenuTriggerStyle,
   NavigationMenuItem,
   NavigationMenuLink,
-  NavigationMenuTrigger,
-  NavigationMenuContent,
 } from "@/components/ui/navigation-menu";
 
 import UserProfile from "./profile";

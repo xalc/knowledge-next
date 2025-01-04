@@ -33,7 +33,7 @@ const SECTIONS = [
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen pb-8 pt-6 md:pb-12 md:pt-10">
+    <>
       {/* Hero Section */}
       <div className="relative">
         <div className="absolute inset-0 -z-10 bg-gradient-to-br from-primary/20 via-background to-background" />
@@ -48,7 +48,7 @@ export default function AboutPage() {
           <div className="flex flex-col items-center space-y-8 text-center">
             <Avatar className="h-32 w-32 duration-700 animate-in zoom-in">
               <AvatarImage src="/placeholder.svg" alt="Blog Author" />
-              <AvatarFallback>ME</AvatarFallback>
+              <AvatarFallback>HunterX</AvatarFallback>
             </Avatar>
             <div className="space-y-2 delay-200 duration-700 animate-in slide-in-from-bottom-4">
               <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">欢迎来到我的博客</h1>
@@ -87,7 +87,7 @@ export default function AboutPage() {
         </div>
 
         {/* Contact Section */}
-        <Card className="mt-12">
+        {/* <Card className="mt-12">
           <CardHeader>
             <CardTitle>联系我</CardTitle>
           </CardHeader>
@@ -102,15 +102,7 @@ export default function AboutPage() {
                   <span className="block text-sm text-muted-foreground">[email protected]</span>
                 </Link>
               </Button>
-              <Button asChild variant="outline" className="h-auto space-y-2 p-4 text-left">
-                <Link href="https://twitter.com/your_twitter_handle" target="_blank">
-                  <div className="flex items-center gap-2">
-                    <Twitter className="h-4 w-4" />
-                    <span className="font-semibold">Twitter</span>
-                  </div>
-                  <span className="block text-sm text-muted-foreground">@your_twitter_handle</span>
-                </Link>
-              </Button>
+
               <Button asChild variant="outline" className="h-auto space-y-2 p-4 text-left">
                 <Link href="https://github.com/your_github_username" target="_blank">
                   <div className="flex items-center gap-2">
@@ -122,14 +114,9 @@ export default function AboutPage() {
               </Button>
             </div>
           </CardContent>
-        </Card>
-
-        {/* Thank You Message */}
-        <div className="mt-12 text-center">
-          <p className="text-muted-foreground">感谢您的支持！</p>
-        </div>
+        </Card> */}
       </div>
-    </div>
+    </>
   );
 }
 

@@ -1,12 +1,15 @@
 import Link from "next/link";
 import { ModeToggle } from "./theme-selector";
 import { clsx } from "clsx";
+import { cn } from "@/lib/utils"
 import {
   NavigationMenu,
   NavigationMenuList,
   navigationMenuTriggerStyle,
   NavigationMenuItem,
   NavigationMenuLink,
+  NavigationMenuTrigger,
+  NavigationMenuContent
 } from "@/components/ui/navigation-menu";
 
 import UserProfile from "./profile";
@@ -22,19 +25,23 @@ export default function NewPost() {
                 Welcome
               </NavigationMenuLink>
             </Link>
-            {/* <Link href="/theme" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Theme
-            </NavigationMenuLink>
-          </Link> */}
-            <Link href="/blogs" legacyBehavior passHref>
+            <Link href="/blogs" legacyBehavior passHref className='w-full'>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 Blogs
               </NavigationMenuLink>
             </Link>
-            <Link href="/blogs/new" legacyBehavior passHref>
+            <Link href="/blogs/new" legacyBehavior passHref className='w-full'>
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
                 New Blog
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
+
+
+          <NavigationMenuItem>
+            <Link href="/calendar" legacyBehavior passHref>
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                2025高速日历
               </NavigationMenuLink>
             </Link>
             <Link href="/about" legacyBehavior passHref>
@@ -43,8 +50,10 @@ export default function NewPost() {
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
+
         </NavigationMenuList>
       </NavigationMenu>
+
       <div className="flex items-center gap-1">
         <ModeToggle />
         <UserProfile />

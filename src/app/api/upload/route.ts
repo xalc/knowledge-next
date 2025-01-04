@@ -1,9 +1,13 @@
+import { verifySession } from "@/lib/dal";
 import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextResponse } from "next/server";
 export async function POST(request: Request): Promise<NextResponse> {
   const body = (await request.json()) as HandleUploadBody;
-
   try {
+    const user = await verifySession();
+    if (!user || !user.isAuth) {
+      throw new Error("Unauthorized");
+    }
     const jsonResponse = await handleUpload({
       body,
       request,
@@ -15,9 +19,6 @@ export async function POST(request: Request): Promise<NextResponse> {
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 400 }, // The webhook will retry 5 times waiting for a 200
-    );
+    return NextResponse.json({ error }, { status: 400 });
   }
 }

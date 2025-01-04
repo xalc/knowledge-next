@@ -9,28 +9,21 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
     async (file: File) => {
       setLoading(true);
       try {
-        const result: any = await upload(`tt_images/${file.name}`, file, {
+        const result = await upload(`tt_images/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/upload",
         });
-        if (result.error) {
-          toast({
-            title: result.status,
-            description: result.error,
-          });
-        } else {
-          onUpload(result.url);
-        }
+
+        onUpload(result.url);
       } catch (errPayload: any) {
-        const error = errPayload.error || "Something went wrong";
+        const error = errPayload.message || "Something went wrong";
         toast({
-          title: errPayload.status,
-          description: error,
+          title: error,
         });
       }
       setLoading(false);
     },
-    [onUpload],
+    [onUpload, toast],
   );
 
   return { loading, uploadFile };

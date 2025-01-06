@@ -98,6 +98,7 @@ export function Calendar({ holidays, year }) {
                 const holidayInfo = getHolidayInfo(date);
                 const isSelected =
                   selectedDate && formatDate(date) === formatDate(selectedDate) && isCurrentMonth;
+                const today = date.toLocaleDateString() === new Date().toLocaleDateString();
 
                 return (
                   <TooltipProvider key={index}>
@@ -108,6 +109,7 @@ export function Calendar({ holidays, year }) {
                             "relative flex flex-col items-center justify-center rounded-sm p-0.5 transition-colors hover:bg-accent",
                             !isCurrentMonth && "text-muted-foreground/50",
                             isSelected && "bg-primary hover:bg-primary",
+                            today && "bg-yellow-500 hover:bg-400"
                           )}
                           onClick={() => setSelectedDate(date)}
                         >

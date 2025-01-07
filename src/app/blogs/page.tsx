@@ -25,15 +25,13 @@ export default async function NotesPage() {
               发现最新的技术趋势、深度教程和实用经验分享
             </p>
           </div> */}
-          <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 [&>*]:break-inside-avoid-column">
+          <div className="columns-1 gap-6 space-y-6 md:columns-2 lg:columns-3 [&>*]:break-inside-avoid-column">
             {posts.map(post => (
               <BlogItem key={post.slug} blog={post} />
             ))}
           </div>
         </div>
       </section>
-
-
     </div>
   );
 }

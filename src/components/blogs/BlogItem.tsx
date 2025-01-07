@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Calendar } from 'lucide-react'
+import { Calendar } from "lucide-react";
 type Meta = {
   tags: string[];
   author: string;
@@ -19,13 +19,19 @@ export default function BlogItem({ blog }: { blog: Blog }) {
   return (
     <Link
       href={`/blogs/${slug}`}
-      className={"w-full rounded-xl border-0 bg-secondary  text-inherit no-underline  block group h-fit"}
+      className={
+        "group block h-fit w-full rounded-xl border-0 bg-secondary text-inherit no-underline"
+      }
     >
-      <Card className={"overflow-hidden transition-all duration-200 hover:shadow-xl hover:-translate-y-1 h-full"}>
+      <Card
+        className={
+          "h-full overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
+        }
+      >
         {imageUrl ? (
           // 有图片的布局
           <>
-            <div className="aspect-video relative overflow-hidden">
+            <div className="relative aspect-video overflow-hidden">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-all duration-500 group-hover:scale-110"
                 style={{ backgroundImage: `url(${imageUrl})` }}
@@ -39,12 +45,12 @@ export default function BlogItem({ blog }: { blog: Blog }) {
                 </Badge>
                 <span className="text-sm text-muted-foreground">{title}</span>
               </div>
-              <h3 className="text-xl font-bold leading-tight tracking-tight group-hover:text-primary transition-colors">
+              <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
                 {title}
               </h3>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground line-clamp-2">{description}</p>
+              <p className="line-clamp-2 text-muted-foreground">{description}</p>
             </CardContent>
           </>
         ) : (
@@ -63,12 +69,12 @@ export default function BlogItem({ blog }: { blog: Blog }) {
                   <span>{blog.updatedAt.toLocaleDateString()}</span>
                 </div>
               </div>
-              <h3 className="text-xl font-bold leading-tight tracking-tight group-hover:text-primary transition-colors">
+              <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
                 {title}
               </h3>
             </CardHeader>
             <CardContent className="pt-2">
-              <p className="text-muted-foreground line-clamp-3">{description}</p>
+              <p className="line-clamp-3 text-muted-foreground">{description}</p>
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -79,7 +85,6 @@ export default function BlogItem({ blog }: { blog: Blog }) {
           </>
         )}
       </Card>
-
     </Link>
   );
 }

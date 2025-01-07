@@ -109,7 +109,7 @@ export function Calendar({ holidays, year }) {
                             "relative flex flex-col items-center justify-center rounded-sm p-0.5 transition-colors hover:bg-accent",
                             !isCurrentMonth && "text-muted-foreground/50",
                             isSelected && "bg-primary hover:bg-primary",
-                            today && "bg-yellow-500 hover:bg-400"
+                            today && "hover:bg-400 bg-yellow-500",
                           )}
                           onClick={() => setSelectedDate(date)}
                         >

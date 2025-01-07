@@ -36,10 +36,10 @@ const ROUTES = [
   //   href: "/articles",
   //   label: "文章"
   // },
-  {
-    href: "/about",
-    label: "关于"
-  }
+  // {
+  //   href: "/about",
+  //   label: "关于"
+  // }
 ]
 const LinkButton = ({ href, children, ...props }) => {
   return (

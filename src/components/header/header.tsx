@@ -1,55 +1,94 @@
+"use client";
 import Link from "next/link";
 import { ModeToggle } from "./theme-selector";
-import { clsx } from "clsx";
-
-import {
-  NavigationMenu,
-  NavigationMenuList,
-  navigationMenuTriggerStyle,
-  NavigationMenuItem,
-  NavigationMenuLink,
-} from "@/components/ui/navigation-menu";
-
+import { AlignJustify } from "lucide-react";
+import { Button } from "../ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+import { usePathname } from "next/navigation";
 import UserProfile from "./profile";
-export default function NewPost() {
+import { useState } from "react";
+const ROUTES = [
+  {
+    href: "/",
+    label: "首页",
+  },
+  {
+    href: "/blogs",
+    label: "博客",
+  },
+  {
+    href: "/blogs/new",
+    label: "new",
+  },
+  {
+    href: "/calendar",
+    label: "假期日历",
+  },
+  // {
+  //   href: "/reading",
+  //   label: "阅读统计"
+  // },
+  // {
+  //   href: "/articles",
+  //   label: "文章"
+  // },
+  // {
+  //   href: "/about",
+  //   label: "关于"
+  // }
+];
+const LinkButton = ({ href, children, ...props }) => {
   return (
-    <header className="flex basis-12 items-center justify-between border px-8 shadow-xl">
-      <h1> Knowledge center </h1>
-      <NavigationMenu>
-        <NavigationMenuList>
-          <NavigationMenuItem>
-            <Link href="/" legacyBehavior passHref>
-              <NavigationMenuLink className={clsx(navigationMenuTriggerStyle(), "uppercase")}>
-                Welcome
-              </NavigationMenuLink>
-            </Link>
-            <Link href="/blogs" legacyBehavior passHref className="w-full">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Blogs
-              </NavigationMenuLink>
-            </Link>
-            <Link href="/blogs/new" legacyBehavior passHref className="w-full">
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                New Blog
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-
-          <NavigationMenuItem>
-            <Link href="/calendar" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                2025高速日历
-              </NavigationMenuLink>
-            </Link>
-            <Link href="/about" legacyBehavior passHref>
-              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                About
-              </NavigationMenuLink>
-            </Link>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
-
+    <Link href={href} legacyBehavior passHref>
+      <Button variant="ghost" {...props}>
+        {children}
+      </Button>
+    </Link>
+  );
+};
+export default function Header() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  return (
+    <header className="sticky top-0 z-50 flex basis-12 items-center justify-between border bg-background/95 px-4 shadow-xl">
+      <div className="md:hidden">
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <AlignJustify className="h-[1.2rem] w-[1.2rem] scale-100 transition-all" />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            hideWhenDetached
+            className="mt-2 flex w-screen flex-col gap-2 rounded-md shadow-lg"
+          >
+            {ROUTES.map((route, index) => (
+              <LinkButton
+                href={route.href}
+                key={`route_${index}`}
+                className="w-full"
+                onClick={() => setOpen(false)}
+              >
+                {route.label}
+              </LinkButton>
+            ))}
+          </PopoverContent>
+        </Popover>
+      </div>
+      <h1 className="hidden md:flex">Knowledge center </h1>
+      <div className="hidden space-x-4 md:flex">
+        {ROUTES.map((route, index) => (
+          <LinkButton
+            disabled={pathname === route.href}
+            href={route.href}
+            key={`route_${index}`}
+            className={cn("w-full", pathname === route.href && "text-primary")}
+          >
+            {route.label}
+          </LinkButton>
+        ))}
+      </div>
       <div className="flex items-center gap-1">
         <ModeToggle />
         <UserProfile />

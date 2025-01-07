@@ -80,7 +80,6 @@ export default function Header() {
       <div className="hidden space-x-4 md:flex">
         {ROUTES.map((route, index) => (
           <LinkButton
-            disabled={pathname === route.href}
             href={route.href}
             key={`route_${index}`}
             className={cn("w-full", pathname === route.href && "text-primary")}

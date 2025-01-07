@@ -78,8 +78,8 @@ export default function BlogItem({ blog }: { blog: Blog }) {
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
-                <span className="h-1 w-1 rounded-full bg-muted-foreground" />
-                <span>{`${description.length} 字`}</span>
+                {/* <span className="h-1 w-1 rounded-full bg-muted-foreground" /> */}
+                {/* <span>{`${description.length} 字`}</span> */}
               </div>
             </CardFooter>
           </>

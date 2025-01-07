@@ -15,7 +15,7 @@ type Blog = {
 };
 export default function BlogItem({ blog }: { blog: Blog }) {
   const { title, description, slug } = blog;
-  const imageUrl = blog.metadata?.coverImage || null;
+  const imageUrl = null;
   return (
     <Link
       href={`/blogs/${slug}`}

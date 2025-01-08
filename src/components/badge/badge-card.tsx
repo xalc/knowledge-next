@@ -56,7 +56,7 @@ export function BadgeCard({ badge }: BadgeCardProps) {
                 <span className="line-clamp-2">{template.name}</span>
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
+            <DialogContent className="max-h-svh overflow-y-auto sm:max-w-[600px]">
               <DialogHeader>
                 <DialogTitle>{template.name}</DialogTitle>
                 <DialogDescription>{template.description}</DialogDescription>

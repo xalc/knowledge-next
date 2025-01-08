@@ -19,7 +19,7 @@ const ROUTES = [
   },
   {
     href: "/blogs/new",
-    label: "new",
+    label: "写博客",
   },
   {
     href: "/calendar",
@@ -33,10 +33,10 @@ const ROUTES = [
   //   href: "/articles",
   //   label: "文章"
   // },
-  // {
-  //   href: "/about",
-  //   label: "关于"
-  // }
+  {
+    href: "/about",
+    label: "关于",
+  },
 ];
 const LinkButton = ({ href, children, ...props }) => {
   return (

@@ -34,7 +34,9 @@ export default async function Badge() {
             <CardTitle className="text-2xl">技能认证</CardTitle>
             <CardDescription>获得的专业技能认证和徽章</CardDescription>
           </div>
-          <Button variant="outline">查看全部</Button>
+          <Button variant="outline" disabled>
+            查看全部
+          </Button>
         </div>
       </CardHeader>
       <CardContent>

@@ -4,6 +4,9 @@ export interface Skill {
   vanity_slug: string;
 }
 
+export interface BadgeTemplateActive {
+  title: string;
+}
 export interface BadgeTemplate {
   id: string;
   name: string;
@@ -15,6 +18,7 @@ export interface BadgeTemplate {
   image_url: string;
   url: string;
   skills: Skill[];
+  badge_template_activities: BadgeTemplateActive[];
 }
 export interface Entity {
   label: string;

@@ -19,8 +19,8 @@ const getCredly = unstable_cache(
     const responseData = await response.json();
     return responseData.data;
   },
-  ["posts"],
-  { revalidate: 3600 * 48, tags: ["posts"] },
+  ["credly"],
+  { revalidate: 3600 * 24 * 7, tags: ["credly"] },
 );
 
 export default async function Badge() {

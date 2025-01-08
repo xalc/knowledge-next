@@ -35,7 +35,7 @@ const BlogEditor = ({ post }) => {
     return null;
   }
   return (
-    <>
+    <div className="w-full overflow-x-hidden">
       {user && (
         <TooltipProvider>
           <Tooltip>
@@ -55,7 +55,7 @@ const BlogEditor = ({ post }) => {
         </BlogMetaPopup>
       )}
       <EditorContent editor={editor} />
-    </>
+    </div>
   );
 };
 export default BlogEditor;

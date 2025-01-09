@@ -15,7 +15,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <Button onClick={onSyncDataClick}> {isPending ? "SYNCing Data" : "SYNC now"} </Button>
+      <Button onClick={onSyncDataClick}> {isPending ? "SYNCing..." : "SYNC now"} </Button>
 
       <div>{value}</div>
     </>

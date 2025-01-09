@@ -35,7 +35,7 @@ export default async function Badge() {
             <CardDescription>获得的专业技能认证和徽章</CardDescription>
           </div>
           <Button variant="outline" disabled>
-            查看全部
+            查看更多
           </Button>
         </div>
       </CardHeader>

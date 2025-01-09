@@ -19,7 +19,7 @@ export async function getBookShelf() {
     orderBy: {
       readUpdateTime: "desc",
     },
-    take: 3,
+    take: 4,
   });
 
   return bookShelf;

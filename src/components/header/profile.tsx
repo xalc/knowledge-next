@@ -24,7 +24,7 @@ export default function UserProfile() {
     if (user) {
       await signoff();
     }
-    router.push("/signin");
+    router.push("/auth/signin");
   };
 
   return (

@@ -9,11 +9,10 @@ export default function UnauthorizedPage() {
       <Button
         onClick={async () => {
           "use server";
-          redirect("/signin");
+          redirect("/auth/signin");
         }}
       >
-        {" "}
-        Sign in first{" "}
+        Sign in first
       </Button>
     </main>
   );

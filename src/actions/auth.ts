@@ -1,7 +1,7 @@
 "use server";
 
-import { FormState, SignupFormSchema } from "@/components/landing/signup";
-import { SignInFormState, SigninFormSchema } from "@/components/landing/signin";
+import { FormState, SignupFormSchema } from "@/components/auth/signup";
+import { SignInFormState, SigninFormSchema } from "@/components/auth/signin";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
@@ -81,5 +81,5 @@ export async function signin(state: SignInFormState, formData: FormData) {
 
 export async function signoff() {
   await deleteSession();
-  redirect("/signin");
+  redirect("/auth/signin");
 }

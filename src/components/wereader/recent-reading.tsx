@@ -37,7 +37,7 @@ export default async function RecentReadingBooks() {
                   </div>
                   <div className="flex items-center gap-4 space-y-1">
                     <Progress
-                      className={"h-4"}
+                      className={"h-3"}
                       value={(book.readProgress as unknown as ReadingProgressType).progress}
                     />
                     <p className="text-right text-xs text-muted-foreground">

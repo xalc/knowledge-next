@@ -48,7 +48,7 @@ const BlogEditor = ({ post }) => {
           </span>
           <span className="inline-flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {(editor.storage.characterCount.words() / 100).toFixed(0)}分钟阅读
+            {(editor.storage.characterCount.words() / 150).toFixed(0)}分钟阅读
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

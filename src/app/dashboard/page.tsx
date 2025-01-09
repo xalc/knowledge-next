@@ -9,9 +9,5 @@ export default async function BoardPage() {
     redirect("/status");
   }
 
-  return (
-    <>
-      <DashboardPage />
-    </>
-  );
+  return <DashboardPage />;
 }

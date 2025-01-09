@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+
 const prisma = new PrismaClient();
 export async function getWRToken(): Promise<string> {
   try {
@@ -11,4 +12,15 @@ export async function getWRToken(): Promise<string> {
   } finally {
     await prisma.$disconnect();
   }
+}
+
+export async function getBookShelf() {
+  const bookShelf = await prisma.wRBookShelt.findMany({
+    orderBy: {
+      readUpdateTime: "desc",
+    },
+    take: 3,
+  });
+
+  return bookShelf;
 }

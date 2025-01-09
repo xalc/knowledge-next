@@ -2,6 +2,7 @@ import Badge from "@/components/badge/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Card, CardContent } from "@/components/ui/card";
+import RecentReadingBooks from "@/components/wereader/recent-reading";
 import { BookOpen, Code, Coffee, Wrench } from "lucide-react";
 
 const SECTIONS = [
@@ -116,6 +117,7 @@ export default function AboutPage() {
           </CardContent>
         </Card> */}
       </div>
+      <RecentReadingBooks />
       <Badge />
     </div>
   );

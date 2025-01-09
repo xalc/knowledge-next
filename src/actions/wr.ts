@@ -67,12 +67,12 @@ const creatManyBooks = async (books, bookProgress) => {
 
     const readProgress = bp
       ? {
-        id: bp.bookId,
-        bookId: bp.bookId,
-        progress: bp.progress,
-        updateTime: bp.updateTime,
-        readingTime: bp.readingTime,
-      }
+          id: bp.bookId,
+          bookId: bp.bookId,
+          progress: bp.progress,
+          updateTime: bp.updateTime,
+          readingTime: bp.readingTime,
+        }
       : null;
     const {
       bookId,
@@ -195,6 +195,7 @@ const syncWRBookShelf = async () => {
 //TODO 尝试流式返回结果 research
 export const syncWRDataToDB = async () => {
   try {
+    await syncWRReadingtimeSummary();
     await syncWRBookShelf();
   } catch (error) {
     console.log(`sync weread date error: ${error}`);

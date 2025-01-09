@@ -2,6 +2,7 @@ import Badge from "@/components/badge/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Card, CardContent } from "@/components/ui/card";
+import RecentReadingBooks from "@/components/wereader/recent-reading";
 import { BookOpen, Code, Coffee, Wrench } from "lucide-react";
 
 const SECTIONS = [
@@ -62,7 +63,7 @@ export default function AboutPage() {
 
       {/* Content Sections */}
       <div className="container mx-auto mt-20 lg:max-w-[1024px]">
-        <div className="grid gap-6 sm:grid-cols-2">
+        <div className="mx-6 grid gap-6 sm:grid-cols-2">
           {SECTIONS.map(section => (
             <Card key={section.title} className="group relative overflow-hidden">
               <CardContent className="p-6">
@@ -116,6 +117,7 @@ export default function AboutPage() {
           </CardContent>
         </Card> */}
       </div>
+      <RecentReadingBooks />
       <Badge />
     </div>
   );

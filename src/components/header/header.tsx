@@ -22,17 +22,14 @@ const ROUTES = [
     label: "写博客",
   },
   {
-    href: "/calendar",
+    href: "/utils/calendar",
     label: "假期日历",
   },
-  // {
-  //   href: "/reading",
-  //   label: "阅读统计"
-  // },
-  // {
-  //   href: "/articles",
-  //   label: "文章"
-  // },
+
+  {
+    href: "/utils",
+    label: "工具箱",
+  },
   {
     href: "/about",
     label: "关于",

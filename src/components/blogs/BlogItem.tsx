@@ -60,7 +60,11 @@ export default function BlogItem({ blog }: { blog: Blog }) {
               <div className="flex items-center justify-between">
                 {blog.metadata?.tags &&
                   blog.metadata.tags?.map((tag, index) => (
-                    <Badge variant="secondary" key={`tag_${index}`} className="pointer-events-none">
+                    <Badge
+                      variant="secondary"
+                      key={`tag_${index}`}
+                      className="pointer-events-none whitespace-nowrap"
+                    >
                       {tag}
                     </Badge>
                   ))}

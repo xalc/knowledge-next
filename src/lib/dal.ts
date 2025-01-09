@@ -8,6 +8,7 @@ import { UserType } from "@/context/user-provider";
 const prisma = new PrismaClient();
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
+  if (!cookie) return { isAuth: false };
   const session = await decrypt(cookie);
 
   if (!session?.userId) {

@@ -15,7 +15,7 @@ const getPosts = async () => {
 export default async function NotesPage() {
   const posts = await getPosts();
   return (
-    <div className="flex flex-col items-center gap-8">
+    <div className="flex flex-col items-center gap-8 mx-6">
       <h1>Blogs</h1>
       <section className="container px-4 py-4">
         <div className="space-y-12">

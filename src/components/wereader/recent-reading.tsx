@@ -7,8 +7,8 @@ import moment from "moment";
 export default async function RecentReadingBooks() {
   const bookShelf = await getBookShelf();
   return (
-    <>
-      <Card className="container mx-auto mt-12 lg:max-w-[1024px]">
+    <div className='container mx-auto mt-12 lg:max-w-[1024px]'>
+      <Card className="mx-6">
         <CardHeader>
           <div className="flex justify-between">
             <CardTitle>最近在读的书</CardTitle>
@@ -50,6 +50,6 @@ export default async function RecentReadingBooks() {
           </div>
         </CardContent>
       </Card>
-    </>
+    </div>
   );
 }

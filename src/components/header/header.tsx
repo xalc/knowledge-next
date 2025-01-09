@@ -25,13 +25,10 @@ const ROUTES = [
     href: "/utils/calendar",
     label: "假期日历",
   },
-  // {
-  //   href: "/reading",
-  //   label: "阅读统计"
-  // },
+
   {
     href: "/utils",
-    label: "工具箱"
+    label: "工具箱",
   },
   {
     href: "/about",

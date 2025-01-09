@@ -1,6 +1,15 @@
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BookOpen, CalendarIcon, Home, LayoutGrid, Medal, FileText, User, ArrowRight } from 'lucide-react'
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  BookOpen,
+  CalendarIcon,
+  Home,
+  LayoutGrid,
+  Medal,
+  FileText,
+  User,
+  ArrowRight,
+} from "lucide-react";
 
 const NAVIGATION_ITEMS = [
   {
@@ -9,7 +18,7 @@ const NAVIGATION_ITEMS = [
     icon: Home,
     href: "/",
     color: "text-blue-500 dark:text-blue-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 50%)"
+    pattern: "radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.08) 0%, transparent 50%)",
   },
   {
     title: "博客",
@@ -17,7 +26,7 @@ const NAVIGATION_ITEMS = [
     icon: FileText,
     href: "/blogs",
     color: "text-green-500 dark:text-green-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)"
+    pattern: "radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)",
   },
   {
     title: "节假日日历",
@@ -25,7 +34,7 @@ const NAVIGATION_ITEMS = [
     icon: CalendarIcon,
     href: "/utils/calendar",
     color: "text-purple-500 dark:text-purple-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 50%)"
+    pattern: "radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 50%)",
   },
   {
     title: "阅读统计",
@@ -33,7 +42,7 @@ const NAVIGATION_ITEMS = [
     icon: BookOpen,
     href: "/reading",
     color: "text-amber-500 dark:text-amber-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(251, 191, 36, 0.08) 0%, transparent 50%)"
+    pattern: "radial-gradient(circle at 100% 100%, rgba(251, 191, 36, 0.08) 0%, transparent 50%)",
   },
   {
     title: "技能认证",
@@ -41,7 +50,7 @@ const NAVIGATION_ITEMS = [
     icon: Medal,
     href: "/badges",
     color: "text-red-500 dark:text-red-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.08) 0%, transparent 50%)"
+    pattern: "radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.08) 0%, transparent 50%)",
   },
   {
     title: "关于",
@@ -49,34 +58,32 @@ const NAVIGATION_ITEMS = [
     icon: User,
     href: "/about",
     color: "text-teal-500 dark:text-teal-400",
-    pattern: "radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.08) 0%, transparent 50%)"
-  }
-]
+    pattern: "radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.08) 0%, transparent 50%)",
+  },
+];
 
 export default function NavigationPage() {
   return (
-    <div className="container py-10  mx-auto lg:max-w-[1024px]">
-      <div className="space-y-6 mx-6">
+    <div className="container mx-auto py-10 lg:max-w-[1024px]">
+      <div className="mx-6 space-y-6">
         {/* Page Header */}
         <div className="space-y-2">
           <div className="flex items-center gap-2">
             <LayoutGrid className="h-6 w-6" />
             <h1 className="text-3xl font-bold tracking-tight">站点导航</h1>
           </div>
-          <p className="text-muted-foreground">
-            快速访问网站的所有主要页面和功能
-          </p>
+          <p className="text-muted-foreground">快速访问网站的所有主要页面和功能</p>
         </div>
 
         {/* Navigation Grid */}
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {NAVIGATION_ITEMS.map((item) => (
+          {NAVIGATION_ITEMS.map(item => (
             <Link key={item.href} href={item.href}>
-              <Card className="h-full transition-all duration-200 hover:shadow-lg hover:-translate-y-1">
+              <Card className="h-full transition-all duration-200 hover:-translate-y-1 hover:shadow-lg">
                 <CardHeader className="space-y-1">
                   <div className="flex items-center justify-between">
                     <div
-                      className={`rounded-lg p-2 ring-1 ring-background/10 bg-background/50 backdrop-blur ${item.color}`}
+                      className={`rounded-lg bg-background/50 p-2 ring-1 ring-background/10 backdrop-blur ${item.color}`}
                       style={{ backgroundImage: item.pattern }}
                     >
                       <item.icon className="h-5 w-5" />
@@ -99,7 +106,7 @@ export default function NavigationPage() {
           </CardHeader>
           <CardContent>
             <nav className="flex flex-wrap gap-4">
-              {NAVIGATION_ITEMS.map((item) => (
+              {NAVIGATION_ITEMS.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
@@ -114,6 +121,5 @@ export default function NavigationPage() {
         </Card>
       </div>
     </div>
-  )
+  );
 }
-

@@ -63,7 +63,7 @@ export default function AboutPage() {
 
       {/* Content Sections */}
       <div className="container mx-auto mt-20 lg:max-w-[1024px]">
-        <div className="grid gap-6 sm:grid-cols-2 mx-6">
+        <div className="mx-6 grid gap-6 sm:grid-cols-2">
           {SECTIONS.map(section => (
             <Card key={section.title} className="group relative overflow-hidden">
               <CardContent className="p-6">

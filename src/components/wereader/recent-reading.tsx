@@ -7,7 +7,7 @@ import moment from "moment";
 export default async function RecentReadingBooks() {
   const bookShelf = await getBookShelf();
   return (
-    <div className='container mx-auto mt-12 lg:max-w-[1024px]'>
+    <div className="container mx-auto mt-12 lg:max-w-[1024px]">
       <Card className="mx-6">
         <CardHeader>
           <div className="flex justify-between">

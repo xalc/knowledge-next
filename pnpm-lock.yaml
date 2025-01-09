@@ -163,6 +163,9 @@ importers:
       tippy.js:
         specifier: ^6.3.7
         version: 6.3.7
+      tough-cookie:
+        specifier: ^5.0.0
+        version: 5.0.0
       use-debounce:
         specifier: ^10.0.4
         version: 10.0.4(react@19.0.0)
@@ -4342,12 +4345,32 @@ packages:
         integrity: sha512-E1d3oP2emgJ9dRQZdf3Kkn0qJgI6ZLpyS5z6ZkY1DF3kaQaBsGZsndEpHwx+eC+tYM41HaSNvNtLx8tU57FzTQ==,
       }
 
+  tldts-core@6.1.71:
+    resolution:
+      {
+        integrity: sha512-LRbChn2YRpic1KxY+ldL1pGXN/oVvKfCVufwfVzEQdFYNo39uF7AJa/WXdo+gYO7PTvdfkCPCed6Hkvz/kR7jg==,
+      }
+
+  tldts@6.1.71:
+    resolution:
+      {
+        integrity: sha512-LQIHmHnuzfZgZWAf2HzL83TIIrD8NhhI0DVxqo9/FdOd4ilec+NTNZOlDZf7EwrTNoutccbsHjvWHYXLAtvxjw==,
+      }
+    hasBin: true
+
   to-regex-range@5.0.1:
     resolution:
       {
         integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==,
       }
     engines: { node: ">=8.0" }
+
+  tough-cookie@5.0.0:
+    resolution:
+      {
+        integrity: sha512-FRKsF7cz96xIIeMZ82ehjC3xW2E+O2+v11udrDYewUbszngYhsGa8z6YUMMzO9QJZzzyd0nGGXnML/TReX6W8Q==,
+      }
+    engines: { node: ">=16" }
 
   ts-api-utils@1.4.3:
     resolution:
@@ -7303,9 +7326,19 @@ snapshots:
     dependencies:
       "@popperjs/core": 2.11.8
 
+  tldts-core@6.1.71: {}
+
+  tldts@6.1.71:
+    dependencies:
+      tldts-core: 6.1.71
+
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+
+  tough-cookie@5.0.0:
+    dependencies:
+      tldts: 6.1.71
 
   ts-api-utils@1.4.3(typescript@5.7.2):
     dependencies:

@@ -63,7 +63,7 @@ const BlogEditor = ({ post }) => {
               </Badge>
             ))}
         </div>
-        <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
+        <h1 className="sticky text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
         <p className="text-xl text-muted-foreground">{post.description}</p>
       </div>
       {user && (

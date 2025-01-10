@@ -25,7 +25,7 @@ export default async function BlogPage({ params }) {
   return (
     <div className="container mx-auto">
       <title>{post.title}</title>
-      <div className="ml-12 mt-8">
+      <div className="mx-12 mt-8">
         <Button variant="ghost" className="mb-6 gap-2 pl-0" asChild>
           <Link href="/blogs">
             <ArrowLeft className="h-4 w-4" />
@@ -34,7 +34,7 @@ export default async function BlogPage({ params }) {
         </Button>
       </div>
 
-      <div className="ml-12 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_240px]">
+      <div className="mx-12 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_240px]">
         <div className="space-y-10">
           <article className="">
             <BlogEditor post={post} />

@@ -16,14 +16,15 @@ async function getHolidays() {
   }
 }
 export default async function CalendarPage() {
-  const description = '小型客车收费公路免费通行时间范围为春节、清明节、劳动节、国庆节4个国家法定节假日。根据国务院办公厅印发的《关于2025年部分节假日安排的通知》梳理发现，2025年共有24天，小型客车可享受高速公路免费通行政策。其中，春节8天、清明节3天、劳动节5天、国庆节8天。';
+  const description =
+    "小型客车收费公路免费通行时间范围为春节、清明节、劳动节、国庆节4个国家法定节假日。根据国务院办公厅印发的《关于2025年部分节假日安排的通知》梳理发现，2025年共有24天，小型客车可享受高速公路免费通行政策。其中，春节8天、清明节3天、劳动节5天、国庆节8天。";
 
   const { holidays, year } = await getHolidays();
   return (
     <Card className="border-0 p-0 shadow-none">
       <CardHeader className="flex space-y-4">
         <title>2025年假期高速日历</title>
-        <meta name='description' content={description} />
+        <meta name="description" content={description} />
         <CardTitle className="self-center text-2xl">2025年节假日日历</CardTitle>
         <div className="flex flex-wrap justify-end gap-4 text-sm">
           <div className="flex items-center gap-2">

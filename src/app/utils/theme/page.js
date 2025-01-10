@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import PopoverWrap from "./popover";
-
+import Image from 'next/image';
+import LogoSrc from '/public/images/HX.svg';
+import LogoDarkSrc from '/public/images/HX-dark.svg'
 import ThemeSwitcher from "./theme-switcher";
 export default function ThemeChange() {
   return (
@@ -15,6 +17,11 @@ export default function ThemeChange() {
         <PopoverWrap />
       </div>
       <ThemeSwitcher />
+
+      <div className="flex gap-6">
+        <Image src={LogoSrc} width={256} alt="logo"></Image>
+        <Image src={LogoDarkSrc} width={256} alt="logo"></Image>
+      </div>
     </>
   );
 }

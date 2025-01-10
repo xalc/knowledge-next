@@ -11,7 +11,7 @@ import { BlogMetaForm } from "./BlogmetaForm";
 import BlogMetaPopup from "./BlogMetaPopup";
 import { DialogTitle } from "@/components/ui/dialog";
 
-import { Pencil, PencilOff, Calendar, Clock, BarChart2 } from "lucide-react";
+import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck } from "lucide-react";
 const BlogEditor = ({ post }) => {
   const user = useContext(UserContext);
   const [editable, setEditable] = useState(false);
@@ -37,18 +37,24 @@ const BlogEditor = ({ post }) => {
   return (
     <div className="w-full overflow-x-hidden">
       <div className="not-prose mb-8 space-y-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        <div className="flex items-center gap-4 text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Calendar className="h-4 w-4" />
-            更新于{post.updatedAt.toLocaleDateString()}
+            创建于{post.createdAt.toLocaleDateString()}
           </span>
+          {post.createdAt.toLocaleDateString() !== post.updatedAt.toLocaleDateString()
+            && <span className="inline-flex items-center gap-1">
+              <CalendarCheck className="h-4 w-4" />
+              修改于{post.updatedAt.toLocaleDateString()}
+            </span>}
+
           <span className="inline-flex items-center gap-1">
             <BarChart2 className="h-4 w-4" />
             {editor.storage.characterCount.words()}
           </span>
           <span className="inline-flex items-center gap-1">
             <Clock className="h-4 w-4" />
-            {(editor.storage.characterCount.words() / 150).toFixed(0)}分钟阅读
+            {(editor.storage.characterCount.words() / 200).toFixed(0)}分钟阅读
           </span>
         </div>
         <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -8,6 +8,8 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import UserProfile from "./profile";
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
 const ROUTES = [
   {
     href: "/",
@@ -20,6 +22,7 @@ const ROUTES = [
   {
     href: "/blogs/new",
     label: "写博客",
+    hideWhenMobile: true
   },
   {
     href: "/utils/calendar",
@@ -60,7 +63,7 @@ export default function Header() {
             hideWhenDetached
             className="mt-2 flex w-screen flex-col gap-2 rounded-md shadow-lg"
           >
-            {ROUTES.map((route, index) => (
+            {ROUTES.filter((r) => r.hideWhenMobile !== true).map((route, index) => (
               <LinkButton
                 href={route.href}
                 key={`route_${index}`}
@@ -73,7 +76,11 @@ export default function Header() {
           </PopoverContent>
         </Popover>
       </div>
-      <h1 className="hidden md:flex">Knowledge center </h1>
+      <h1 className="hidden md:flex">
+        <Avatar className="h-12 w-12">
+          <AvatarImage src="/images/HX.svg" alt="website title" />
+        </Avatar>
+      </h1>
       <div className="hidden space-x-4 md:flex">
         {ROUTES.map((route, index) => (
           <LinkButton

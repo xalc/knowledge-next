@@ -33,7 +33,7 @@ const Tiptap = () => {
     ],
     editorProps: {
       attributes: {
-        class: "my-6 p-4 focus:outline-none border-2 min-h-[600px]",
+        class: "mx-12 my-8 p-4 focus:outline-none border-2 min-h-[600px]",
       },
     },
     onUpdate: ({ editor }) => {
@@ -64,8 +64,8 @@ const Tiptap = () => {
   };
 
   return (
-    <>
-      <div className="flex justify-end gap-4">
+    <div className="container mx-auto lg: max-w-[1024px]">
+      <div className="flex justify-end gap-4 mt-8 mx-12 flex-wrap">
         <BlogMetaPopup editor={editor}>
           <DialogTitle>Add meta infomation</DialogTitle>
           <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
@@ -83,7 +83,7 @@ const Tiptap = () => {
       </div>
 
       <EditorContent editor={editor} />
-    </>
+    </div>
   );
 };
 

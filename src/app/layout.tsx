@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   applicationName: "knowledge next",
   authors: [{ name: "HunterX" }],
   keywords: ["next", "knowledge", "blog", "react", "typescript"],
-  icons: "/images/favor.svg",
+  icons: "/images/HX.svg",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

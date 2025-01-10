@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import "@/globals.css";
 import { ThemeProvider } from "@/context/theme-provider";
 import UILayout from "@/components/uiLayout";
-import WrapUserProfile from "@/components/landing/user-profile";
+import WrapUserProfile from "@/components/auth/user-profile";
 import { Analytics } from "@vercel/analytics/react";
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   applicationName: "knowledge next",
   authors: [{ name: "HunterX" }],
   keywords: ["next", "knowledge", "blog", "react", "typescript"],
-  icons: "/images/favor.svg",
+  icons: "/images/HX.svg",
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -22,9 +22,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body>
         <ThemeProvider
           attribute="class"
+          enableSystem
           defaultTheme="system"
           disableTransitionOnChange
-          themes={["green", "zinc", "dark", "light", "system"]}
+          themes={[
+            "light",
+            "dark",
+            "zinc",
+            "zinc-dark",
+            "rose",
+            "rose-dark",
+            "yellow",
+            "yellow-dark",
+          ]}
         >
           <WrapUserProfile>
             <UILayout>{children}</UILayout>

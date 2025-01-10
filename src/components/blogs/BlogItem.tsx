@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Calendar } from "lucide-react";
+import { cn } from "@/lib/utils";
 type Meta = {
   tags: string[];
   author: string;
@@ -13,7 +14,7 @@ type Blog = {
   metadata: Meta;
   updatedAt: Date;
 };
-export default function BlogItem({ blog }: { blog: Blog }) {
+export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const imageUrl = null;
   return (
@@ -24,9 +25,10 @@ export default function BlogItem({ blog }: { blog: Blog }) {
       }
     >
       <Card
-        className={
-          "h-full overflow-hidden transition-all duration-200 hover:-translate-y-1 hover:shadow-xl"
-        }
+        className={cn(
+          "h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:bg-accent/5 hover:shadow-xl group-hover:border-primary/50",
+          className,
+        )}
       >
         {imageUrl ? (
           // 有图片的布局
@@ -59,7 +61,7 @@ export default function BlogItem({ blog }: { blog: Blog }) {
             <CardHeader className="space-y-2">
               <div className="flex items-center justify-between">
                 {blog.metadata?.tags &&
-                  blog.metadata.tags?.map((tag, index) => (
+                  blog.metadata.tags?.slice(0, 3).map((tag, index) => (
                     <Badge
                       variant="secondary"
                       key={`tag_${index}`}

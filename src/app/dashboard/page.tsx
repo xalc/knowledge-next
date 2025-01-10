@@ -6,7 +6,7 @@ export default async function BoardPage() {
   const user = await verifySession();
 
   if (!user || !user.isAuth) {
-    redirect("/status");
+    redirect("/utils/status");
   }
 
   return <DashboardPage />;

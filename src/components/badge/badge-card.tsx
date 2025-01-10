@@ -39,9 +39,7 @@ export function BadgeCard({ badge }: BadgeCardProps) {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
           <div className="absolute bottom-0 left-0 right-0 translate-y-full p-4 transition-transform group-hover:translate-y-0">
-            <p className="line-clamp-3 text-sm text-black dark:text-white">
-              {template.description}
-            </p>
+            <p className="line-clamp-3 text-sm text-accent-foreground">{template.description}</p>
           </div>
         </div>
       </CardHeader>
@@ -70,20 +68,6 @@ export function BadgeCard({ badge }: BadgeCardProps) {
                     </div>
                     <p className="text-sm text-muted-foreground">{template.level}</p>
                   </div>
-                  {/* <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <Clock className="h-4 w-4" />
-                      所需时间
-                    </div>
-                    <p className="text-sm text-muted-foreground">{template.time_to_earn}</p>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2 text-sm font-medium">
-                      <DollarSign className="h-4 w-4" />
-                      费用
-                    </div>
-                    <p className="text-sm text-muted-foreground">{template.cost}</p>
-                  </div> */}
                   <div className="space-y-1">
                     <div className="flex items-center gap-2 text-sm font-medium">
                       <Tag className="h-4 w-4" />
@@ -133,7 +117,11 @@ export function BadgeCard({ badge }: BadgeCardProps) {
           )}
         </div> */}
       </CardContent>
-      <CardFooter className="flex items-center justify-end p-4 pt-0">
+      <CardFooter className="flex flex-wrap items-center justify-between p-4 pt-0">
+        {/* <UIBadge variant="secondary" className="pointer-events-none">
+          {template.type_category}
+        </UIBadge> */}
+        <UIBadge className="whitespace-nowrap">{template.issuer.entities[0].entity.name}</UIBadge>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" variant="outline">
             <Link href={template.url} target="_blank" className="gap-2">

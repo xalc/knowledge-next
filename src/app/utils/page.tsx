@@ -9,6 +9,8 @@ import {
   FileText,
   User,
   ArrowRight,
+  Lock,
+  Palette,
 } from "lucide-react";
 
 const NAVIGATION_ITEMS = [
@@ -51,6 +53,22 @@ const NAVIGATION_ITEMS = [
     href: "/badges",
     color: "text-red-500 dark:text-red-400",
     pattern: "radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.08) 0%, transparent 50%)",
+  },
+  {
+    title: "AdminDashBoard",
+    description: "后台数据(private)",
+    icon: Lock,
+    href: "/dashboard",
+    color: "text-red-500 dark:text-red-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.08) 0%, transparent 50%)",
+  },
+  {
+    title: "主题调试",
+    description: "选择不同的主题，看看显示效果",
+    icon: Palette,
+    href: "/utils/theme",
+    color: "text-red-500 dark:text-red-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(20, 184, 166, 0.08) 0%, transparent 50%)",
   },
   {
     title: "关于",
@@ -106,16 +124,14 @@ export default function NavigationPage() {
           </CardHeader>
           <CardContent>
             <nav className="flex flex-wrap gap-4">
-              {NAVIGATION_ITEMS.map(item => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`inline-flex items-center gap-2 rounded-lg px-3 py-1 text-sm ring-1 ring-transparent transition-all duration-200 hover:ring-primary ${item.color}`}
-                >
-                  <item.icon className="h-4 w-4" />
-                  <span>{item.title}</span>
-                </Link>
-              ))}
+              <a
+                className="text-primary underline"
+                href="https://note.huntx.cn"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                站点历史版本
+              </a>
             </nav>
           </CardContent>
         </Card>

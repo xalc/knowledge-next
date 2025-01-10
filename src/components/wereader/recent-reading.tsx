@@ -25,7 +25,7 @@ export default async function RecentReadingBooks() {
                 <img
                   src={book.cover}
                   alt={book.title}
-                  className="rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
+                  className="max-w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
                 />
                 <div className="flex-1">
                   <div className="space-y-2">

@@ -6,6 +6,8 @@ import { ThemeProvider } from "@/context/theme-provider";
 import UILayout from "@/components/uiLayout";
 import WrapUserProfile from "@/components/auth/user-profile";
 import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
+
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "knowledge next",
@@ -41,7 +43,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <Toaster />
           </WrapUserProfile>
         </ThemeProvider>
-        <Analytics />
+        {process.env.NODE_ENV === "production" && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
     </html>
   );

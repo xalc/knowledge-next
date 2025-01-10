@@ -11,6 +11,7 @@ export default function UILayout({ children }) {
   }
   return (
     <div className="flex min-h-screen flex-col">
+      <meta name="google-site-verification" content="_lv6oskWRfi00Z3rjMkNWOr9jHofZIU71abSExDAeUs" />
       <Header />
       <main className="w-auto flex-1">{children}</main>
 

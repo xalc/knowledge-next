@@ -83,7 +83,6 @@ export function Calendar({ holidays, year }) {
 
   return (
     <ScrollArea className="h-[700px] rounded-md border">
-      <title>2025年假期高速日历</title>
       <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {MONTHS.map((monthName, monthIndex) => (
           <div key={monthName} className="space-y-2">

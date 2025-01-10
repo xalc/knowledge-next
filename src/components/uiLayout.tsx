@@ -7,7 +7,15 @@ export default function UILayout({ children }) {
   const landingPage = pathname === "/";
 
   if (landingPage) {
-    return <>{children}</>;
+    return (
+      <>
+        <meta
+          name="google-site-verification"
+          content="_lv6oskWRfi00Z3rjMkNWOr9jHofZIU71abSExDAeUs"
+        />
+        {children}
+      </>
+    );
   }
   return (
     <div className="flex min-h-screen flex-col">

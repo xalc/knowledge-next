@@ -42,11 +42,12 @@ const BlogEditor = ({ post }) => {
             <Calendar className="h-4 w-4" />
             创建于{post.createdAt.toLocaleDateString()}
           </span>
-          {post.createdAt.toLocaleDateString() !== post.updatedAt.toLocaleDateString()
-            && <span className="inline-flex items-center gap-1">
+          {post.createdAt.toLocaleDateString() !== post.updatedAt.toLocaleDateString() && (
+            <span className="inline-flex items-center gap-1">
               <CalendarCheck className="h-4 w-4" />
               修改于{post.updatedAt.toLocaleDateString()}
-            </span>}
+            </span>
+          )}
 
           <span className="inline-flex items-center gap-1">
             <BarChart2 className="h-4 w-4" />

@@ -21,7 +21,11 @@ export default async function BlogsPage() {
         <div className="space-y-12">
           <div className="columns-1 gap-6 space-y-6 md:columns-2 lg:columns-3 [&>*]:break-inside-avoid-column">
             {posts.map(post => (
-              <BlogItem key={post.slug} blog={post} className="animate-in fade-in slide-in-from-bottom-6 duration-1000" />
+              <BlogItem
+                key={post.slug}
+                blog={post}
+                className="duration-1000 animate-in fade-in slide-in-from-bottom-6"
+              />
             ))}
           </div>
         </div>

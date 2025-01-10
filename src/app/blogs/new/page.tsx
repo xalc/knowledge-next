@@ -64,8 +64,8 @@ const Tiptap = () => {
   };
 
   return (
-    <div className="container mx-auto lg: max-w-[1024px]">
-      <div className="flex justify-end gap-4 mt-8 mx-12 flex-wrap">
+    <div className="lg: container mx-auto max-w-[1024px]">
+      <div className="mx-12 mt-8 flex flex-wrap justify-end gap-4">
         <BlogMetaPopup editor={editor}>
           <DialogTitle>Add meta infomation</DialogTitle>
           <BlogMetaForm content={JSON.stringify(editor.getJSON())} />

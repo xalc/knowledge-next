@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import PopoverWrap from "./popover";
-import Image from 'next/image';
-import LogoSrc from '/public/images/HX.svg';
-import LogoDarkSrc from '/public/images/HX-dark.svg'
+import Image from "next/image";
+import LogoSrc from "/public/images/HX.svg";
+import LogoDarkSrc from "/public/images/HX-dark.svg";
 import ThemeSwitcher from "./theme-switcher";
 export default function ThemeChange() {
   return (

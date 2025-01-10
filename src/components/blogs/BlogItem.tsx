@@ -14,7 +14,7 @@ type Blog = {
   metadata: Meta;
   updatedAt: Date;
 };
-export default function BlogItem({ blog, className }: { blog: Blog, className: string }) {
+export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const imageUrl = null;
   return (
@@ -24,10 +24,12 @@ export default function BlogItem({ blog, className }: { blog: Blog, className: s
         "group block h-fit w-full rounded-xl border-0 bg-secondary text-inherit no-underline"
       }
     >
-      <Card className={cn(
-        "overflow-hidden h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 hover:bg-accent/5 group-hover:border-primary/50",
-        className
-      )}>
+      <Card
+        className={cn(
+          "h-full overflow-hidden transition-all duration-300 hover:-translate-y-1.5 hover:bg-accent/5 hover:shadow-xl group-hover:border-primary/50",
+          className,
+        )}
+      >
         {imageUrl ? (
           // 有图片的布局
           <>

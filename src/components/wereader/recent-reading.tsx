@@ -4,6 +4,7 @@ import { getBookShelf } from "@/lib/wereader/wr-db";
 import { ReadingProgressType } from "@/types/bookshelf";
 import { Button } from "../ui/button";
 import moment from "moment";
+import Link from "next/link";
 export default async function RecentReadingBooks() {
   const bookShelf = await getBookShelf();
   return (
@@ -12,8 +13,8 @@ export default async function RecentReadingBooks() {
         <CardHeader>
           <div className="flex justify-between">
             <CardTitle>最近在读的书</CardTitle>
-            <Button variant="outline" disabled>
-              查看更多
+            <Button variant="outline" disabled asChild>
+              <Link href="/reading">查看更多</Link>
             </Button>
           </div>
         </CardHeader>

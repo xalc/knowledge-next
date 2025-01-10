@@ -1,4 +1,4 @@
-import Badge from "@/components/badge/badge";
+import TopBadge from "@/components/badge/top-badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -118,7 +118,7 @@ export default function AboutPage() {
         </Card> */}
       </div>
       <RecentReadingBooks />
-      <Badge />
+      <TopBadge />
     </div>
   );
 }

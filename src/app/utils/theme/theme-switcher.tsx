@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 export default function ThemeSwitcher() {
   const { setTheme, themes, theme } = useTheme();
   return (
-    <>
+    <div className="mx-10">
       <p className="text-primary"> current theme {theme}</p>
       <div className="mx-8 flex flex-auto flex-wrap gap-8">
         {themes.map((t, i) => {
@@ -28,6 +28,13 @@ export default function ThemeSwitcher() {
       <p className="text-accent-foreground"> text-accent-foreground</p>
       <p className="text-card"> text-card</p>
       <p className="text-card-foreground"> text-card-foreground</p>
+
+      <div className="my-8">
+        <p className="text-3xl text-foreground"> 尽量使用如下几种</p>
+        <p className="text-foreground"> text-foreground</p>
+        <p className="text-muted-foreground"> text-muted-foreground</p>
+        <p className="text-accent-foreground"> text-accent-foreground</p>
+      </div>
       <div className="flex gap-5">
         <div className="h-10 w-10 border-4 border-border bg-background"></div>
         <div className="h-10 w-10 border-4 border-border bg-foreground"></div>
@@ -38,6 +45,6 @@ export default function ThemeSwitcher() {
         <div className="h-10 w-10 border-4 border-border bg-primary"></div>
         <div className="h-10 w-10 border-4 border-border bg-ring"></div>
       </div>
-    </>
+    </div>
   );
 }

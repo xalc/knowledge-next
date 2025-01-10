@@ -14,6 +14,7 @@ export interface BadgeTemplate {
   level: string;
   time_to_earn: string;
   cost: string;
+  issuer: BadgeIssuer;
   type_category: string;
   image_url: string;
   url: string;

@@ -91,6 +91,13 @@ const BlogEditor = ({ post }) => {
           <BlogMetaForm content={JSON.stringify(editor.getJSON())} meta={post} />
         </BlogMetaPopup>
       )}
+      {post.cover && (
+        <div className="not-prose my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
+          <div className="relative aspect-[2/1]">
+            <img src={post.cover} alt={post.title} className="object-cover" />
+          </div>
+        </div>
+      )}
       <EditorContent editor={editor} />
     </div>
   );

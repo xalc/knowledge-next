@@ -13,10 +13,11 @@ type Blog = {
   slug: string;
   metadata: Meta;
   updatedAt: Date;
+  cover?: string;
 };
 export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
-  const imageUrl = null;
+  const cover = blog.cover;
   return (
     <Link
       href={`/blogs/${slug}`}
@@ -30,22 +31,31 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
           className,
         )}
       >
-        {imageUrl ? (
-          // 有图片的布局
+        {cover ? (
           <>
             <div className="relative aspect-video overflow-hidden">
               <div
                 className="absolute inset-0 bg-cover bg-center transition-all duration-500 group-hover:scale-110"
-                style={{ backgroundImage: `url(${imageUrl})` }}
+                style={{ backgroundImage: `url(${cover})` }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-background/0" />
             </div>
             <CardHeader className="space-y-2">
               <div className="flex items-center justify-between">
-                <Badge variant="secondary" className="pointer-events-none">
-                  {slug}
-                </Badge>
-                <span className="text-sm text-muted-foreground">{title}</span>
+                {blog.metadata?.tags &&
+                  blog.metadata.tags?.slice(0, 3).map((tag, index) => (
+                    <Badge
+                      variant="secondary"
+                      key={`tag_${index}`}
+                      className="pointer-events-none whitespace-nowrap"
+                    >
+                      {tag}
+                    </Badge>
+                  ))}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Calendar className="h-4 w-4" />
+                  <span>{blog.updatedAt.toLocaleDateString()}</span>
+                </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
                 {title}

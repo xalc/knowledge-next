@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import UserProfile from "./profile";
 import { useState } from "react";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { HeaderLogo } from "./header-logo";
 
 const ROUTES = [
   {
@@ -76,11 +76,7 @@ export default function Header() {
           </PopoverContent>
         </Popover>
       </div>
-      <h1 className="hidden md:flex">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src="/images/HX.svg" alt="website title" />
-        </Avatar>
-      </h1>
+      <HeaderLogo />
       <div className="hidden space-x-4 md:flex">
         {ROUTES.map((route, index) => (
           <LinkButton

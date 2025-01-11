@@ -14,6 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -112,7 +113,7 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
             <FormItem>
               <FormLabel>description</FormLabel>
               <FormControl>
-                <Input placeholder="Description" autoComplete="off" {...field} />
+                <Textarea placeholder="Description" autoComplete="off" {...field} />
               </FormControl>
 
               <FormMessage />

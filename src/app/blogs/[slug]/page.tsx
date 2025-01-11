@@ -37,13 +37,13 @@ export default async function BlogPage({ params }) {
         </Button>
       </div>
 
-      <div className="mx-12 grid grid-cols-1 gap-10 lg:grid-cols-[1fr_240px]">
+      <div className="mx-12 grid grid-cols-1 gap-10 xl:grid-cols-[1fr_240px]">
         <div className="space-y-10">
           <article className="mb-36">
             <BlogEditor post={post} />
           </article>
         </div>
-        <div className="hidden lg:block">
+        <div className="hidden xl:block">
           <div className="sticky top-20">
             {/* <TableOfContents />
              */}

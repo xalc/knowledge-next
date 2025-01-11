@@ -41,59 +41,59 @@ const BadgesPage = async () => {
       .length,
   };
   return (
-    <>
-      <div className="container mx-auto mt-12 lg:max-w-[1024px]">
-        <div className="mx-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                <Image src={CredlySvg} width={64} alt="Credly Icon" />
-              </CardTitle>
-              <Trophy className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <p className="text-xs text-muted-foreground">
-                展示来自
-                <a
-                  href="https://www.credly.com/users/xalc"
-                  className="px-2 font-bold text-primary"
-                  target="_blank"
-                >
-                  Credly
-                </a>
-                的数字证书和专业技能
-              </p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">总认证数</CardTitle>
-              <Award className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.totalBadges}</div>
-              <p className="text-xs text-muted-foreground">包含证书和徽章</p>
-            </CardContent>
-          </Card>
 
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">专业技能</CardTitle>
-              <Target className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stats.uniqueSkills}</div>
-              <p className="text-xs text-muted-foreground">掌握的技能数量</p>
-            </CardContent>
-          </Card>
-        </div>
+    <div className="container mx-auto mt-12 lg:max-w-[1024px]">
+      <div className="mx-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              <Image src={CredlySvg} width={64} alt="Credly Icon" />
+            </CardTitle>
+            <Trophy className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <p className="text-xs text-muted-foreground">
+              展示来自
+              <a
+                href="https://www.credly.com/users/xalc"
+                className="px-2 font-bold text-primary"
+                target="_blank"
+              >
+                Credly
+              </a>
+              的数字证书和专业技能
+            </p>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">总认证数</CardTitle>
+            <Award className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.totalBadges}</div>
+            <p className="text-xs text-muted-foreground">包含证书和徽章</p>
+          </CardContent>
+        </Card>
 
-        {/* Skills Overview */}
-        <CertificationTypeStats categories={categories} />
-        <SkillsOverView skills={skills} />
-        <BadgeWithActions badges={badges} />
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">专业技能</CardTitle>
+            <Target className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.uniqueSkills}</div>
+            <p className="text-xs text-muted-foreground">掌握的技能数量</p>
+          </CardContent>
+        </Card>
       </div>
-    </>
+
+      {/* Skills Overview */}
+      <CertificationTypeStats categories={categories} />
+      <SkillsOverView skills={skills} />
+      <BadgeWithActions badges={badges} />
+    </div>
+
   );
 };
 

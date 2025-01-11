@@ -20,8 +20,8 @@ const BlogItemSkeleton = () => (
 
 export default function Loading() {
   return (
-    <div className="container mx-auto flex flex-col items-center gap-8 lg:max-w-[1024px]">
-      <h1>Blogs</h1>
+    <div className="container mx-auto max-w-[1024px] flex flex-col items-center gap-8">
+      <h1 className='text-3xl mt-8'>Blogs</h1>
 
       <section className="container px-4 py-4">
         <div className="space-y-12">

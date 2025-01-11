@@ -76,7 +76,10 @@ export default function Header() {
           </PopoverContent>
         </Popover>
       </div>
-      <HeaderLogo />
+      <h1 className="hidden md:flex">
+        <HeaderLogo />
+      </h1>
+
       <div className="hidden space-x-4 md:flex">
         {ROUTES.map((route, index) => (
           <LinkButton

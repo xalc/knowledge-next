@@ -14,7 +14,7 @@ export async function getWRToken(): Promise<string> {
   }
 }
 
-export async function getBookShelf() {
+export async function getRecentBooks() {
   const bookShelf = await prisma.wRBookShelt.findMany({
     orderBy: {
       readUpdateTime: "desc",

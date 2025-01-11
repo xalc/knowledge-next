@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { HeaderLogo } from "../header/header-logo";
 
 export const HeroSection = () => {
   return (
@@ -13,10 +14,8 @@ export const HeroSection = () => {
       />
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center space-y-8 pt-8 text-center">
-          <Avatar className="h-32 w-32 duration-700 animate-in zoom-in">
-            <AvatarImage src="/images/HX.svg" alt="Blog Author" />
-            <AvatarFallback>HunterX</AvatarFallback>
-          </Avatar>
+          <HeaderLogo className='h-32 w-32'></HeaderLogo>
+
           <div className="space-y-2 delay-200 duration-700 animate-in slide-in-from-bottom-4">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">欢迎来到我的博客</h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-lg">

@@ -6,6 +6,7 @@ import RecentReadingBooks from "@/components/wereader/recent-reading";
 export default function AboutPage() {
   return (
     <div className="item-center flex min-h-screen w-full flex-col">
+
       <HeroSection />
       <ContentCard />
       <RecentReadingBooks />

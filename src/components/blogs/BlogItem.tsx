@@ -3,18 +3,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
-type Meta = {
-  tags: string[];
-  author: string;
-};
-type Blog = {
-  title: string;
-  description: string;
-  slug: string;
-  metadata: Meta;
-  updatedAt: Date;
-  cover?: string;
-};
+import { Blog } from '@/types/blogs';
 export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const cover = blog.cover;
@@ -54,7 +43,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
                   ))}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.updatedAt.toLocaleDateString()}</span>
+                  <span>{blog.createdAt.toLocaleDateString()}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
@@ -82,7 +71,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
                   ))}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.updatedAt.toLocaleDateString()}</span>
+                  <span>{blog.createdAt.toLocaleDateString()}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">

@@ -36,4 +36,3 @@ async function main() {
 
   console.dir(newPost.id, { depth: null });
 }
-

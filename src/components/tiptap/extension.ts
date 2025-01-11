@@ -20,7 +20,7 @@ import CharacterCount from "@tiptap/extension-character-count";
 import { CodeBlock } from "./codeblock";
 const taskList = TaskList.configure({
   HTMLAttributes: {
-    class: cx("not-prose pl-2 "),
+    class: cx("pl-2 "),
   },
 });
 const taskItem = TaskItem.configure({

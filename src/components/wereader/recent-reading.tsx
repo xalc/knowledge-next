@@ -1,12 +1,14 @@
 import { Card, CardContent, CardTitle, CardHeader } from "../ui/card";
-import { Progress } from "@/components/ui/progress";
-import { getBookShelf } from "@/lib/wereader/wr-db";
-import { ReadingProgressType } from "@/types/bookshelf";
+
+import { getRecentBooks } from "@/lib/wereader/wr-db";
+
 import { Button } from "../ui/button";
-import moment from "moment";
+
 import Link from "next/link";
+import BookItem from "./book-item";
+
 export default async function RecentReadingBooks() {
-  const bookShelf = await getBookShelf();
+  const bookShelf = await getRecentBooks();
   return (
     <div className="container mx-auto mt-12 lg:max-w-[1024px]">
       <Card className="mx-6">
@@ -20,34 +22,7 @@ export default async function RecentReadingBooks() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
-            {bookShelf.map(book => (
-              <div key={book.title} className="group flex aspect-auto gap-6">
-                <img
-                  src={book.cover}
-                  alt={book.title}
-                  className="max-w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
-                />
-                <div className="flex-1">
-                  <div className="space-y-2">
-                    <h4 className="font-semibold leading-none">{book.title}</h4>
-                    <p className="text-sm text-muted-foreground">{book.author}</p>
-                    <p className="text-xs text-muted-foreground">
-                      最近阅读：{moment(book.readUpdateTime * 1000).format("YYYY/MM/DD")}
-                    </p>
-                    <p className="text-sm">{book.category}</p>
-                  </div>
-                  <div className="flex items-center gap-4 space-y-1">
-                    <Progress
-                      className={"h-3"}
-                      value={(book.readProgress as unknown as ReadingProgressType).progress}
-                    />
-                    <p className="text-right text-xs text-muted-foreground">
-                      {(book.readProgress as unknown as ReadingProgressType).progress}%
-                    </p>
-                  </div>
-                </div>
-              </div>
-            ))}
+            {bookShelf.map(book => <BookItem key={book.id} book={book} />)}
           </div>
         </CardContent>
       </Card>

@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { BlogMetaForm } from "./BlogmetaForm";
 import BlogMetaPopup from "./BlogMetaPopup";
 import { DialogTitle } from "@/components/ui/dialog";
-
+import { clsx } from "clsx";
 import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck } from "lucide-react";
 const BlogEditor = ({ post }) => {
   const user = useContext(UserContext);
@@ -20,7 +20,7 @@ const BlogEditor = ({ post }) => {
     extensions: [...extensions],
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose-base lg:prose-lg xl:prose-2xl focus:outline-none",
+        class: clsx("focus:outline-none p-4", editable && "border-2"),
       },
     },
     content: post.postcontent.content,
@@ -36,8 +36,8 @@ const BlogEditor = ({ post }) => {
   }
   return (
     <div className="w-full overflow-x-hidden">
-      <div className="not-prose mb-8 space-y-4">
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+      <div className="mb-8 space-y-4">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
           <span className="inline-flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             创建于{post.createdAt.toLocaleDateString()}
@@ -71,14 +71,19 @@ const BlogEditor = ({ post }) => {
             ))}
         </div>
         <h1 className="sticky text-3xl font-bold tracking-tight sm:text-4xl">{post.title}</h1>
-        <p className="text-xl text-muted-foreground">{post.description}</p>
+        <p className="text-xl italic text-muted-foreground">{post.description}</p>
       </div>
       {user && (
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="link" onClick={editContent} disabled={!user.isAuth}>
-                {editable ? <PencilOff /> : <Pencil />}
+              <Button
+                variant="outline"
+                onClick={editContent}
+                disabled={!user.isAuth}
+                className="mb-8 mr-8"
+              >
+                {editable ? <PencilOff /> : <Pencil />} {editable ? "只读" : "编辑"}
               </Button>
             </TooltipTrigger>
             <TooltipContent>{editable ? "只读" : "编辑"}</TooltipContent>
@@ -92,7 +97,7 @@ const BlogEditor = ({ post }) => {
         </BlogMetaPopup>
       )}
       {post.cover && (
-        <div className="not-prose my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
+        <div className="my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
           <div className="relative aspect-[2/1]">
             <img src={post.cover} alt={post.title} className="object-cover" />
           </div>

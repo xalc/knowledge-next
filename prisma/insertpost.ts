@@ -24,7 +24,6 @@ async function main() {
         tags: ["nextjs", "dynamic-import", "performance"],
         author: "HunterX",
         excerpt: "Optimize your Next.js application using dynamic imports.",
-        coverImage: "https://example.com/images/dynamic-import.png",
       },
       stats: {
         views: 200,
@@ -37,12 +36,4 @@ async function main() {
 
   console.dir(newPost.id, { depth: null });
 }
-main()
-  .then(async () => {
-    await prisma.$disconnect();
-  })
-  .catch(async e => {
-    console.error(e);
-    await prisma.$disconnect();
-    process.exit(1);
-  });
+

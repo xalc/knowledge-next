@@ -26,12 +26,7 @@ export async function saveArticleAction(
       slug: slug,
     },
   });
-  if (existSlug) {
-    return {
-      code: 400,
-      message: "slug already in use,change one",
-    };
-  }
+
   if (contentId) {
     try {
       await prisma.postContent.update({
@@ -70,6 +65,12 @@ export async function saveArticleAction(
   }
 
   try {
+    if (existSlug) {
+      return {
+        code: 400,
+        message: "slug already in use,change one",
+      };
+    }
     const content = await prisma.postContent.create({
       data: {
         content: JSON.parse(jsonContnet),

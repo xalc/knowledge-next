@@ -1,0 +1,11 @@
+<svg width="300" height="100">
+  <text x="10" y="50" font-size="20">
+    This is <tspan fill="red">red</tspan> and
+    <tspan font-style="italic">italic</tspan> text.
+      <tspan x="10" dy="25">这是第二行</tspan>
+  </text>
+    <text x="10" y="80" font-size="20">
+        上标<tspan baseline-shift="super" font-size="12">2</tspan>
+        下标<tspan baseline-shift="sub" font-size="12">2</tspan>
+    </text>
+</svg>

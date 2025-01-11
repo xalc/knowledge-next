@@ -9,7 +9,6 @@ datasource db {
 
 type PostMetadata {
   author     String
-  coverImage String?
   date       String
   excerpt    String?
   tags       String[]
@@ -41,6 +40,7 @@ model Post {
   content     String?
   createdAt   DateTime     @db.Date
   description String
+  cover       String?
   metadata    PostMetadata
   slug        String       @unique
   stats       PostStats

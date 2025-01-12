@@ -4,7 +4,7 @@ import {
   BookOpen,
   CalendarIcon,
   Home,
-  LayoutGrid,
+  MapPinHouse,
   Medal,
   FileText,
   User,
@@ -83,12 +83,12 @@ const NAVIGATION_ITEMS = [
 export default function NavigationPage() {
   return (
     <div className="container mx-auto py-10 lg:max-w-[1024px]">
-      <div className="mx-6 space-y-6">
+      <div className="mx-6 space-y-6 sm:mx-12">
         {/* Page Header */}
         <div className="space-y-2">
-          <div className="flex items-center gap-2">
-            <LayoutGrid className="h-6 w-6" />
+          <div className="flex items-center gap-2 text-primary">
             <h1 className="text-3xl font-bold tracking-tight">站点导航</h1>
+            <MapPinHouse className="h-6 w-6" />
           </div>
           <p className="text-muted-foreground">快速访问网站的所有主要页面和功能</p>
         </div>

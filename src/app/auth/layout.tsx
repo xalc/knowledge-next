@@ -1,5 +1,4 @@
-export default ({ children }) => {
-  return <div className="max-w-[768px] mt-16 mx-auto">
-    {children}
-  </div>
-}
+const AuthLayout = ({ children }) => {
+  return <div className="mx-auto mt-16 max-w-[768px]">{children}</div>;
+};
+export default AuthLayout;

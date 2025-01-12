@@ -35,5 +35,5 @@ export default function BookItem({ book }) {
         )}
       </div>
     </div>
-  )
+  );
 }

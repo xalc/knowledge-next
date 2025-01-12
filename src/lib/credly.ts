@@ -19,4 +19,19 @@ const getCredly = unstable_cache(
   ["credly"],
   { revalidate: 3600 * 24 * 7, tags: ["credly"] },
 );
-export { getCredly };
+const getCredlyStatic = async () => {
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  };
+  const response = await fetch(badgesUrl, options);
+  if (!response.ok) {
+    throw new Error(`Response status: ${response.status}`);
+  }
+  const responseData = await response.json();
+  return responseData.data;
+};
+
+export { getCredly, getCredlyStatic };

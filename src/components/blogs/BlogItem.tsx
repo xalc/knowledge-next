@@ -3,7 +3,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Blog } from '@/types/blogs';
+import { Blog } from "@/types/blogs";
 export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const cover = blog.cover;
@@ -51,7 +51,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
               </h3>
             </CardHeader>
             <CardContent>
-              <p className="line-clamp-2 text-muted-foreground">{description}</p>
+              <p className="line-clamp-3 text-muted-foreground">{description}</p>
             </CardContent>
           </>
         ) : (
@@ -79,7 +79,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
               </h3>
             </CardHeader>
             <CardContent className="pt-2">
-              <p className="line-clamp-3 text-muted-foreground">{description}</p>
+              <p className="line-clamp-5 text-muted-foreground">{description}</p>
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

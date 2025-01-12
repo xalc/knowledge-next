@@ -3,9 +3,9 @@ export type Meta = {
   author: string;
 };
 export type BlogStats = {
-  likes: number
-  views: number
-}
+  likes: number;
+  views: number;
+};
 export type Blog = {
   title: string;
   description: string;

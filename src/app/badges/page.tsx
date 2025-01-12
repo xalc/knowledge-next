@@ -41,7 +41,6 @@ const BadgesPage = async () => {
       .length,
   };
   return (
-
     <div className="container mx-auto mt-12 lg:max-w-[1024px]">
       <div className="mx-6 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
@@ -93,7 +92,6 @@ const BadgesPage = async () => {
       <SkillsOverView skills={skills} />
       <BadgeWithActions badges={badges} />
     </div>
-
   );
 };
 

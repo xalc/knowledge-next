@@ -22,7 +22,9 @@ export default async function RecentReadingBooks() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
-            {bookShelf.map(book => <BookItem key={book.id} book={book} />)}
+            {bookShelf.map(book => (
+              <BookItem key={book.id} book={book} />
+            ))}
           </div>
         </CardContent>
       </Card>

@@ -1,18 +1,14 @@
+import { Button } from "@/components/ui/button";
 
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Link from "next/link"
-import { BarChart2, Grid, List } from 'lucide-react'
+import Link from "next/link";
+import { BarChart2 } from "lucide-react";
 export default function ReadingPage() {
   return (
-    <div className="mx-8 py-10 space-y-8">
-      {/* 页面标题和操作区 */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="mx-8 space-y-8 py-10">
+      <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">我的书架</h1>
-          <p className="text-muted-foreground">
-            记录读过的每一本书
-          </p>
+          <p className="text-muted-foreground">记录读过的每一本书</p>
         </div>
         <div className="flex items-center gap-4">
           <Button variant="outline" asChild>
@@ -27,5 +23,5 @@ export default function ReadingPage() {
       {/* 书籍列表 */}
       {/* <BookList /> */}
     </div>
-  )
+  );
 }

@@ -5,9 +5,8 @@ const getCredlyStatic = async () => {
     method: "GET",
     headers: {
       Accept: "application/json",
-
     },
-    next: { revalidate: 10 }
+    next: { revalidate: 10 },
   };
   const response = await fetch(badgesUrl, options);
   if (!response.ok) {

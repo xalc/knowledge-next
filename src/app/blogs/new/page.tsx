@@ -84,11 +84,11 @@ const Tiptap = () => {
         <Button variant="outline">{editor.storage.characterCount.words()} words</Button>
       </div>
 
-      <Alert className="mx-12 mt-8 w-auto">
+      <Alert className="mx-12 mt-8 w-auto bg-primary/5">
         <BellRing className="h-4 w-4" />
         <AlertTitle>提醒</AlertTitle>
         <AlertDescription>
-          可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同意设备访问不会丢失，但只有登陆后才能保存
+          可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同一设备访问不会丢失，但只有登陆后才能上传
         </AlertDescription>
       </Alert>
 

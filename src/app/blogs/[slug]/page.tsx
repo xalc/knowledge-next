@@ -1,23 +1,17 @@
-import { PrismaClient } from "@prisma/client";
-
 import BlogEditor from "@/components/blogs/BlogEditor";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const prisma = new PrismaClient();
+import { getPost, getPosts } from "@/lib/blogs/blogs";
 
-const getPost = async (slug: string) => {
-  const post = await prisma.post.findUnique({
-    where: {
-      slug: slug,
-    },
-    include: {
-      postcontent: true,
-    },
-  });
-  return post;
-};
+export async function generateStaticParams() {
+  const posts = await getPosts();
+
+  return posts.map(post => ({
+    slug: post.slug,
+  }));
+}
 
 export default async function BlogPage({ params }) {
   const slug = (await params).slug;
@@ -43,7 +37,7 @@ export default async function BlogPage({ params }) {
             <BlogEditor post={post} />
           </article>
         </div>
-        <div className="hidden xl:block">
+        <div className="hidden 2xl:block">
           <div className="sticky top-20">
             {/* <TableOfContents />
              */}

@@ -1,16 +1,5 @@
 import BlogItem from "@/components/blogs/BlogItem";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
-const getPosts = async () => {
-  try {
-    const allPosts = await prisma.post.findMany({});
-    return allPosts;
-  } catch (e) {
-    console.error(e);
-  } finally {
-    await prisma.$disconnect();
-  }
-};
+import { getPosts } from "@/lib/blogs/blogs";
 
 export default async function BlogsPage() {
   const posts = await getPosts();

@@ -14,7 +14,7 @@ export default async function RecentReadingBooks() {
         <CardHeader>
           <div className="flex justify-between">
             <CardTitle>最近在读的书</CardTitle>
-            <Button variant="outline" disabled asChild>
+            <Button variant="outline" disabled>
               查看更多
               {/* <Link href="/reading">查看更多</Link> */}
             </Button>

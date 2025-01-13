@@ -5,8 +5,9 @@ export default function BlogMetaPopup({ children, editor }) {
   return (
     <Dialog>
       <DialogTrigger disabled={editor.isEmpty} asChild>
-        <Button>
+        <Button variant="outline">
           <CloudUpload />
+          保存
         </Button>
       </DialogTrigger>
       <DialogContent>

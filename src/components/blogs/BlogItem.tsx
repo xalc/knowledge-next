@@ -3,18 +3,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Calendar } from "lucide-react";
 import { cn } from "@/lib/utils";
-type Meta = {
-  tags: string[];
-  author: string;
-};
-type Blog = {
-  title: string;
-  description: string;
-  slug: string;
-  metadata: Meta;
-  updatedAt: Date;
-  cover?: string;
-};
+import { Blog } from "@/types/blogs";
 export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const cover = blog.cover;
@@ -54,7 +43,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
                   ))}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.updatedAt.toLocaleDateString()}</span>
+                  <span>{blog.createdAt.toLocaleDateString()}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
@@ -62,7 +51,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
               </h3>
             </CardHeader>
             <CardContent>
-              <p className="line-clamp-2 text-muted-foreground">{description}</p>
+              <p className="line-clamp-3 text-muted-foreground">{description}</p>
             </CardContent>
           </>
         ) : (
@@ -82,7 +71,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
                   ))}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.updatedAt.toLocaleDateString()}</span>
+                  <span>{blog.createdAt.toLocaleDateString()}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors group-hover:text-primary">
@@ -90,7 +79,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
               </h3>
             </CardHeader>
             <CardContent className="pt-2">
-              <p className="line-clamp-3 text-muted-foreground">{description}</p>
+              <p className="line-clamp-5 text-muted-foreground">{description}</p>
             </CardContent>
             <CardFooter className="text-sm text-muted-foreground">
               <div className="flex items-center gap-2">

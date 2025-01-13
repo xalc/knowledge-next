@@ -120,7 +120,6 @@ export default function NavigationPage() {
         <Card>
           <CardHeader>
             <CardTitle>快速链接</CardTitle>
-            <CardDescription>常用页面的直接访问链接</CardDescription>
           </CardHeader>
           <CardContent>
             <nav className="flex flex-wrap gap-4">
@@ -130,7 +129,7 @@ export default function NavigationPage() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                站点历史版本
+                网站历史版本
               </a>
             </nav>
           </CardContent>

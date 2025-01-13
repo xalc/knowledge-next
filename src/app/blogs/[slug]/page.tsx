@@ -47,7 +47,8 @@ export default async function BlogPage({ params }) {
           <div className="sticky top-20">
             {/* <TableOfContents />
              */}
-            This is toc
+            <div className="text-xl">This is toc</div>
+            available later...
           </div>
         </div>
       </div>

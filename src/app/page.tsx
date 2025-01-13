@@ -22,10 +22,10 @@ export default function Page() {
       />
       <div className="container relative space-y-6 px-4 text-center">
         <h1 className="duration-2000 bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-4xl font-bold tracking-tighter text-transparent animate-in fade-in slide-in-from-bottom-3 md:text-6xl">
-          探索技术的无限可能
+          在Debug中寻找自我
         </h1>
         <p className="mx-auto max-w-2xl text-xl text-muted-foreground mix-blend-difference delay-200 duration-1000 animate-in fade-in slide-in-from-bottom-4">
-          在这里，我们深入探讨前沿技术，分享开发经验，一起探索编程的奥秘
+          读书/写作/思考/分享/探索
         </p>
         <div className="flex justify-center gap-4 delay-300 duration-1000 animate-in fade-in slide-in-from-bottom-5">
           <Button size="lg" onClick={() => router.push("/blogs")}>

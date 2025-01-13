@@ -4,7 +4,6 @@ import { getRecentBooks } from "@/lib/wereader/wr-db";
 
 import { Button } from "../ui/button";
 
-import Link from "next/link";
 import BookItem from "./book-item";
 
 export default async function RecentReadingBooks() {
@@ -16,7 +15,8 @@ export default async function RecentReadingBooks() {
           <div className="flex justify-between">
             <CardTitle>最近在读的书</CardTitle>
             <Button variant="outline" disabled asChild>
-              <Link href="/reading">查看更多</Link>
+              查看更多
+              {/* <Link href="/reading">查看更多</Link> */}
             </Button>
           </div>
         </CardHeader>

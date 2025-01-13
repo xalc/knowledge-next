@@ -13,7 +13,7 @@ import { HeaderLogo } from "./header-logo";
 const ROUTES = [
   {
     href: "/",
-    label: "首页",
+    label: "WELCOME",
   },
   {
     href: "/blogs",
@@ -24,11 +24,6 @@ const ROUTES = [
     label: "写博客",
     hideWhenMobile: true,
   },
-  {
-    href: "/utils/calendar",
-    label: "假期日历",
-  },
-
   {
     href: "/utils",
     label: "工具箱",

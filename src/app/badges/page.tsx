@@ -6,7 +6,8 @@ import BadgeWithActions from "@/components/badge/filter-bages";
 import CertificationTypeStats from "@/components/badge/certification-type-stats";
 import CredlySvg from "/public/images/credly.svg";
 import Image from "next/image";
-
+export const dynamic = "force-static";
+export const revalidate = 120;
 const BadgesPage = async () => {
   const badges = await getCredly();
   const getSkills = badges => {

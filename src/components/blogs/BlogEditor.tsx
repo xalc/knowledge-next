@@ -1,7 +1,7 @@
 "use client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { extensions } from "@/components/tiptap/extension";
-
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { useContext, useState } from "react";
 import { UserContext } from "@/context/UserContext";
@@ -99,7 +99,8 @@ const BlogEditor = ({ post }) => {
       {post.cover && (
         <div className="my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
           <div className="relative aspect-[2/1]">
-            <img src={post.cover} alt={post.title} className="object-cover" />
+            <Image src={post.cover} alt={post.title} className="object-cover" fill priority />
+            {/* <img src={post.cover} alt={post.title} className="object-cover" /> */}
           </div>
         </div>
       )}

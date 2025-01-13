@@ -14,7 +14,7 @@ import { BlogMetaForm } from "@/components/blogs/BlogmetaForm";
 import { DialogTitle } from "@/components/ui/dialog";
 import BlogMetaPopup from "@/components/blogs/BlogMetaPopup";
 import { BellRing } from "lucide-react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const Tiptap = () => {
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage("ttcontent", null);
@@ -86,7 +86,7 @@ const Tiptap = () => {
 
       <Alert className="mx-12 mt-8 w-auto bg-primary/5">
         <BellRing className="h-4 w-4" />
-        <AlertTitle>提醒</AlertTitle>
+
         <AlertDescription>
           可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同一设备访问不会丢失，但只有登陆后才能上传
         </AlertDescription>

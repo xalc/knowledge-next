@@ -6,6 +6,7 @@ export default function Page() {
     <section className="absolute flex h-screen w-screen items-center justify-center overflow-hidden">
       <link
         rel="preload"
+        as="image"
         href="https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN"
       />
       <Image

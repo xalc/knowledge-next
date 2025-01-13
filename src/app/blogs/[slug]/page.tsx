@@ -43,7 +43,7 @@ export default async function BlogPage({ params }) {
             <BlogEditor post={post} />
           </article>
         </div>
-        <div className="hidden xl:block">
+        <div className="hidden 2xl:block">
           <div className="sticky top-20">
             {/* <TableOfContents />
              */}

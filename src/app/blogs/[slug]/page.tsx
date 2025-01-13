@@ -4,7 +4,6 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPost, getPosts } from "@/lib/blogs/blogs";
 
-
 export async function generateStaticParams() {
   const posts = await getPosts();
 

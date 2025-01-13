@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardHeader, CardContent, CardFooter } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Calendar } from "lucide-react";
@@ -23,10 +24,17 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
         {cover ? (
           <>
             <div className="relative aspect-video overflow-hidden">
-              <div
+              <Image
+                src={cover}
+                alt={title}
+                className="absolute inset-0 bg-cover bg-center object-cover transition-all duration-500 group-hover:scale-110"
+                fill
+                priority
+              />
+              {/* <div
                 className="absolute inset-0 bg-cover bg-center transition-all duration-500 group-hover:scale-110"
                 style={{ backgroundImage: `url(${cover})` }}
-              />
+              /> */}
               <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-background/0" />
             </div>
             <CardHeader className="space-y-2">

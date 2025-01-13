@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import { cache } from 'react'
+import { cache } from "react";
 const getPosts = cache(async () => {
   try {
     const allPosts = await prisma.post.findMany({});

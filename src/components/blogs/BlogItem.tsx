@@ -27,6 +27,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
               <Image
                 src={cover}
                 alt={title}
+                sizes={"w-full"}
                 className="absolute inset-0 bg-cover bg-center object-cover transition-all duration-500 group-hover:scale-110"
                 fill
                 priority

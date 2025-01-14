@@ -4,17 +4,13 @@ import { Button } from "@/components/ui/button";
 export default function Page() {
   return (
     <section className="absolute flex h-screen w-screen items-center justify-center overflow-hidden">
-      <link
-        rel="preload"
-        as="image"
-        href="https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN"
-      />
       <Image
         src="https://bing.biturl.top/?resolution=1920&format=image&index=0&mkt=zh-CN"
         alt={"background image"}
         className="inset-0 bg-gradient-to-br from-primary/10 to-background object-cover"
         fill
         priority
+        sizes={"w-full"}
       />
       {/* <div
         className="absolute inset-0 bg-gradient-to-br from-primary/20 to-background bg-cover bg-center bg-no-repeat"

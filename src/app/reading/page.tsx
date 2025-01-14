@@ -2,7 +2,11 @@ import { Button } from "@/components/ui/button";
 
 import Link from "next/link";
 import { BarChart2 } from "lucide-react";
-export default function ReadingPage() {
+import { getAllBooks } from "@/lib/wereader/wr-db";
+import BooksView from "@/components/wereader/books-view";
+export default async function ReadingPage() {
+  const allBooks = await getAllBooks();
+
   return (
     <div className="mx-8 space-y-8 py-10">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
@@ -20,6 +24,7 @@ export default function ReadingPage() {
         </div>
       </div>
 
+      <BooksView books={allBooks} />
       {/* 书籍列表 */}
       {/* <BookList /> */}
     </div>

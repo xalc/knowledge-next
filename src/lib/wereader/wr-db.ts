@@ -15,12 +15,31 @@ export async function getWRToken(): Promise<string> {
 }
 
 export async function getRecentBooks() {
-  const bookShelf = await prisma.wRBookShelt.findMany({
-    orderBy: {
-      readUpdateTime: "desc",
-    },
-    take: 4,
-  });
-
-  return bookShelf;
+  try {
+    const bookShelf = await prisma.wRBookShelt.findMany({
+      orderBy: {
+        readUpdateTime: "desc",
+      },
+      take: 4,
+    });
+    return bookShelf;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getAllBooks() {
+  try {
+    const bookShelf = await prisma.wRBookShelt.findMany({
+      orderBy: {
+        readUpdateTime: "desc",
+      },
+    });
+    return bookShelf;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await prisma.$disconnect();
+  }
 }

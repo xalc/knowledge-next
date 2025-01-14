@@ -25,5 +25,5 @@ const getPost = cache(async (slug: string) => {
   console.log("get post from db without cache");
   return post;
 });
-
+export const revalidate = 60;
 export { getPosts, getPost };

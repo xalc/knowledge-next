@@ -4,7 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import moment from "moment";
 
-export default function BookGrid({ book }) {
+export default function BookGridItem({ book }) {
   const useBigImage = url => {
     if (!url) return null;
     const arr = url.split("/");
@@ -49,13 +49,15 @@ export default function BookGrid({ book }) {
           </div>
           {readProgress && (
             <>
-              <div className="space-y-2">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">阅读进度</span>
-                  <span>{readProgress?.progress}%</span>
+              {book.finishReading === 0 && (
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">阅读进度</span>
+                    <span>{readProgress?.progress}%</span>
+                  </div>
+                  <Progress value={readProgress?.progress} />
                 </div>
-                <Progress value={readProgress?.progress} />
-              </div>
+              )}
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary">{book.category}</Badge>
                 {book.finishReading === 1 ? (
@@ -67,11 +69,11 @@ export default function BookGrid({ book }) {
               <div className="flex flex-col gap-1 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4" />
-                  <span>上次阅读 {formatDate(readProgress.updateTime)}</span>
+                  <span>上次阅读： {formatDate(readProgress.updateTime)}</span>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4" />
-                  <span>已读 {formatReadingTime(readProgress?.readingTime)}</span>
+                  <span>已读时长： {formatReadingTime(readProgress?.readingTime)}</span>
                 </div>
               </div>
             </>

@@ -12,17 +12,18 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "prettier --write",
-      "eslint --max-warnings 0 ."
-    ]
-  },
   "keywords": [
     "person-as-a-service",
     "knowledge center",
     "nextjs"
   ],
+  "lint-staged": {
+    "*.{js,ts,tsx}": [
+      "prettier --write",
+      "eslint --max-warnings 0 .",
+      "git add"
+    ]
+  },
   "author": "xalc",
   "license": "ISC",
   "dependencies": {

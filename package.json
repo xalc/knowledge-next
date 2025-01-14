@@ -12,6 +12,12 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "husky"
   },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "prettier --write",
+      "eslint --max-warnings 1 ."
+    ]
+  },
   "keywords": [
     "person-as-a-service",
     "knowledge center",
@@ -92,6 +98,7 @@
     "eslint-plugin-prettier": "^5.2.1",
     "husky": "^9.1.7",
     "install": "^0.13.0",
+    "lint-staged": "^15.3.0",
     "postcss": "^8.4.49",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.9",

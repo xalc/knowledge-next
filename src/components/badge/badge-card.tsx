@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/dialog";
 import { Award, Tag, ExternalLink } from "lucide-react";
 import type { Badge } from "@/types/badge";
+import Image from "next/image";
 
 interface BadgeCardProps {
   badge: Badge;
@@ -31,10 +32,13 @@ export function BadgeCard({ badge }: BadgeCardProps) {
   return (
     <Card className="group relative overflow-hidden">
       <CardHeader className="p-0">
-        <div className="relative aspect-square overflow-hidden">
-          <img
+        <div className="relative aspect-square w-full overflow-hidden">
+          <Image
+            fill
+            priority={false}
             src={template.image_url}
             alt={template.name}
+            sizes={"w-full"}
             className="object-contain p-4 transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />

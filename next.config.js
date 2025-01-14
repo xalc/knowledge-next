@@ -1,9 +1,28 @@
+const { hostname } = require("os");
+
 module.exports = {
   images: {
     remotePatterns: [
       {
         protocol: "https",
         hostname: "bing.biturl.top",
+      },
+      {
+        hostname: "images.credly.com",
+        protocol: "https",
+      },
+      {
+        hostname: "res.weread.qq.com",
+        protocol: "https",
+      },
+
+      {
+        hostname: "cdn.weread.qq.com",
+        protocol: "https",
+      },
+      {
+        protocol: "https",
+        hostname: "*.image.myqcloud.com",
       },
       {
         protocol: "https",

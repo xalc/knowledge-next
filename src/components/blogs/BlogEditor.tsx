@@ -99,8 +99,14 @@ const BlogEditor = ({ post }) => {
       {post.cover && (
         <div className="my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
           <div className="relative aspect-[2/1]">
-            <Image src={post.cover} alt={post.title} className="object-cover" fill priority />
-            {/* <img src={post.cover} alt={post.title} className="object-cover" /> */}
+            <Image
+              src={post.cover}
+              alt={post.title}
+              className="object-cover"
+              fill
+              sizes={"w-full"}
+              priority
+            />
           </div>
         </div>
       )}

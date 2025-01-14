@@ -5,12 +5,23 @@ import { ReadingProgressType } from "@/types/bookshelf";
 
 export default function BookItem({ book }) {
   return (
-    <div key={book.title} className="group flex aspect-auto gap-6">
+    <div key={book.title} className="group flex gap-6">
+      {/* <div className="relative aspect-auto w-24">
+        <Image
+          src={book.cover}
+          alt={book.title}
+          fill
+          sizes={"w-full"}
+          className="max-w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
+        />
+      </div> */}
+
       <img
         src={book.cover}
         alt={book.title}
-        className="max-w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
+        className="w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
       />
+
       <div className="flex-1">
         <div className="space-y-2">
           <h4 className="font-semibold leading-none">{book.title}</h4>
@@ -26,10 +37,10 @@ export default function BookItem({ book }) {
           <div className="flex items-center gap-4 space-y-1">
             <Progress
               className={"h-3"}
-              value={(book.readProgress as unknown as ReadingProgressType).progress}
+              value={(book.readProgress as unknown as ReadingProgressType)?.progress}
             />
             <p className="text-right text-xs text-muted-foreground">
-              {(book.readProgress as unknown as ReadingProgressType).progress}%
+              {(book.readProgress as unknown as ReadingProgressType)?.progress}%
             </p>
           </div>
         )}

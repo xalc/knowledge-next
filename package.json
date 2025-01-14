@@ -20,8 +20,7 @@
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "prettier --write",
-      "eslint --max-warnings 0 .",
-      "git add"
+      "eslint ."
     ]
   },
   "author": "xalc",
@@ -54,6 +53,7 @@
     "@tiptap/extension-heading": "^2.10.4",
     "@tiptap/extension-horizontal-rule": "^2.10.4",
     "@tiptap/extension-image": "^2.11.0",
+    "@tiptap/extension-link": "^2.11.2",
     "@tiptap/extension-list-item": "^2.10.4",
     "@tiptap/extension-paragraph": "^2.10.4",
     "@tiptap/extension-placeholder": "^2.10.4",

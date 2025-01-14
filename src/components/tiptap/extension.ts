@@ -16,7 +16,7 @@ import Image from "@tiptap/extension-image";
 import ImageUpload from "./extensions/ImageUpload/ImageUpload";
 import { ImageBlock } from "./extensions/ImageBlock";
 import CharacterCount from "@tiptap/extension-character-count";
-
+import Link from "@/components/tiptap/link";
 import { CodeBlock } from "./codeblock";
 const taskList = TaskList.configure({
   HTMLAttributes: {
@@ -109,5 +109,6 @@ export const extensions = [
     },
   }),
   CodeBlock,
+  Link,
   SlashCommand,
 ];

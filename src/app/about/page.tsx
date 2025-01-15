@@ -10,6 +10,7 @@ export default function AboutPage() {
       <ContentCard />
       <RecentReadingBooks />
       <TopBadge />
+      <>test ocmmit</>
     </div>
   );
 }

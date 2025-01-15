@@ -10,20 +10,27 @@ const compat = new FlatCompat({
   recommendedConfig: js.configs.recommended,
   allConfig: js.configs.all,
 });
-
-const lintConfig = [
-  ...compat.extends(
-    "next/core-web-vitals",
-    "eslint:recommended",
-    "next/typescript",
-    "plugin:@typescript-eslint/recommended",
-    "prettier",
-    "plugin:prettier/recommended",
-  ),
-  {
+const eslintConfig = [
+  ...compat.config({
+    extends: ["next"],
     rules: {
       "@next/next/no-img-element": "off",
     },
-  },
+  }),
 ];
-export default lintConfig;
+// const lintConfig = [
+//   ...compat.extends([
+//     "next",
+//     "eslint:recommended",
+//     "next/typescript",
+//     "plugin:@typescript-eslint/recommended",
+//     "prettier",
+//     "plugin:prettier/recommended",
+//   ]),
+//   {
+//     rules: {
+//       "@next/next/no-img-element": "off",
+//     },
+//   },
+// ];
+export default eslintConfig;

@@ -14,6 +14,7 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
         });
 
         onUpload(result.url);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (errPayload: any) {
         const error = errPayload.message || "Something went wrong";
         toast({

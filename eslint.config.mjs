@@ -12,7 +12,15 @@ const compat = new FlatCompat({
 });
 const eslintConfig = [
   ...compat.config({
-    extends: ["next"],
+    extends: [
+      "eslint:recommended",
+      "next",
+      "next/core-web-vitals",
+      "next/typescript",
+      "plugin:@typescript-eslint/recommended",
+      "prettier",
+      "plugin:prettier/recommended",
+    ],
     rules: {
       "@next/next/no-img-element": "off",
     },

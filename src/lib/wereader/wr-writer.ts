@@ -1,43 +1,8 @@
-"use server";
 import { getWrReadingTimes, getShelf } from "@/lib/wereader/wereader-api";
 import { PrismaClient } from "@prisma/client";
-import { READING_TIME_SYNC_KEY, BOOKS_SYNC_KEY } from "@/lib/wereader/constant";
+import { READING_TIME_SYNC_KEY, BOOKS_SYNC_KEY, REGISTER_TIME_KEY } from "@/lib/wereader/constant";
 /* eslint-disable */
 const prisma = new PrismaClient();
-const syncWRReadingtimeSummary = async () => {
-  const result = await getWrReadingTimes(0);
-  const { registTime, synckey, readTimes } = result;
-  const operations = [];
-  for (let [key, value] of Object.entries(readTimes)) {
-    operations.push({
-      id: key,
-      value: value,
-    });
-  }
-  // need refactor it's less effective
-  const dbResult = await Promise.all(
-    operations.map(op =>
-      prisma.wRReadingSummary.upsert({
-        where: { id: op.id },
-        update: { readingSeconds: op.value },
-        create: { id: op.id, readingSeconds: op.value },
-      }),
-    ),
-  );
-  prisma.wRMeta.upsert({
-    where: { keyName: READING_TIME_SYNC_KEY },
-    update: { keyValue: synckey },
-    create: { keyName: READING_TIME_SYNC_KEY, keyValue: synckey },
-  });
-
-  // prisma.wRMeta.upsert({
-  //   where: { keyName: REGISTER_TIME_KEY },
-  //   update: { keyValue: registTime },
-  //   create: { keyName: REGISTER_TIME_KEY, keyValue: registTime }
-  // })
-
-  console.log(dbResult);
-};
 
 const getShelfSyncId = async () => {
   const shelfResult = await prisma.wRMeta.findFirst({
@@ -191,14 +156,54 @@ const syncWRBookShelf = async () => {
     console.log("Sync book shelf failed" + error);
   }
 };
+const syncWRReadingtimeSummary = async () => {
+  const result = await getWrReadingTimes(0);
+  const { registTime, synckey, readTimes } = result;
 
-//TODO 尝试流式返回结果 research
+  const readingTimeRecord = await prisma.wRReadingSummary.findMany({});
+  for (let [key, value] of Object.entries(readTimes)) {
+    const find = readingTimeRecord.find(record => record.id === key);
+    if (!find) {
+      const result = await prisma.wRReadingSummary.create({
+        data: {
+          id: key,
+          readingSeconds: Number(value),
+        },
+      });
+      console.log(`record ${result.id} is added with ${result.readingSeconds}`);
+    } else if (find && find.readingSeconds !== value) {
+      const result = await prisma.wRReadingSummary.update({
+        where: {
+          id: key,
+        },
+        data: {
+          readingSeconds: value,
+        },
+      });
+      console.log(`record ${result.id} is updated with ${result.readingSeconds}`);
+    }
+  }
+  prisma.wRMeta.upsert({
+    where: { keyName: READING_TIME_SYNC_KEY },
+    update: { keyValue: synckey },
+    create: { keyName: READING_TIME_SYNC_KEY, keyValue: synckey },
+  });
+
+  prisma.wRMeta.upsert({
+    where: { keyName: REGISTER_TIME_KEY },
+    update: { keyValue: registTime },
+    create: { keyName: REGISTER_TIME_KEY, keyValue: registTime },
+  });
+};
+
 export const syncWRDataToDB = async () => {
   try {
     await syncWRReadingtimeSummary();
     await syncWRBookShelf();
   } catch (error) {
     console.log(`sync weread date error: ${error}`);
+  } finally {
+    await prisma.$disconnect();
   }
-  return "successfully";
+  return "successfully synced wechat reader data";
 };

@@ -1,4 +1,4 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Editor, Extension } from "@tiptap/core";
 import { ReactRenderer } from "@tiptap/react";
 import Suggestion, { SuggestionProps, SuggestionKeyDownProps } from "@tiptap/suggestion";
@@ -206,8 +206,6 @@ export const SlashCommand = Extension.create({
               };
 
               view.dom.parentElement?.addEventListener("scroll", scrollHandler);
-
-              // eslint-disable-next-line no-param-reassign
               props.editor.storage[extensionName].rect = props.clientRect
                 ? getReferenceClientRect()
                 : {

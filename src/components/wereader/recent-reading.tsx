@@ -4,7 +4,7 @@ import { getRecentBooks } from "@/lib/wereader/wr-db";
 
 import { Button } from "../ui/button";
 import Link from "next/link";
-import BookItem from "./book-item";
+import BookItem from "./book-list-item";
 
 export default async function RecentReadingBooks() {
   const bookShelf = await getRecentBooks();

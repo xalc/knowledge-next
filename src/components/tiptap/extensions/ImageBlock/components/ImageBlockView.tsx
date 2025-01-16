@@ -9,7 +9,6 @@ interface ImageBlockViewProps {
   node: Node;
   updateAttributes: (attrs: Record<string, string>) => void;
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ImageBlockView = (props: ImageBlockViewProps) => {
   const { editor, getPos, node } = props as ImageBlockViewProps & {
     node: Node & {

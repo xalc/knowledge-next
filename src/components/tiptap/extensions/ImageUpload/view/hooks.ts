@@ -1,7 +1,6 @@
 import { DragEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { upload } from "@vercel/blob/client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false);
   const { toast } = useToast();
@@ -15,6 +14,7 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
         });
 
         onUpload(result.url);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (errPayload: any) {
         const error = errPayload.message || "Something went wrong";
         toast({

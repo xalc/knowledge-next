@@ -3,6 +3,8 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPost, getPosts } from "@/lib/blogs/blogs";
+export const revalidate = 60;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   const posts = await getPosts();

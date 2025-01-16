@@ -3,7 +3,7 @@ import { Badge } from "../ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ReadingProgressType } from "@/types/bookshelf";
 
-export default function BookItem({ book }) {
+export default function BookListItem({ book }) {
   return (
     <div key={book.title} className="group flex gap-6">
       {/* <div className="relative aspect-auto w-24">

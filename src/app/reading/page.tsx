@@ -25,8 +25,6 @@ export default async function ReadingPage() {
       </div>
 
       <BooksView books={allBooks} />
-      {/* 书籍列表 */}
-      {/* <BookList /> */}
     </div>
   );
 }

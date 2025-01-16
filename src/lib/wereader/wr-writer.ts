@@ -183,17 +183,20 @@ const syncWRReadingtimeSummary = async () => {
       console.log(`record ${result.id} is updated with ${result.readingSeconds}`);
     }
   }
-  prisma.wRMeta.upsert({
-    where: { keyName: READING_TIME_SYNC_KEY },
-    update: { keyValue: synckey },
-    create: { keyName: READING_TIME_SYNC_KEY, keyValue: synckey },
-  });
+  const bactchUpdated = await Promise.all([
+    prisma.wRMeta.upsert({
+      where: { keyName: READING_TIME_SYNC_KEY },
+      update: { keyValue: String(synckey) },
+      create: { keyName: READING_TIME_SYNC_KEY, keyValue: String(synckey) },
+    }),
+    prisma.wRMeta.upsert({
+      where: { keyName: REGISTER_TIME_KEY },
+      update: { keyValue: String(registTime) },
+      create: { keyName: REGISTER_TIME_KEY, keyValue: String(registTime) },
+    }),
+  ]);
 
-  prisma.wRMeta.upsert({
-    where: { keyName: REGISTER_TIME_KEY },
-    update: { keyValue: registTime },
-    create: { keyName: REGISTER_TIME_KEY, keyValue: registTime },
-  });
+  bactchUpdated.forEach(result => console.log(`update ${result.keyName} with ${result.keyValue}`));
 };
 
 export const syncWRDataToDB = async () => {

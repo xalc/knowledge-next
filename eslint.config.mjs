@@ -26,19 +26,5 @@ const eslintConfig = [
     },
   }),
 ];
-// const lintConfig = [
-//   ...compat.extends([
-//     "next",
-//     "eslint:recommended",
-//     "next/typescript",
-//     "plugin:@typescript-eslint/recommended",
-//     "prettier",
-//     "plugin:prettier/recommended",
-//   ]),
-//   {
-//     rules: {
-//       "@next/next/no-img-element": "off",
-//     },
-//   },
-// ];
+
 export default eslintConfig;

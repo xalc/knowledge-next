@@ -2,7 +2,7 @@ import { Calendar, Clock } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
-import moment from "moment";
+import { formatDate } from "@/lib/utils";
 
 export default function BookGridItem({ book }) {
   const useBigImage = url => {
@@ -24,9 +24,6 @@ export default function BookGridItem({ book }) {
     if (seconds / 60 < 1) {
       return "1分钟";
     }
-  };
-  const formatDate = (timeStamp: number) => {
-    return moment(timeStamp * 1000).format("YYYY/MM/DD");
   };
   const { readProgress } = book;
   return (

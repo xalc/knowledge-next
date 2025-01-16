@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { READING_TIME_SYNC_KEY } from "./constant";
 
 const prisma = new PrismaClient();
 export async function getWRToken(): Promise<string> {
@@ -37,6 +38,27 @@ export async function getAllBooks() {
       },
     });
     return bookShelf;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function getReadingSummary() {
+  try {
+    const summarys = await prisma.wRReadingSummary.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
+    const result = await prisma.wRMeta.findUnique({
+      where: {
+        keyName: READING_TIME_SYNC_KEY,
+      },
+    });
+    const lastSyncTime = result.keyValue;
+    return { summarys, lastSyncTime };
   } catch (e) {
     console.error(e);
   } finally {

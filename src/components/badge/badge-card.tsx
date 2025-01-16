@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import moment from "moment";
-import "moment/locale/zh-cn";
 import { Badge as UIBadge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
@@ -26,9 +24,6 @@ interface BadgeCardProps {
 export function BadgeCard({ badge }: BadgeCardProps) {
   // const { badge_template: template, issued_at_date, expires_at_date, state } = badge;
   const { badge_template: template } = badge;
-  // Set locale to Chinese
-  moment.locale("zh-cn");
-
   return (
     <Card className="group relative overflow-hidden">
       <CardHeader className="p-0">

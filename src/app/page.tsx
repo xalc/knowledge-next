@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronsDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { useDebouncedCallback } from "use-debounce";
+import { useThrottledCallback } from "use-debounce";
 export default function Page() {
   const router = useRouter();
-  const navigate = useDebouncedCallback(() => router.push("/blogs"), 500);
+  const navigate = useThrottledCallback(() => router.push("/blogs"), 500);
   useEffect(() => {
     const handleScroll = event => {
       if (event.deltaY > 0) {

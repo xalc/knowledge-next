@@ -1,21 +1,11 @@
-import moment from "moment";
 import { Badge } from "../ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { ReadingProgressType } from "@/types/bookshelf";
+import { formatDate } from "@/lib/utils";
 
 export default function BookListItem({ book }) {
   return (
     <div key={book.title} className="group flex gap-6">
-      {/* <div className="relative aspect-auto w-24">
-        <Image
-          src={book.cover}
-          alt={book.title}
-          fill
-          sizes={"w-full"}
-          className="max-w-24 rounded-sm object-contain transition-transform duration-300 group-hover:scale-110"
-        />
-      </div> */}
-
       <img
         src={book.cover}
         alt={book.title}
@@ -27,7 +17,7 @@ export default function BookListItem({ book }) {
           <h4 className="font-semibold leading-none">{book.title}</h4>
           <p className="text-sm text-muted-foreground">{book.author}</p>
           <p className="text-xs text-muted-foreground">
-            最近阅读：{moment(book.readUpdateTime * 1000).format("YYYY/MM/DD")}
+            最近阅读：{formatDate(book.readUpdateTime)}
           </p>
           <p className="text-sm">{book.category}</p>
         </div>

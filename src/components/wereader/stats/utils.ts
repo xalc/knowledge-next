@@ -26,6 +26,27 @@ export const getWeeksOfYear = (year: number) => {
   weeks.push(currentWeek);
   return weeks;
 };
+
+export const groupDataByMonth = (year: number) => {
+  const Months = [];
+  for (let month = 0; month < 12; month++) {
+    const firstDayOfMonth = moment().year(year).month(month).startOf("month");
+    const lastDayOfMonth = moment().year(year).month(month).endOf("month");
+    const daysInMonth = [];
+    let currentDay = firstDayOfMonth;
+    let firstDayOfWeek = currentDay.day();
+    while (firstDayOfWeek > 0) {
+      daysInMonth.push(null);
+      firstDayOfWeek--;
+    }
+    while (currentDay.isBefore(lastDayOfMonth) || currentDay.isSame(lastDayOfMonth, "day")) {
+      daysInMonth.push(currentDay.format("YYYY-MM-DD"));
+      currentDay = currentDay.add(1, "days");
+    }
+    Months.push(daysInMonth);
+  }
+  return Months;
+};
 export const getGithubBGcolorClassName = (value: number, maxValue: number) => {
   const percentage = (value / maxValue) * 100;
   if (percentage === 0) return "bg-muted";
@@ -36,7 +57,17 @@ export const getGithubBGcolorClassName = (value: number, maxValue: number) => {
   if (percentage <= 100) return "bg-green-900";
   return "bg-muted";
 };
-export const getCurrentDayofYear = currentYear => {
+export const getPrimaryBGcolorClassName = (value: number, maxValue: number) => {
+  const percentage = (value / maxValue) * 100;
+  if (percentage === 0) return "bg-muted";
+  if (percentage <= 20) return "bg-primary/20";
+  if (percentage <= 40) return "bg-primary/40";
+  if (percentage <= 60) return "bg-primary/60";
+  if (percentage <= 80) return "bg-primary/80";
+  if (percentage <= 100) return "bg-primary";
+  return "bg-muted";
+};
+export const getCurrentDayofYear = (currentYear: number) => {
   if (currentYear === moment().year()) {
     return moment().dayOfYear();
   } else return getDayofYear(currentYear);

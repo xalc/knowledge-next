@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 import { ReadingSummaryType } from "@/types/reading-summary";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { getWeeksOfYear, getGithubBGcolorClassName } from "../utils";
+import { getWeeksOfYear, getPrimaryBGcolorClassName } from "../utils";
 export default function Heatmap({
   summarys,
   year,
@@ -45,8 +45,11 @@ export default function Heatmap({
                     summary = { id: String(day.unix()), readingSeconds: 0 };
                   }
                   const classes = clsx(
-                    getGithubBGcolorClassName(summary.readingSeconds, maxMinutes),
+                    getPrimaryBGcolorClassName(summary.readingSeconds, maxMinutes),
                     "h-3 w-3",
+                    "transition-all duration-200",
+                    "hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:ring-offset-background",
+                    "border border-border/50",
                   );
                   return (
                     <GridCell
@@ -70,7 +73,7 @@ export default function Heatmap({
             <TooltipProvider key={level}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className={clsx("h-3 w-3", getGithubBGcolorClassName(level, 5))} />
+                  <div className={clsx("h-3 w-3", getPrimaryBGcolorClassName(level, 5))} />
                 </TooltipTrigger>
                 <TooltipContent>
                   <p>
@@ -93,7 +96,7 @@ const GridCell = ({ summary, classes, lastSyncTime }) => {
         <TooltipTrigger asChild>
           <div key={summary.id} className={classes}></div>
         </TooltipTrigger>
-        <TooltipContent className="bg-background text-foreground">
+        <TooltipContent>
           <div className="space-y-1">
             <p className="font-medium">{moment.unix(summary.id).format("YYYY年MM月DD日 dddd")}</p>
             <p className="flex items-center gap-2">

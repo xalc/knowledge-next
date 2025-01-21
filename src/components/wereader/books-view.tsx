@@ -45,7 +45,7 @@ export default function BooksView({ books }) {
           <TabsContent value="grid" className="mt-0">
             <Card className="space-y-6">
               <CardContent>
-                <div className="mt-6 grid gap-6 duration-1000 animate-in fade-in slide-in-from-bottom-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="mt-6 grid gap-6 duration-1000 animate-in fade-in slide-in-from-bottom-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                   {filteredBooks.map(book => {
                     return <BookGridItem book={book} key={book.id} />;
                   })}

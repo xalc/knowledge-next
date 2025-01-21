@@ -8,7 +8,7 @@ export default async function ReadingPage() {
   const allBooks = await getAllBooks();
 
   return (
-    <div className="mx-8 space-y-8 py-10">
+    <div className="mx-8 mt-8 flex flex-col gap-8">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight">我的书架</h1>

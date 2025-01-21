@@ -10,6 +10,7 @@ export async function GET() {
       } else {
         const originalLog = console.log;
         console.log = (...args) => {
+          originalLog(...args);
           const logMessage = `${args.join(" ")}`;
           controller.enqueue(logMessage + "\n"); // 推送日志到流
         };

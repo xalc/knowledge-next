@@ -18,9 +18,13 @@ export default function ThemeChange() {
       </div>
       <ThemeSwitcher />
 
-      <div className="flex gap-6">
+      <div className="my-8 flex gap-6">
         <Image src={LogoSrc} width={256} alt="logo"></Image>
         <Image src={LogoDarkSrc} width={256} alt="logo"></Image>
+      </div>
+      <div className="my-8 flex gap-6">
+        <div className="h-8 w-8 bg-violet-500"></div>
+        <div className="h-8 w-8 bg-violet-950/50"></div>
       </div>
     </>
   );

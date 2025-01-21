@@ -25,6 +25,10 @@ const ROUTES = [
     hideWhenMobile: true,
   },
   {
+    href: "/reading",
+    label: "读书",
+  },
+  {
     href: "/utils",
     label: "工具箱",
   },

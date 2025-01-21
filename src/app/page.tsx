@@ -11,17 +11,26 @@ export default function Page() {
   const [hidden, setHidden] = useState(true);
   const navigate = useThrottledCallback(() => router.push("/blogs"), 500);
   useEffect(() => {
-    const handleScroll = event => {
+    const handleScroll = () => {
+      console.log("scroll");
+      const scrollPosition = window.scrollY;
+      const threshold = window.innerWidth <= 768 ? 150 : 200; // 针对手机设备设置更小的阈值
+
+      if (scrollPosition > threshold) {
+        router.push("/new-page");
+      }
+    };
+    const handleWheel = event => {
       if (event.deltaY > 0) {
         navigate();
       }
     };
-    window.addEventListener("wheel", handleScroll);
-    window.addEventListener("touchmove", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("wheel", handleWheel);
 
     return () => {
-      window.removeEventListener("wheel", handleScroll);
-      window.removeEventListener("touchmove", handleScroll);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("wheel", handleWheel);
     };
   }, [router, navigate]);
   return (

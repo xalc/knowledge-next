@@ -11,13 +11,13 @@ export default function Page() {
   const [hidden, setHidden] = useState(true);
   const navigate = useThrottledCallback(() => router.push("/blogs"), 500);
   useEffect(() => {
-    const handleScroll = () => {
+    const handleToucheMove = () => {
       console.log("scroll");
       const scrollPosition = window.scrollY;
       const threshold = window.innerWidth <= 768 ? 150 : 200; // 针对手机设备设置更小的阈值
 
       if (scrollPosition > threshold) {
-        router.push("/new-page");
+        navigate();
       }
     };
     const handleWheel = event => {
@@ -25,11 +25,11 @@ export default function Page() {
         navigate();
       }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("touchmove", handleToucheMove);
     window.addEventListener("wheel", handleWheel);
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("touchmove", handleToucheMove);
       window.removeEventListener("wheel", handleWheel);
     };
   }, [router, navigate]);

@@ -25,7 +25,7 @@ export default function ReadingSummary() {
 
   return (
     <div className="flex w-full flex-col">
-      <div>数据同步时间: {formatDateTime(Number(lastSyncTime))}</div>
+      {!loading && <div>数据同步时间: {formatDateTime(Number(lastSyncTime))}</div>}
       <div className="my-2 flex flex-col flex-wrap justify-end gap-4 sm:flex-row">
         {[2021, 2022, 2023, 2024, 2025].map(eachEear => (
           <Button

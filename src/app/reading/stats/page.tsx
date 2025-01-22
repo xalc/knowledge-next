@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { BookOpen } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 export default function ReadingSummarys() {
   return (
     <div className="mx-8 mt-8 flex flex-col gap-8">

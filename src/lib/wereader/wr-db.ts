@@ -67,6 +67,8 @@ export async function getReadingSummary() {
 }
 export async function getReadingSummaryByYear(year: number) {
   const firstDay = moment(String(year)).startOf("year").unix();
+  console.log(`firstDay: ${firstDay}`);
+  console.log(moment(firstDay * 1000).format());
   const nextYearFirstDay = moment(String(year + 1))
     .startOf("year")
     .unix();

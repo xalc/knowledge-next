@@ -1,11 +1,12 @@
 import { ReadingSummaryType } from "@/types/reading-summary";
-import { groupDataByMonth } from "../utils";
+import { getReadingText, groupDataByMonth } from "../utils";
 import moment from "moment";
 import { Clock } from "lucide-react";
 import clsx from "clsx";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { getPrimaryBGcolorClassName } from "../utils";
+import { getGridCellClasses, getReadingLevel } from "../utils";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 export default function MonthHeatmap({
   summarys,
   year,
@@ -38,34 +39,8 @@ export default function MonthHeatmap({
                   if (!summary) {
                     summary = { id: String(moment(day).unix()), readingSeconds: 0 };
                   }
-                  return (
-                    <TooltipProvider key={day}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <div
-                            className={clsx(
-                              "aspect-square rounded-sm transition-all duration-200",
-                              "hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:ring-offset-background",
-                              "border border-border/50",
-                              getPrimaryBGcolorClassName(summary.readingSeconds, maxMinutes),
-                            )}
-                          />
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <div className="space-y-1">
-                            <p className="font-medium">
-                              {moment(day).format("YYYY年MM月DD日 dddd")}
-                            </p>
-                            <p className="flex items-center gap-2">
-                              <Clock className="h-4 w-4" />
-                              <span>{(summary.readingSeconds / 60).toFixed(0)} 分钟</span>
-                            </p>
-                            <p className="text-sm text-muted-foreground"></p>
-                          </div>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  );
+                  const level = getReadingLevel(summary.readingSeconds, maxMinutes);
+                  return <HeatmapCell key={summary.id} day={day} level={level} summary={summary} />;
                 })}
               </div>
             </CardContent>
@@ -75,3 +50,41 @@ export default function MonthHeatmap({
     </>
   );
 }
+const HeatmapCell = ({ day, summary, level }) => {
+  return (
+    <>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild className="hidden sm:block">
+            <div className={clsx("aspect-square", getGridCellClasses(level))} />
+          </TooltipTrigger>
+          <TooltipContent>
+            <div className="space-y-1">
+              <p className="font-medium">{moment(day).format("YYYY年MM月DD日 dddd")}</p>
+              <p className="flex items-center gap-2">
+                <Clock className="h-4 w-4" />
+                <span>{(summary.readingSeconds / 60).toFixed(0)} 分钟</span>
+              </p>
+              <p className="text-sm">{getReadingText(level)}</p>
+            </div>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+      <Popover>
+        <PopoverTrigger className="block sm:hidden">
+          <div className={clsx("aspect-square", getGridCellClasses(level))} />
+        </PopoverTrigger>
+        <PopoverContent className={"bg-primary text-primary-foreground"}>
+          <div className="space-y-1">
+            <p className="font-medium">{moment(day).format("YYYY年MM月DD日 dddd")}</p>
+            <p className="flex items-center gap-2">
+              <Clock className="h-4 w-4" />
+              <span>{(summary.readingSeconds / 60).toFixed(0)} 分钟</span>
+            </p>
+            <p className="text-sm">{getReadingText(level)}</p>
+          </div>
+        </PopoverContent>
+      </Popover>
+    </>
+  );
+};

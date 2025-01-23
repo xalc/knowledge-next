@@ -48,7 +48,7 @@ export default function Page() {
         priority
         sizes={"w-full"}
       />
-      <div className="flex animate-bounce justify-center pt-12 text-sm font-bold text-muted-foreground">
+      <div className="hidden animate-bounce justify-center pt-12 text-sm font-bold text-muted-foreground md:flex">
         <ChevronsDown className="h-6 w-6" />
         向下滚动以开始阅读
       </div>

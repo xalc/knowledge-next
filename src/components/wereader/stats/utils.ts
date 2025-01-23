@@ -60,13 +60,24 @@ export const getGithubBGcolorClassName = (value: number, maxValue: number) => {
 export const getPrimaryBGcolorClassName = (value: number, maxValue: number) => {
   const percentage = (value / maxValue) * 100;
   if (percentage === 0) return "bg-muted";
-  if (percentage <= 20) return "bg-primary/20";
-  if (percentage <= 40) return "bg-primary/40";
-  if (percentage <= 60) return "bg-primary/60";
+  if (percentage <= 20) return "bg-primary/30";
+  if (percentage <= 40) return "bg-primary/50";
+  if (percentage <= 60) return "bg-primary/70";
   if (percentage <= 80) return "bg-primary/80";
   if (percentage <= 100) return "bg-primary";
   return "bg-muted";
 };
+export const getReadingLevel = (value: number, maxValue: number) => {
+  const percentage = (value / maxValue) * 100;
+  if (percentage === 0) return 0;
+  if (percentage <= 20) return 1;
+  if (percentage <= 40) return 2;
+  if (percentage <= 60) return 3;
+  if (percentage <= 80) return 4;
+  if (percentage <= 100) return 5;
+  return 0;
+};
+
 export const getCurrentDayofYear = (currentYear: number) => {
   if (currentYear === moment().year()) {
     return moment().dayOfYear();

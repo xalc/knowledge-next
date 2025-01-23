@@ -4,7 +4,7 @@ import { Clock } from "lucide-react";
 import { ReadingSummaryType } from "@/types/reading-summary";
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { getWeeksOfYear, getPrimaryBGcolorClassName } from "../utils";
+import { getWeeksOfYear, getPrimaryBGcolorClassName, getReadingLevel } from "../utils";
 export default function Heatmap({
   summarys,
   year,
@@ -55,6 +55,7 @@ export default function Heatmap({
                     <GridCell
                       key={summary.id}
                       summary={summary}
+                      level={getReadingLevel(summary.readingSeconds, maxMinutes)}
                       classes={classes}
                       lastSyncTime={lastSyncTime}
                     />
@@ -88,7 +89,7 @@ export default function Heatmap({
     </div>
   );
 }
-const GridCell = ({ summary, classes, lastSyncTime }) => {
+const GridCell = ({ summary, classes, lastSyncTime, level }) => {
   if (lastSyncTime < summary.id) return <div key={summary.id} className={classes}></div>;
   return (
     <TooltipProvider key={summary.id}>
@@ -103,6 +104,7 @@ const GridCell = ({ summary, classes, lastSyncTime }) => {
               <Clock className="h-4 w-4" />
               <span>{(summary.readingSeconds / 60).toFixed(2)} 分钟</span>
             </p>
+            <p>{["未阅读", "短时阅读", "适度阅读", "良好阅读", "深度阅读", "专注阅读"][level]}</p>
           </div>
         </TooltipContent>
       </Tooltip>

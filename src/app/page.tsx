@@ -14,7 +14,7 @@ export default function Page() {
     const handleToucheMove = () => {
       console.log("scroll");
       const scrollPosition = window.scrollY;
-      const threshold = window.innerWidth <= 768 ? 150 : 200; // 针对手机设备设置更小的阈值
+      const threshold = 100; // 针对手机设备设置更小的阈值
 
       if (scrollPosition > threshold) {
         navigate();

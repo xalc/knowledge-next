@@ -2,9 +2,15 @@ import moment from "moment";
 import clsx from "clsx";
 import { Clock } from "lucide-react";
 import { ReadingSummaryType } from "@/types/reading-summary";
-
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { getWeeksOfYear, getPrimaryBGcolorClassName, getReadingLevel } from "../utils";
+import {
+  getWeeksOfYear,
+  getReadingLevel,
+  getReadingText,
+  getGridCellClasses,
+  getReadingIcon,
+} from "../utils";
+
 export default function Heatmap({
   summarys,
   year,
@@ -44,19 +50,13 @@ export default function Heatmap({
                   if (!summary) {
                     summary = { id: String(day.unix()), readingSeconds: 0 };
                   }
-                  const classes = clsx(
-                    getPrimaryBGcolorClassName(summary.readingSeconds, maxMinutes),
-                    "h-3 w-3",
-                    "transition-all duration-200",
-                    "hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:ring-offset-background",
-                    "border border-border/50",
-                  );
+                  const level = getReadingLevel(summary.readingSeconds, maxMinutes);
+
                   return (
                     <GridCell
                       key={summary.id}
                       summary={summary}
-                      level={getReadingLevel(summary.readingSeconds, maxMinutes)}
-                      classes={classes}
+                      level={level}
                       lastSyncTime={lastSyncTime}
                     />
                   );
@@ -70,32 +70,39 @@ export default function Heatmap({
       <div className="mt-6 flex items-center gap-2">
         <span className="text-sm text-muted-foreground">阅读程度：</span>
         <div className="flex items-center gap-1">
-          {[0, 1, 2, 3, 4, 5].map(level => (
-            <TooltipProvider key={level}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className={clsx("h-3 w-3", getPrimaryBGcolorClassName(level, 5))} />
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>
-                    {["未阅读", "短时阅读", "适度阅读", "良好阅读", "深度阅读", "专注阅读"][level]}
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          ))}
+          {[0, 1, 2, 3, 4, 5].map(level => {
+            const Icon = getReadingIcon(level);
+            return (
+              <TooltipProvider key={level}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className={clsx(getGridCellClasses(level), "h-3 w-3")} />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p className="flex items-center text-sm">
+                      <Icon className="mr-2 h-4 w-4" />
+                      {getReadingText(level)}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            );
+          })}
         </div>
       </div>
     </div>
   );
 }
-const GridCell = ({ summary, classes, lastSyncTime, level }) => {
-  if (lastSyncTime < summary.id) return <div key={summary.id} className={classes}></div>;
+
+const GridCell = ({ summary, lastSyncTime, level }) => {
+  if (lastSyncTime < summary.id)
+    return <div key={summary.id} className={clsx(getGridCellClasses(level), "h-3 w-3")}></div>;
+  const Icon = getReadingIcon(level);
   return (
     <TooltipProvider key={summary.id}>
       <Tooltip>
         <TooltipTrigger asChild>
-          <div key={summary.id} className={classes}></div>
+          <div key={summary.id} className={clsx(getGridCellClasses(level), "h-3 w-3")}></div>
         </TooltipTrigger>
         <TooltipContent>
           <div className="space-y-1">
@@ -104,7 +111,10 @@ const GridCell = ({ summary, classes, lastSyncTime, level }) => {
               <Clock className="h-4 w-4" />
               <span>{(summary.readingSeconds / 60).toFixed(2)} 分钟</span>
             </p>
-            <p>{["未阅读", "短时阅读", "适度阅读", "良好阅读", "深度阅读", "专注阅读"][level]}</p>
+            <p className="flex items-center text-sm">
+              <Icon className="mr-2 h-4 w-4" />
+              {getReadingText(level)}
+            </p>
           </div>
         </TooltipContent>
       </Tooltip>

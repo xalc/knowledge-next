@@ -1,4 +1,6 @@
 import moment from "moment";
+import { BookOpen, BookX, Coffee, BookMarked, BookCheck } from "lucide-react";
+import clsx from "clsx";
 import "moment/locale/zh-cn";
 moment.locale("zh-cn");
 export const getDayofYear = (year: number) => (moment(String(year)).isLeapYear() ? 366 : 365);
@@ -47,25 +49,41 @@ export const groupDataByMonth = (year: number) => {
   }
   return Months;
 };
-export const getGithubBGcolorClassName = (value: number, maxValue: number) => {
-  const percentage = (value / maxValue) * 100;
-  if (percentage === 0) return "bg-muted";
-  if (percentage <= 20) return "bg-green-300";
-  if (percentage <= 40) return "bg-green-500";
-  if (percentage <= 60) return "bg-green-700";
-  if (percentage <= 80) return "bg-green-800";
-  if (percentage <= 100) return "bg-green-900";
-  return "bg-muted";
+export const getGithubBGcolorClassName = (level: number) => {
+  switch (level) {
+    case 0:
+      return "bg-muted";
+    case 1:
+      return "bg-green-300";
+    case 2:
+      return "bg-green-500";
+    case 3:
+      return "bg-green-700";
+    case 4:
+      return "bg-green-800";
+    case 5:
+      return "bg-green-900";
+    default:
+      return "bg-muted";
+  }
 };
-export const getPrimaryBGcolorClassName = (value: number, maxValue: number) => {
-  const percentage = (value / maxValue) * 100;
-  if (percentage === 0) return "bg-muted";
-  if (percentage <= 20) return "bg-primary/30";
-  if (percentage <= 40) return "bg-primary/50";
-  if (percentage <= 60) return "bg-primary/70";
-  if (percentage <= 80) return "bg-primary/80";
-  if (percentage <= 100) return "bg-primary";
-  return "bg-muted";
+export const getPrimaryBGcolorClassName = (level: number) => {
+  switch (level) {
+    case 0:
+      return "bg-muted";
+    case 1:
+      return "bg-primary/30";
+    case 2:
+      return "bg-primary/50";
+    case 3:
+      return "bg-primary/70";
+    case 4:
+      return "bg-primary/80";
+    case 5:
+      return "bg-primary";
+    default:
+      return "bg-muted";
+  }
 };
 export const getReadingLevel = (value: number, maxValue: number) => {
   const percentage = (value / maxValue) * 100;
@@ -83,3 +101,19 @@ export const getCurrentDayofYear = (currentYear: number) => {
     return moment().dayOfYear();
   } else return getDayofYear(currentYear);
 };
+export const getReadingText = (level: number) => {
+  return ["未阅读", "短时阅读", "适度阅读", "良好阅读", "深度阅读", "专注阅读"][level];
+};
+
+export const getGridCellClasses = (level: number) => {
+  return clsx(
+    getPrimaryBGcolorClassName(level),
+    "rounded-sm",
+    "transition-all duration-200",
+    "hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:ring-offset-background",
+    "border border-border/50",
+  );
+};
+
+export const getReadingIcon = (level: number) =>
+  [BookX, BookOpen, Coffee, BookMarked, BookCheck, BookCheck][level];

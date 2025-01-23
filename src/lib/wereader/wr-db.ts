@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { READING_TIME_SYNC_KEY } from "./constant";
+
 import moment from "moment";
+
 const prisma = new PrismaClient();
 export async function getWRToken(): Promise<string> {
   try {
@@ -66,14 +68,16 @@ export async function getReadingSummary() {
   }
 }
 export async function getReadingSummaryByYear(year: number) {
-  const firstDay = moment(String(year)).startOf("year").unix();
+  const firstDay = moment(String(year)).startOf("year");
+  const lastDay = firstDay.subtract(1, "day").unix();
+
   const nextYearFirstDay = moment(String(year + 1))
     .startOf("year")
     .unix();
   const { summarys, lastSyncTime } = await getReadingSummary();
   const yearSummary = summarys.filter(summary => {
     const id = Number(summary.id);
-    return id >= firstDay && id < nextYearFirstDay;
+    return id > lastDay && id < nextYearFirstDay;
   });
   return { yearSummary, lastSyncTime };
 }

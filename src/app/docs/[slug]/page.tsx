@@ -1,6 +1,6 @@
 import { getDocBySlug } from "@/lib/docs";
 import { notFound } from "next/navigation";
-
+import { DocBreadcrumb } from "@/components/docs/doc-breadcrumb";
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
@@ -14,7 +14,8 @@ export default async function DocDetailPage({ params }: PageProps) {
   }
 
   return (
-    <div className="container mx-auto py-8">
+    <div className="mb-12 space-y-8 p-8">
+      <DocBreadcrumb slug={slug} />
       <div className="prose prose-lg max-w-none">{doc.content}</div>
     </div>
   );

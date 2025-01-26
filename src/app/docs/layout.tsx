@@ -7,7 +7,7 @@ export default async function DocLayout({ children }: { children: React.ReactNod
   const tree = getDocTree();
 
   return (
-    <div className="min-h-screen">
+    <div className="top-12">
       <div className="hidden md:block">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20} minSize={15} maxSize={40}>
@@ -15,12 +15,7 @@ export default async function DocLayout({ children }: { children: React.ReactNod
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={80}>
-            <div className="container p-4">
-              <div className="mb-4 flex items-center justify-between">
-                <h1 className="text-2xl font-bold">文档</h1>
-              </div>
-              {children}
-            </div>
+            <div className="container p-4">{children}</div>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

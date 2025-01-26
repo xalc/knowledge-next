@@ -17,7 +17,7 @@ interface MobileNavProps {
   currentSlug?: string;
 }
 
-export function MobileNav({ tree, currentSlug }: MobileNavProps) {
+export function MobileNav({ tree }: MobileNavProps) {
   return (
     <>
       <Drawer direction="bottom">
@@ -35,7 +35,7 @@ export function MobileNav({ tree, currentSlug }: MobileNavProps) {
           <DrawerHeader className="border-b">
             <DrawerTitle>文档导航</DrawerTitle>
           </DrawerHeader>
-          <DocNav tree={tree} currentSlug={currentSlug} mobileView />
+          <DocNav tree={tree} mobileView />
         </DrawerContent>
       </Drawer>
     </>

@@ -47,8 +47,7 @@ export const ToC = ({ items = [], editor }) => {
       editor.view.focus();
 
       if (history.pushState) {
-        // eslint-disable-line
-        history.pushState(null, null, `#${id}`); // eslint-disable-line
+        history.pushState(null, null, `#${id}`);
       }
 
       window.scrollTo({

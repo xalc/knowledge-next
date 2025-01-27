@@ -10,7 +10,7 @@ export default async function DocPage() {
       <div className="space-y-4">
         {docs.map(doc => (
           <div key={doc.slug} className="rounded-lg border p-4">
-            <Link href={`/docs/${doc.slug}`} className="text-lg font-medium hover:text-blue-600">
+            <Link href={`/docs/${doc.slug}`} className="text-lg font-medium hover:text-primary">
               {doc.title}
             </Link>
           </div>

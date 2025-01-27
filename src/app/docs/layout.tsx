@@ -2,7 +2,7 @@ import { getDocTree } from "@/lib/docs";
 import { DocNav } from "@/components/docs/doc-nav";
 import { MobileNav } from "@/components/docs/mobile-nav";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-
+import { ScrollArea } from "@/components/ui/scroll-area";
 export default async function DocLayout({ children }: { children: React.ReactNode }) {
   const tree = getDocTree();
 
@@ -15,7 +15,7 @@ export default async function DocLayout({ children }: { children: React.ReactNod
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={80}>
-            <div className="container p-4">{children}</div>
+            <ScrollArea className="container h-[calc(100vh-100px)] p-4">{children}</ScrollArea>
           </ResizablePanel>
         </ResizablePanelGroup>
       </div>

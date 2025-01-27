@@ -16,7 +16,7 @@ export default async function DocDetailPage({ params }: PageProps) {
   return (
     <div className="mb-12 space-y-8 p-8">
       <DocBreadcrumb slug={slug} />
-      <div className="prose prose-lg max-w-none">{doc.content}</div>
+      <div>{doc.content}</div>
     </div>
   );
 }

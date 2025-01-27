@@ -34,7 +34,7 @@ export function DocNav({ tree, mobileView = false }: DocNavProps) {
   const currentSlug = decodeURIComponent(pathname.split("/").pop());
 
   return (
-    <div className={cn(mobileView ? "h-[calc(100vh-100px)] w-full" : "min-h-[calc(100vh-100px)]")}>
+    <div className={cn(mobileView ? "h-[calc(100vh-100px)] w-full" : "h-[calc(100vh-100px)]")}>
       <ScrollArea className="h-full">
         <div className="space-y-1 p-4">
           {sortedTree.map(node => (

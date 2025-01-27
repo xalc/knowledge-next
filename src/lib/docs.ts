@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { DocType, DocNode } from "@/types/docs";
+import { mdxComponents } from "@/components/docs/mdx-components";
 export async function getAllDocs(): Promise<DocType[]> {
   const docsDirectory = path.join(process.cwd(), "src", "notes");
   try {
@@ -126,6 +127,7 @@ export async function getDocBySlug(slug: string): Promise<DocType | null> {
     const { content } = await compileMDX({
       source: fileContent,
       options: { parseFrontmatter: true },
+      components: mdxComponents,
     });
 
     return {

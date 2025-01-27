@@ -43,8 +43,8 @@ export function DocNavItem({ node, level = 0, currentSlug }: DocNavItemProps) {
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger
           className={cn(
-            "group flex w-full items-center rounded-md p-2 hover:bg-muted/50",
-            hasActiveChild && "bg-muted/50 font-medium text-blue-700",
+            "group flex w-full items-center rounded-md p-2 hover:bg-muted",
+            hasActiveChild && "bg-muted/50 font-medium",
           )}
         >
           <ChevronRight
@@ -54,10 +54,7 @@ export function DocNavItem({ node, level = 0, currentSlug }: DocNavItemProps) {
             )}
           />
           <Folder
-            className={cn(
-              "ml-1 h-4 w-4 shrink-0 text-muted-foreground",
-              hasActiveChild && "text-blue-500",
-            )}
+            className={cn("ml-1 h-4 w-4 shrink-0 text-muted-foreground", hasActiveChild && "")}
           />
           <span className="ml-1 truncate text-sm font-medium">{node.name}</span>
         </CollapsibleTrigger>
@@ -82,11 +79,11 @@ export function DocNavItem({ node, level = 0, currentSlug }: DocNavItemProps) {
       href={`/docs/${encodeURIComponent(node.slug)}`}
       className={cn(
         "group flex items-center rounded-md px-2 py-2 text-sm hover:bg-muted/50",
-        isActive && "bg-blue-50 font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-300",
+        isActive && "bg-muted font-medium text-primary",
       )}
     >
       <FileText
-        className={cn("mr-2 h-4 w-4 shrink-0 text-muted-foreground", isActive && "text-blue-500")}
+        className={cn("mr-2 h-4 w-4 shrink-0 text-muted-foreground", isActive && "text-primary")}
       />
       <span className="truncate">{node.name}</span>
     </Link>

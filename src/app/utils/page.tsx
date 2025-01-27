@@ -11,6 +11,7 @@ import {
   ArrowRight,
   Lock,
   Palette,
+  FileDigit,
 } from "lucide-react";
 
 const NAVIGATION_ITEMS = [
@@ -29,6 +30,14 @@ const NAVIGATION_ITEMS = [
     href: "/blogs",
     color: "text-green-500 dark:text-green-400",
     pattern: "radial-gradient(circle at 100% 100%, rgba(34, 197, 94, 0.08) 0%, transparent 50%)",
+  },
+  {
+    title: "印记",
+    description: "从notion导出的笔记",
+    icon: FileDigit,
+    href: "/docs",
+    color: "text-rose-500 dark:text-rose-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(168, 85, 247, 0.08) 0%, transparent 50%)",
   },
   {
     title: "节假日日历",

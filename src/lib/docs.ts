@@ -3,6 +3,7 @@ import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
 import { DocType, DocNode } from "@/types/docs";
 import { mdxComponents } from "@/components/docs/mdx-components";
+
 export async function getAllDocs(): Promise<DocType[]> {
   const docsDirectory = path.join(process.cwd(), "src", "notes");
   try {
@@ -101,6 +102,28 @@ export function getDocTree(basePath: string = ""): DocNode[] {
     .filter(Boolean) as DocNode[];
 }
 
+const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
+  const visitNode = node => {
+    if (node.type === "image") {
+      const relativePath = node.url;
+      if (!node.url.startsWith("http")) {
+        try {
+          const absPath = path
+            .join(path.dirname(nodePath), decodeURIComponent(relativePath))
+            .replace(/\.(md|mdx)$/, "");
+
+          node.url = absPath;
+        } catch (e) {
+          console.error("resolve path error", node.url, docsDir, e);
+        }
+      }
+    } else if (node.children) {
+      node.children.forEach(visitNode);
+    }
+  };
+
+  visitNode(tree);
+};
 export async function getDocBySlug(slug: string): Promise<DocType | null> {
   try {
     const tree = getDocTree();
@@ -126,7 +149,13 @@ export async function getDocBySlug(slug: string): Promise<DocType | null> {
 
     const { content } = await compileMDX({
       source: fileContent,
-      options: { parseFrontmatter: true },
+      options: {
+        parseFrontmatter: true,
+        mdxOptions: {
+          remarkPlugins: [remarkImgToAbsolute(docsDirectory, docNode.path)],
+        },
+      },
+
       components: mdxComponents,
     });
 

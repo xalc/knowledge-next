@@ -3,6 +3,7 @@ import { Code } from "bright";
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { Button } from "../ui/button";
+import Image from "next/image";
 const handleInnerLink = link =>
   "/docs/" +
   decodeURIComponent(link.split("/").pop())
@@ -75,7 +76,19 @@ export const mdxComponents = {
   ),
   img: ({ className, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
     // eslint-disable-next-line @next/next/no-img-element
-    <img className={cn("rounded-md border", className)} alt={alt} {...props} />
+
+    <Image
+      src={`/api/image?src=${props.src}`}
+      alt={alt}
+      className={cn(
+        "inset-0 bg-gradient-to-br from-primary/10 to-background object-cover",
+        className,
+      )}
+      priority
+      width={1600}
+      height={900}
+      style={{ width: "90%", height: "auto" }}
+    />
   ),
   a: CustomLink,
   hr: ({ ...props }) => <hr className="my-4 md:my-8" {...props} />,

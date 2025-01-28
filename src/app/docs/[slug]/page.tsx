@@ -4,7 +4,9 @@ import { DocBreadcrumb } from "@/components/docs/doc-breadcrumb";
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
-
+// export async function generateStaticParams() {
+//   return await getAllSlugs();
+// }
 export default async function DocDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const doc = await getDocBySlug(decodeURIComponent(slug));

@@ -44,6 +44,23 @@ export async function getAllDocs(): Promise<DocType[]> {
   }
 }
 
+export async function getAllSlugs(): Promise<string[]> {
+  const docsDirectory = path.join(process.cwd(), "src", "notes");
+  try {
+    const allFiles = fs.readdirSync(docsDirectory);
+    const markdownFiles = allFiles.filter(filename => {
+      const filePath = path.join(docsDirectory, filename);
+      const stats = fs.statSync(filePath);
+      return stats.isFile() && /\.(md|mdx)$/.test(filename);
+    });
+
+    return markdownFiles.map(filename => filename.replace(/\.mdx?$/, "").replace(" ", "_"));
+  } catch (error) {
+    console.error("Error reading docs:", error);
+    return [];
+  }
+}
+
 export function findDocNodeBySlug(tree: DocNode[], slug: string): DocNode | null {
   for (const node of tree) {
     if (node.type === "file" && node.slug === slug) {

@@ -12,7 +12,6 @@ export default function Page() {
   const navigate = useThrottledCallback(() => router.push("/blogs"), 500);
   useEffect(() => {
     const handleToucheMove = () => {
-      console.log("scroll");
       const scrollPosition = window.scrollY;
       const threshold = 100; // 针对手机设备设置更小的阈值
 

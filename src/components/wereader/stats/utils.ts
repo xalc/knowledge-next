@@ -78,7 +78,7 @@ export const getPrimaryBGcolorClassName = (level: number) => {
     case 3:
       return "bg-primary/70";
     case 4:
-      return "bg-primary/80";
+      return "bg-primary/90";
     case 5:
       return "bg-primary";
     default:

@@ -15,7 +15,7 @@ export const HeroSection = () => {
         <div className="flex flex-col items-center space-y-8 pt-8 text-center">
           <HeaderLogo className="h-32 w-32"></HeaderLogo>
 
-          <div className="space-y-2 delay-200 duration-700 animate-in slide-in-from-bottom-4">
+          <div className="delay-600 space-y-2 duration-700 animate-in slide-in-from-bottom-4">
             <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl">欢迎来到我的博客</h1>
             <p className="mx-auto max-w-[700px] text-muted-foreground md:text-lg">
               在这里，我将分享我的技术笔记、技术文章、个人生活文章以及一些有趣的小功能。

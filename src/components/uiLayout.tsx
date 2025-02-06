@@ -3,7 +3,7 @@ import { usePathname } from "next/navigation";
 import Header from "./header/header";
 import { Link } from "./ui/link";
 
-import { RouteTransition } from "@/components/route-transition";
+import { RouteTransition } from "@/components/transition/route-transition";
 import { ProgressTranstion } from "./transition/progress-transition";
 export default function UILayout({ children }) {
   const pathname = usePathname();

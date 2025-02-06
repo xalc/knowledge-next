@@ -52,7 +52,7 @@ export const HeroSection = () => {
             </motion.p>
             <motion.div
               className="flex flex-wrap justify-center gap-2"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
             >

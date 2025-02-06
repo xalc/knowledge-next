@@ -19,7 +19,7 @@ export default async function RecentPosts() {
           </div>
         </CardHeader>
         <CardContent>
-          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+          <div className="columns-1 gap-6 space-y-6 md:columns-2 [&>*]:break-inside-avoid-column">
             {posts.map(post => (
               <BlogItem
                 key={post.slug}

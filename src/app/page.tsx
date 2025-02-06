@@ -4,7 +4,7 @@ import TopBadge from "@/components/badge/top-badge";
 import RecentPosts from "@/components/blogs/recent-blogs";
 import Parallax from "@/components/transition/parallax";
 import RecentReadingBooks from "@/components/wereader/recent-reading";
-
+import Header from "@/components/header/header";
 export default function RootPage() {
   return (
     <>
@@ -12,6 +12,7 @@ export default function RootPage() {
         <HeroSection />
       </Parallax>
       <Parallax>
+        <Header />
         <ContentCard />
         <RecentPosts />
         <RecentReadingBooks />

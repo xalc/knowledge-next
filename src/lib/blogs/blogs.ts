@@ -22,7 +22,7 @@ const getRecentPosts = cache(async () => {
       orderBy: {
         createdAt: "desc",
       },
-      take: 5,
+      take: 4,
     });
     console.log("get posts from db without cache");
     return allPosts;

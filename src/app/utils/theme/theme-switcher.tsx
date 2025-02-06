@@ -4,13 +4,40 @@ import { Button } from "@/components/ui/button";
 
 export default function ThemeSwitcher() {
   const { setTheme, themes, theme } = useTheme();
+  const getClassName = (t: string) => {
+    switch (t) {
+      case "light":
+        return "bg-violet-600";
+      case "dark":
+        return "bg-violet-500";
+      case "zinc":
+        return "bg-zinc-500";
+      case "zinc-dark":
+        return "bg-zinc-600";
+      case "rose":
+        return "bg-rose-500";
+      case "rose-dark":
+        return "bg-rose-600";
+      case "yellow":
+        return "bg-yellow-500";
+      case "yellow-dark":
+        return "bg-yellow-600";
+      default:
+        return "bg-primary";
+    }
+  };
   return (
     <div className="mx-10">
       <p className="text-primary"> current theme {theme}</p>
       <div className="mx-8 flex flex-auto flex-wrap gap-8">
         {themes.map((t, i) => {
           return (
-            <Button key={t + i} variant="default" onClick={() => setTheme(t)}>
+            <Button
+              key={t + i}
+              variant="default"
+              className={getClassName(t)}
+              onClick={() => setTheme(t)}
+            >
               {t}
             </Button>
           );

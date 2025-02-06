@@ -4,6 +4,7 @@ import Header from "./header/header";
 import { Link } from "./ui/link";
 
 import { RouteTransition } from "@/components/route-transition";
+import { ProgressTranstion } from "./transition/progress-transition";
 export default function UILayout({ children }) {
   const pathname = usePathname();
   const landingPage = pathname === "/";
@@ -15,7 +16,7 @@ export default function UILayout({ children }) {
           name="google-site-verification"
           content="_lv6oskWRfi00Z3rjMkNWOr9jHofZIU71abSExDAeUs"
         />
-        {children}
+        <ProgressTranstion>{children}</ProgressTranstion>
       </>
     );
   }

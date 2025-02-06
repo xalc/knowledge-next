@@ -28,13 +28,14 @@ const ROUTES = [
     href: "/reading",
     label: "读书",
   },
+
+  {
+    href: "/docs",
+    label: "印记",
+  },
   {
     href: "/utils",
     label: "工具箱",
-  },
-  {
-    href: "/about",
-    label: "关于",
   },
 ];
 const LinkButton = ({ href, children, ...props }) => {

@@ -75,8 +75,6 @@ export const mdxComponents = {
     />
   ),
   img: ({ className, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
-    // eslint-disable-next-line @next/next/no-img-element
-
     <Image
       src={`/api/image?src=${props.src}`}
       alt={alt}

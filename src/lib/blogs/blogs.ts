@@ -3,7 +3,27 @@ const prisma = new PrismaClient();
 import { cache } from "react";
 const getPosts = cache(async () => {
   try {
-    const allPosts = await prisma.post.findMany({});
+    const allPosts = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+    console.log("get posts from db without cache");
+    return allPosts;
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+const getRecentPosts = cache(async () => {
+  try {
+    const allPosts = await prisma.post.findMany({
+      orderBy: {
+        createdAt: "desc",
+      },
+      take: 4,
+    });
     console.log("get posts from db without cache");
     return allPosts;
   } catch (e) {
@@ -26,4 +46,4 @@ const getPost = cache(async (slug: string) => {
   return post;
 });
 export const revalidate = 60;
-export { getPosts, getPost };
+export { getPosts, getPost, getRecentPosts };

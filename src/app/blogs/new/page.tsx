@@ -9,10 +9,10 @@ import Placeholder from "@tiptap/extension-placeholder";
 
 import { Button } from "@/components/ui/button";
 
-import { BlogMetaForm } from "@/components/blogs/BlogmetaForm";
+import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 
 import { DialogTitle } from "@/components/ui/dialog";
-import BlogMetaPopup from "@/components/blogs/BlogMetaPopup";
+import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 

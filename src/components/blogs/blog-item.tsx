@@ -40,16 +40,19 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
             </div>
             <CardHeader className="space-y-2">
               <div className="flex items-center justify-between">
-                {blog.metadata?.tags &&
-                  blog.metadata.tags?.slice(0, 3).map((tag, index) => (
-                    <Badge
-                      variant="secondary"
-                      key={`tag_${index}`}
-                      className="pointer-events-none whitespace-nowrap"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+                <div className="flex justify-start gap-4">
+                  {blog.metadata?.tags &&
+                    blog.metadata.tags?.slice(0, 3).map((tag, index) => (
+                      <Badge
+                        variant="secondary"
+                        key={`tag_${index}`}
+                        className="pointer-events-none whitespace-nowrap"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                </div>
+
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <span>{blog.createdAt.toLocaleDateString()}</span>
@@ -67,17 +70,20 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
           // 无图片的布局
           <>
             <CardHeader className="space-y-2">
-              <div className="flex items-center justify-between">
-                {blog.metadata?.tags &&
-                  blog.metadata.tags?.slice(0, 3).map((tag, index) => (
-                    <Badge
-                      variant="secondary"
-                      key={`tag_${index}`}
-                      className="pointer-events-none whitespace-nowrap"
-                    >
-                      {tag}
-                    </Badge>
-                  ))}
+              <div className="flex items-center justify-start">
+                <div className="flex justify-start gap-4">
+                  {blog.metadata?.tags &&
+                    blog.metadata.tags?.slice(0, 3).map((tag, index) => (
+                      <Badge
+                        variant="secondary"
+                        key={`tag_${index}`}
+                        className="pointer-events-none whitespace-nowrap"
+                      >
+                        {tag}
+                      </Badge>
+                    ))}
+                </div>
+
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Calendar className="h-4 w-4" />
                   <span>{blog.createdAt.toLocaleDateString()}</span>

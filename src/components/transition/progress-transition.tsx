@@ -1,12 +1,20 @@
 "use client";
+
+import type * as React from "react";
 import { motion, useScroll, useSpring } from "motion/react";
-export default function AboutLayout({ children }: { children: React.ReactNode }) {
+
+interface RouteTransitionProps {
+  children: React.ReactNode;
+}
+
+export function ProgressTranstion({ children }: RouteTransitionProps) {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
     stiffness: 100,
     damping: 30,
     restDelta: 0.001,
   });
+
   return (
     <div className="item-center flex min-h-screen w-full flex-col">
       <motion.div

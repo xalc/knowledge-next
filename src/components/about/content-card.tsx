@@ -32,7 +32,7 @@ const SECTIONS = [
 
 export default function ContentCard() {
   return (
-    <div className="container mx-auto mt-20 lg:max-w-[1024px]">
+    <div id="content-card" className="container mx-auto mt-20 lg:max-w-[1024px]">
       <div className="mx-6 grid gap-6 sm:grid-cols-2">
         {SECTIONS.map(section => (
           <Card key={section.title} className="group relative overflow-hidden">

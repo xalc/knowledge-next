@@ -1,7 +1,7 @@
 import { Card, CardContent, CardTitle, CardHeader } from "../ui/card";
 
 import { getRecentPosts } from "@/lib/blogs/blogs";
-import BlogItem from "./BlogItem";
+import BlogItem from "./blog-item";
 import { Button } from "../ui/button";
 import Link from "next/link";
 

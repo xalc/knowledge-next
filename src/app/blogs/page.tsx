@@ -1,4 +1,4 @@
-import BlogItem from "@/components/blogs/BlogItem";
+import BlogItem from "@/components/blogs/blog-item";
 import { getPosts } from "@/lib/blogs/blogs";
 
 export default async function BlogsPage() {

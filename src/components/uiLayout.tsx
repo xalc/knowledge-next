@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 import Header from "./header/header";
 import { Link } from "./ui/link";
 
+import { RouteTransition } from "@/components/route-transition";
 export default function UILayout({ children }) {
   const pathname = usePathname();
   const landingPage = pathname === "/";
@@ -21,7 +22,10 @@ export default function UILayout({ children }) {
   return (
     <div className="flex min-h-screen flex-col">
       <Header />
-      <main className="w-auto flex-1">{children}</main>
+
+      <main className="w-auto flex-1">
+        <RouteTransition>{children}</RouteTransition>
+      </main>
 
       <footer className="flex w-full shrink-0 basis-12 items-center justify-center border shadow-xl">
         <p>

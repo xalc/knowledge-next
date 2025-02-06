@@ -11,7 +11,7 @@ export default async function DocPage() {
   }
 
   return (
-    <div className="mb-12 space-y-8 p-8">
+    <div className="container mb-12 max-w-[768px] space-y-8 p-8">
       <DocBreadcrumb slug={defaultSlug} />
       <div>{doc.content}</div>
     </div>

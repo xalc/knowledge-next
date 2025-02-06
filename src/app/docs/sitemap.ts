@@ -12,7 +12,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return slugs.map(slug => {
     return {
-      url: `${BASE_URL}/docs/${slug.replace("&", "&amp;")}`,
+      url: `${BASE_URL}/docs/${slug.replace(/&/g, "&amp;")}`,
       lastModified: new Date(),
       changeFrequency: "yearly",
       priority: 1,

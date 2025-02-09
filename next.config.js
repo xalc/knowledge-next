@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 const withPWA = require("next-pwa")({
   dest: "public", // Service Worker 和 manifest 文件输出目录，通常是 public 文件夹
   disable: process.env.NODE_ENV === "development", // 开发环境下禁用 PWA，避免干扰开发

@@ -32,6 +32,7 @@ export default function UILayout({ children }) {
         <p>
           <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
         </p>
+        {/* <PWA /> */}
       </footer>
     </div>
   );

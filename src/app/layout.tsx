@@ -10,7 +10,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "我的博客",
-  description: "技术即工具，想法改善生活，个人即服务",
+  description: "技术即工具，专注前端和AI，个人即服务",
   applicationName: "knowledge next",
   authors: [{ name: "HunterX" }],
   keywords: ["knowledge", "blog", "react", "前端"],

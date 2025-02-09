@@ -7,11 +7,10 @@ import UILayout from "@/components/uiLayout";
 import WrapUserProfile from "@/components/auth/user-profile";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import PWA from "@/components/pwa/pwa";
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "我的博客",
-  description: "技术即工具，想法改善生活，个人即服务",
+  description: "技术即工具，专注前端和AI，个人即服务",
   applicationName: "knowledge next",
   authors: [{ name: "HunterX" }],
   keywords: ["knowledge", "blog", "react", "前端"],
@@ -21,6 +20,10 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <link rel="manifest" href="/manifest.json" />
+      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="apple-mobile-web-app-title" content="blog"></meta>
+      <link rel="apple-touch-icon" href="/favor/apple-touch-icon.png" />
       <body>
         <ThemeProvider
           attribute="class"
@@ -40,6 +43,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           <WrapUserProfile>
             <UILayout>{children}</UILayout>
+
             <Toaster />
           </WrapUserProfile>
         </ThemeProvider>
@@ -47,7 +51,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <>
             <Analytics />
             <SpeedInsights />
-            <PWA />
           </>
         )}
       </body>

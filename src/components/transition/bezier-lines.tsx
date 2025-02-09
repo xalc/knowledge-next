@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from "react";
 import { motion, useAnimationFrame } from "motion/react";
+
 interface Point {
   x: number;
   y: number;
@@ -16,6 +17,7 @@ interface BezierLinesProps {
   animationDuration?: number;
   opacity?: number;
   speed?: number;
+  mousePosition?: { x: number; y: number };
 }
 
 export function BezierLines({
@@ -27,6 +29,7 @@ export function BezierLines({
   animationDuration = 8,
   opacity = 0.3,
   speed = 0.5,
+  mousePosition,
 }: BezierLinesProps) {
   const [paths, setPaths] = useState<string[]>([]);
   const [dimensions, setDimensions] = useState<{ width: number; height: number }>({
@@ -34,6 +37,7 @@ export function BezierLines({
     height: 0,
   });
 
+  // 使用 ref 来存储动画状态
   const animationState = useRef({
     time: 0,
     offsets: Array(count)
@@ -41,12 +45,20 @@ export function BezierLines({
       .map(() => Math.random() * Math.PI * 2),
   });
 
+  // 生成贝塞尔曲线路径
   const generatePath = useCallback(
     (index: number, time: number) => {
       if (!dimensions.width || !dimensions.height) return "";
 
       const startY = dimensions.height / 2;
+      // const curveHeight = minCurveHeight + Math.random() * (maxCurveHeight - minCurveHeight);
       const baseOffset = (index - Math.floor(count / 2)) * (dimensions.height / count);
+
+      // 使用正弦波和鼠标位置来创建动态流动效果
+      const mouseXEffect = ((mousePosition?.x || 0) / dimensions.width - 0.5) * 200;
+      const mouseYEffect = ((mousePosition?.y || 0) / dimensions.height - 0.5) * 200;
+
+      // 创建更多的控制点来使曲线更平滑
       const points: Point[] = [];
       const segments = 8;
 
@@ -54,16 +66,20 @@ export function BezierLines({
         const x = (dimensions.width * i) / segments;
         const progress = i / segments;
 
+        // 使用多个正弦波和鼠标位置叠加创造更复杂的波动效果
         const wave1 =
           Math.sin(time * speed + progress * Math.PI * 2 + animationState.current.offsets[index]) *
-          50;
-        const wave2 = Math.sin(time * speed * 0.5 + progress * Math.PI * 4) * 30;
-        const wave3 = Math.sin(time * speed * 0.3 + progress * Math.PI * 6) * 20;
+          (50 + mouseXEffect);
+        const wave2 = Math.sin(time * speed * 0.5 + progress * Math.PI * 4) * (30 + mouseYEffect);
+        const wave3 =
+          Math.sin(time * speed * 0.3 + progress * Math.PI * 6) *
+          (20 + Math.abs(mouseXEffect + mouseYEffect) * 0.2);
 
         const y = startY + baseOffset + wave1 + wave2 + wave3;
         points.push({ x, y });
       }
 
+      // 使用三次贝塞尔曲线连接所有点
       let path = `M ${points[0].x},${points[0].y}`;
 
       for (let i = 0; i < points.length - 1; i++) {
@@ -79,12 +95,13 @@ export function BezierLines({
 
       return path;
     },
-    [dimensions, count, minCurveHeight, maxCurveHeight, speed],
+    [dimensions, count, minCurveHeight, maxCurveHeight, speed, mousePosition],
   );
 
+  // 使用 useAnimationFrame 来创建流畅的动画
   useAnimationFrame(time => {
     if (dimensions.width && dimensions.height) {
-      animationState.current.time = time * 0.001;
+      animationState.current.time = time * 0.001; // 转换为秒
       const newPaths = Array.from({ length: count }, (_, i) =>
         generatePath(i, animationState.current.time),
       );
@@ -130,7 +147,7 @@ export function BezierLines({
               delay: (index * animationDuration) / count,
             }}
             style={{
-              filter: "blur(0.5px)",
+              filter: "blur(0.5px)", // 添加轻微模糊效果使线条看起来更柔和
             }}
           />
         ))}

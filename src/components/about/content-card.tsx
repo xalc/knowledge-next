@@ -8,7 +8,7 @@ const SECTIONS = [
     title: "技术文章",
     description: "分享对技术和工具的使用踩坑记录，也包括一些DIY过程",
     color: "text-green-500 dark:text-green-400",
-    href: "/blog",
+    href: "/blogs",
   },
   {
     icon: BookOpen,

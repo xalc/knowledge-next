@@ -1,4 +1,4 @@
-import { Card, CardContent, CardTitle, CardHeader } from "../ui/card";
+import { Card, CardContent, CardTitle, CardHeader, CardDescription } from "../ui/card";
 
 import { getRecentPosts } from "@/lib/blogs/blogs";
 import BlogItem from "./blog-item";
@@ -12,7 +12,11 @@ export default async function RecentPosts() {
       <Card className="mx-6">
         <CardHeader>
           <div className="flex justify-between">
-            <CardTitle>最新的博客</CardTitle>
+            <div>
+              <CardTitle>最新思考</CardTitle>
+              <CardDescription>分享技术见解，探讨开发心得</CardDescription>
+            </div>
+
             <Button variant="outline" asChild>
               <Link href="/blogs">查看更多</Link>
             </Button>

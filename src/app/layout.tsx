@@ -20,6 +20,8 @@ export const metadata: Metadata = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <link rel="manifest" href="/manifest.json" />
+      <link rel="apple-touch-icon" href="/favor/apple-touch-icon.png" />
       <body>
         <ThemeProvider
           attribute="class"

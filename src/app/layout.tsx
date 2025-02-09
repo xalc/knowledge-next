@@ -7,7 +7,6 @@ import UILayout from "@/components/uiLayout";
 import WrapUserProfile from "@/components/auth/user-profile";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import PWA from "@/components/pwa/pwa";
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
   title: "我的博客",
@@ -40,6 +39,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         >
           <WrapUserProfile>
             <UILayout>{children}</UILayout>
+
             <Toaster />
           </WrapUserProfile>
         </ThemeProvider>
@@ -47,7 +47,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <>
             <Analytics />
             <SpeedInsights />
-            <PWA />
           </>
         )}
       </body>

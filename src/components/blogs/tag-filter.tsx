@@ -22,19 +22,21 @@ export function TagFilter({ tags, selectedTag, onTagSelect }: TagFilterProps) {
       >
         全部
       </Badge>
-      {tags.map(({ tag, count }) => (
-        <Badge
-          key={tag}
-          variant="secondary"
-          className={cn(
-            "cursor-pointer hover:bg-primary hover:text-primary-foreground",
-            selectedTag === tag && "bg-primary text-primary-foreground",
-          )}
-          onClick={() => onTagSelect(tag)}
-        >
-          {tag} ({count})
-        </Badge>
-      ))}
+      {tags
+        .filter(tag => tag.count > 1)
+        .map(({ tag, count }) => (
+          <Badge
+            key={tag}
+            variant="secondary"
+            className={cn(
+              "cursor-pointer hover:bg-primary hover:text-primary-foreground",
+              selectedTag === tag && "bg-primary text-primary-foreground",
+            )}
+            onClick={() => onTagSelect(tag)}
+          >
+            {tag} ({count})
+          </Badge>
+        ))}
     </div>
   );
 }

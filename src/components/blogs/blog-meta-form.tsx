@@ -134,7 +134,6 @@ export function BlogMetaForm({ content, meta }) {
             )}
           />
 
-          {/* 标签区域 */}
           <div className="space-y-4">
             <FormLabel className="text-base font-medium">文章标签</FormLabel>
             <FormField
@@ -143,7 +142,7 @@ export function BlogMetaForm({ content, meta }) {
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <TagInput value={field.value} onChange={field.onChange} existingTags={[]} />
+                    <TagInput value={field.value} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

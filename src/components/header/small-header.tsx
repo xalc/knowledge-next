@@ -32,7 +32,7 @@ const LinkButton = ({ href, children, ...props }) => {
 export default function SmallHeader() {
   return (
     <header className="sticky top-4 z-50 flex basis-12 justify-center">
-      <div className="flex w-[400px] items-center space-x-4 rounded-2xl border px-4 text-primary shadow-xl">
+      <div className="flex w-[400px] items-center space-x-4 rounded-2xl border bg-background/90 px-4 text-primary shadow-xl">
         {ROUTES.map((route, index) => (
           <LinkButton href={route.href} key={`route_${index}`} className={"w-full"}>
             {route.label}

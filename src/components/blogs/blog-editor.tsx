@@ -9,7 +9,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { Badge } from "@/components/ui/badge";
 import { BlogMetaForm } from "./blog-meta-form";
 import BlogMetaPopup from "./blog-meta-popup";
-import { DialogTitle } from "@/components/ui/dialog";
 import { clsx } from "clsx";
 import { getHierarchicalIndexes, TableOfContents } from "@tiptap-pro/extension-table-of-contents";
 import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck } from "lucide-react";
@@ -104,7 +103,6 @@ const BlogEditor = ({ post }) => {
         )}
         {user && editable && (
           <BlogMetaPopup editor={editor}>
-            <DialogTitle>Edit meta infomation</DialogTitle>
             <BlogMetaForm content={JSON.stringify(editor.getJSON())} meta={post} />
           </BlogMetaPopup>
         )}

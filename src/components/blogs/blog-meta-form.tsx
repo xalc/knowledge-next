@@ -31,14 +31,8 @@ export const formSchema = z.object({
   author: z.string(),
   id: z.string().optional(),
 });
-// interface BlogMeta extends z.infer<typeof formSchema> {
 
-//   metadata: {
-//     tags: string[];
-//   };
-// }
-/* eslint-disable-next-line */
-export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
+export function BlogMetaForm({ content, meta }) {
   const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -80,14 +74,6 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
-        {/* 标题区域 */}
-        <div className="mb-6 border-b pb-4">
-          <h2 className="text-center text-2xl font-semibold">文章信息</h2>
-          <p className="mt-1 text-center text-sm text-muted-foreground">
-            填写文章的基本信息，让读者更容易发现它
-          </p>
-        </div>
-
         {/* 表单字段区域 */}
         <div className="grid gap-6">
           <FormField

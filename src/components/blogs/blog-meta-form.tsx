@@ -19,6 +19,7 @@ import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { X, Plus, Loader2 } from "lucide-react";
 
 export const formSchema = z.object({
   title: z.string().min(2, {
@@ -78,93 +79,155 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="mx-8 my-8 space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>title</FormLabel>
-              <FormControl>
-                <Input placeholder="article title" {...field} autoComplete="off" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input placeholder="the name shown on url" {...field} autoComplete="off" />
-              </FormControl>
-              <FormDescription>This is your public display name.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea rows={5} placeholder="Description" autoComplete="off" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormLabel>Article tags</FormLabel>
-        <div className="flex flex-wrap gap-4">
-          {fields.map((field, index) => (
-            <FormField
-              key={field.id}
-              name={`tags.${index}`}
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input placeholder="add tag" autoComplete="off" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => remove(index)}
-                  >
-                    delete
-                  </Button>
-                </FormItem>
-              )}
-            />
-          ))}
-          <Button type="button" onClick={() => append("")}>
-            Add tag
-          </Button>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
+        {/* 标题区域 */}
+        <div className="mb-6 border-b pb-4">
+          <h2 className="text-center text-2xl font-semibold">文章信息</h2>
+          <p className="mt-1 text-center text-sm text-muted-foreground">
+            填写文章的基本信息，让读者更容易发现它
+          </p>
         </div>
 
-        <FormField
-          control={form.control}
-          name="author"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author</FormLabel>
-              <FormControl>
-                <Input placeholder="ahthor" autoComplete="off" {...field} />
-              </FormControl>
+        {/* 表单字段区域 */}
+        <div className="grid gap-6">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">标题</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="请输入文章标题"
+                    {...field}
+                    className="h-11"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">{isPending ? "submiting..." : "submit"}</Button>
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">URL 别名</FormLabel>
+                <FormControl>
+                  <div className="flex items-center">
+                    <span className="mr-2 text-sm text-muted-foreground">/blogs/</span>
+                    <Input
+                      placeholder="article-url-name"
+                      {...field}
+                      className="h-11"
+                      autoComplete="off"
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription>这将作为文章的永久链接地址</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">描述</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={4}
+                    placeholder="简短描述文章的主要内容..."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* 标签区域 */}
+          <div className="space-y-4">
+            <FormLabel className="text-base font-medium">文章标签</FormLabel>
+            <div className="flex flex-wrap gap-3">
+              {fields.map((field, index) => (
+                <div key={field.id} className="flex items-center gap-2">
+                  <FormField
+                    name={`tags.${index}`}
+                    control={form.control}
+                    render={({ field }) => (
+                      <FormItem className="flex items-center space-x-2">
+                        <FormControl>
+                          <Input
+                            {...field}
+                            placeholder="标签名称"
+                            className="h-9 w-32"
+                            autoComplete="off"
+                          />
+                        </FormControl>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-9 w-9"
+                          onClick={() => remove(index)}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              ))}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-9"
+                onClick={() => append("")}
+              >
+                <Plus className="mr-1 h-4 w-4" />
+                添加标签
+              </Button>
+            </div>
+          </div>
+
+          <FormField
+            control={form.control}
+            name="author"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">作者</FormLabel>
+                <FormControl>
+                  <Input {...field} className="h-11" autoComplete="off" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        {/* 操作按钮区域 */}
+        <div className="mt-8 flex justify-end gap-4 border-t pt-6">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            重置
+          </Button>
+          <Button type="submit" disabled={isPending} className="min-w-[100px]">
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                保存中...
+              </>
+            ) : (
+              "保存"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

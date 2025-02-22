@@ -33,7 +33,8 @@ export const formSchema = z.object({
   id: z.string().optional(),
 });
 
-export function BlogMetaForm({ content, meta }) {
+/* eslint-disable-next-line */
+export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
   const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(formSchema),

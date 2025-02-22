@@ -78,7 +78,7 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="my-8 space-y-8">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="mx-8 my-8 space-y-8">
         <FormField
           control={form.control}
           name="title"
@@ -111,9 +111,9 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>description</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="Description" autoComplete="off" {...field} />
+                <Textarea rows={5} placeholder="Description" autoComplete="off" {...field} />
               </FormControl>
 
               <FormMessage />

@@ -1,6 +1,7 @@
 import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { CloudUpload } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
 export default function BlogMetaPopup({ children, editor }) {
   return (
     <Dialog>
@@ -11,7 +12,9 @@ export default function BlogMetaPopup({ children, editor }) {
         </Button>
       </DialogTrigger>
       <DialogContent>
-        <DialogHeader>{children}</DialogHeader>
+        <ScrollArea className="container mx-auto max-h-[80vh] w-full max-w-[720px]">
+          <DialogHeader>{children}</DialogHeader>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );

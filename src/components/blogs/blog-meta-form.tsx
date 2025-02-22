@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,7 +19,8 @@ import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
-import { X, Plus, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
+import { TagInput } from "./blog-tag-input";
 
 export const formSchema = z.object({
   title: z.string().min(2, {
@@ -45,10 +46,6 @@ export function BlogMetaForm({ content, meta }) {
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "tags",
-    control: form.control,
-  });
   const router = useRouter();
   const [isPending, setPending] = useState(false);
 
@@ -140,47 +137,18 @@ export function BlogMetaForm({ content, meta }) {
           {/* 标签区域 */}
           <div className="space-y-4">
             <FormLabel className="text-base font-medium">文章标签</FormLabel>
-            <div className="flex flex-wrap gap-3">
-              {fields.map((field, index) => (
-                <div key={field.id} className="flex items-center gap-2">
-                  <FormField
-                    name={`tags.${index}`}
-                    control={form.control}
-                    render={({ field }) => (
-                      <FormItem className="flex items-center space-x-2">
-                        <FormControl>
-                          <Input
-                            {...field}
-                            placeholder="标签名称"
-                            className="h-9 w-32"
-                            autoComplete="off"
-                          />
-                        </FormControl>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-9 w-9"
-                          onClick={() => remove(index)}
-                        >
-                          <X className="h-4 w-4" />
-                        </Button>
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              ))}
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                className="h-9"
-                onClick={() => append("")}
-              >
-                <Plus className="mr-1 h-4 w-4" />
-                添加标签
-              </Button>
-            </div>
+            <FormField
+              control={form.control}
+              name="tags"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <TagInput value={field.value} onChange={field.onChange} existingTags={[]} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <FormField

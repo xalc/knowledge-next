@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 
 import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 
-import { DialogTitle } from "@/components/ui/dialog";
 import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
@@ -69,7 +68,6 @@ const Tiptap = () => {
     <div className="lg: container mx-auto max-w-[1024px]">
       <div className="mx-12 mt-8 flex flex-wrap justify-end gap-4">
         <BlogMetaPopup editor={editor}>
-          <DialogTitle>Add meta infomation</DialogTitle>
           <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
         </BlogMetaPopup>
         <Button disabled={editor.isEmpty} onClick={reset}>

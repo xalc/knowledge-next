@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,6 +19,8 @@ import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
+import { TagInput } from "./blog-tag-input";
 
 export const formSchema = z.object({
   title: z.string().min(2, {
@@ -30,12 +32,7 @@ export const formSchema = z.object({
   author: z.string(),
   id: z.string().optional(),
 });
-// interface BlogMeta extends z.infer<typeof formSchema> {
 
-//   metadata: {
-//     tags: string[];
-//   };
-// }
 /* eslint-disable-next-line */
 export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
   const { toast } = useToast();
@@ -50,10 +47,6 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
     },
   });
 
-  const { fields, append, remove } = useFieldArray({
-    name: "tags",
-    control: form.control,
-  });
   const router = useRouter();
   const [isPending, setPending] = useState(false);
 
@@ -78,93 +71,117 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="my-8 space-y-8">
-        <FormField
-          control={form.control}
-          name="title"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>title</FormLabel>
-              <FormControl>
-                <Input placeholder="article title" {...field} autoComplete="off" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="slug"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Slug</FormLabel>
-              <FormControl>
-                <Input placeholder="the name shown on url" {...field} autoComplete="off" />
-              </FormControl>
-              <FormDescription>This is your public display name.</FormDescription>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Description" autoComplete="off" {...field} />
-              </FormControl>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 p-6">
+        {/* 表单字段区域 */}
+        <div className="grid gap-6">
+          <FormField
+            control={form.control}
+            name="title"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">标题</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="请输入文章标题"
+                    {...field}
+                    className="h-11"
+                    autoComplete="off"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormLabel>Article tags</FormLabel>
-        <div className="flex flex-wrap gap-4">
-          {fields.map((field, index) => (
+          <FormField
+            control={form.control}
+            name="slug"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">URL 别名</FormLabel>
+                <FormControl>
+                  <div className="flex items-center">
+                    <span className="mr-2 text-sm text-muted-foreground">/blogs/</span>
+                    <Input
+                      placeholder="article-url-name"
+                      {...field}
+                      className="h-11"
+                      autoComplete="off"
+                    />
+                  </div>
+                </FormControl>
+                <FormDescription>这将作为文章的永久链接地址</FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="description"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">描述</FormLabel>
+                <FormControl>
+                  <Textarea
+                    rows={4}
+                    placeholder="简短描述文章的主要内容..."
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="space-y-4">
+            <FormLabel className="text-base font-medium">文章标签</FormLabel>
             <FormField
-              key={field.id}
-              name={`tags.${index}`}
               control={form.control}
+              name="tags"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Input placeholder="add tag" autoComplete="off" {...field} />
+                    <TagInput value={field.value} onChange={field.onChange} />
                   </FormControl>
                   <FormMessage />
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => remove(index)}
-                  >
-                    delete
-                  </Button>
                 </FormItem>
               )}
             />
-          ))}
-          <Button type="button" onClick={() => append("")}>
-            Add tag
-          </Button>
+          </div>
+
+          <FormField
+            control={form.control}
+            name="author"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-base font-medium">作者</FormLabel>
+                <FormControl>
+                  <Input {...field} className="h-11" autoComplete="off" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
-        <FormField
-          control={form.control}
-          name="author"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Author</FormLabel>
-              <FormControl>
-                <Input placeholder="ahthor" autoComplete="off" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">{isPending ? "submiting..." : "submit"}</Button>
+        {/* 操作按钮区域 */}
+        <div className="mt-8 flex justify-end gap-4 border-t pt-6">
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            重置
+          </Button>
+          <Button type="submit" disabled={isPending} className="min-w-[100px]">
+            {isPending ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                保存中...
+              </>
+            ) : (
+              "保存"
+            )}
+          </Button>
+        </div>
       </form>
     </Form>
   );

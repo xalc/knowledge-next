@@ -108,7 +108,7 @@ export const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.6, duration: 0.8 }}
               >
-                {["React", "AI", "Next.js", "TypeScript", "LLM"].map(skill => (
+                {["React", "Next.js", "Shadcn", "AI", "LLM"].map(skill => (
                   <Badge
                     key={skill}
                     variant="secondary"

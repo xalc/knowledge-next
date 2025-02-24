@@ -4,7 +4,7 @@
 
 [Styles](Front%20end%20developer/Styles.md)
 
-[NextJS and antd](Front%20end%20developer/NextJS%20and%20antd.md)
+[NextJS](Front%20end%20developer/NextJS.md)
 
 [Https](Front%20end%20developer/Https.md)
 

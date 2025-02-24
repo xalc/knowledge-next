@@ -8,14 +8,4 @@ os.getcwd()
 os.listdir('.')
 ```
 
-## 创建venv 以及venv命令
-
-```bash
-python -m venv .venv
-
-source .venv/bin/activate
-
-which python
-
-deactivate
-```
+[python虚拟环境](Python/python%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83.md)

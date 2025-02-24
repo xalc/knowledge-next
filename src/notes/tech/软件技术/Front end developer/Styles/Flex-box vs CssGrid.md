@@ -51,6 +51,12 @@ complex design/ has GAP between block / overlap element/ layout-first
 > [https://blog.logrocket.com/css-flexbox-vs-css-grid/](https://blog.logrocket.com/css-flexbox-vs-css-grid/)
 > 
 
+align-content 和align-items的区别
+
+align-items控制每个子元素在交叉轴上的对齐方式
+
+aligin-content控制多行之间的对其方式适用于行（对单行不生效）
+
 ## Conclusion
 
 flex-box是一维的。只需要行或者列，更多应用于对内容的对齐

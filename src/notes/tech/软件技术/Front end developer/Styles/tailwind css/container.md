@@ -1,13 +1,13 @@
 # container
 
-| **Class** | **Breakpoint** | **Properties** |
-| --- | --- | --- |
-| **container** | *None* | width: 100%; |
-|  | sm *(640px)* | max-width: 640px; |
-|  | md *(768px)* | max-width: 768px; |
-|  | lg *(1024px)* | max-width: 1024px; |
-|  | xl *(1280px)* | max-width: 1280px; |
-|  | 2xl *(1536px)* | max-width: 1536px; |
+| **Class** | **Breakpoint** | **Properties** |  |  |  |
+| --- | --- | --- | --- | --- | --- |
+| **container** | *None* | width: 100%; |  |  |  |
+|  | sm *(640px)* | max-width: 640px; |  |  |  |
+|  | md *(768px)* | max-width: 768px; |  |  |  |
+|  | lg *(1024px)* | max-width: 1024px; |  |  |  |
+|  | xl *(1280px)* | max-width: 1280px; |  |  |  |
+|  | 2xl *(1536px)* | max-width: 1536px; |  |  |  |
 
 不知为何，看起来很简单直观，但是理解起来老是和预期的结果不一致，可能思维习惯不同？
 

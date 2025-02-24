@@ -30,3 +30,9 @@ cva基于clsx的的组件样式变体管理库。
 前者将元素从渲染树中完全移除 不占用空间并触发重拍和重绘
 
 后者顾名思义只是隐藏会保留其空间
+
+## 设置子元素滚动到固定位置
+
+在container上使用**scroll-snap-type为 mandatory** ||  proximity
+
+在子元素中设置具体的滚动位置如 start end, center

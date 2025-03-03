@@ -86,7 +86,7 @@ export const HeroSection = () => {
             </motion.div>
             <div className="space-y-4">
               <motion.h1
-                className="bg-gradient-to-r from-primary to-primary/50 bg-clip-text text-4xl font-bold tracking-tighter text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
+                className="bg-gradient-to-r from-primary via-primary/80 to-primary/50 bg-clip-text text-4xl font-bold tracking-tighter text-transparent sm:text-5xl md:text-6xl lg:text-7xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
@@ -95,7 +95,7 @@ export const HeroSection = () => {
               </motion.h1>
 
               <motion.p
-                className="mx-auto max-w-[700px] text-lg text-muted-foreground sm:text-xl md:text-2xl"
+                className="mx-auto max-w-[700px] text-lg font-medium text-muted-foreground/90 sm:text-xl md:text-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}

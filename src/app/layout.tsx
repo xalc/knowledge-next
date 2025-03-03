@@ -21,7 +21,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang="en" suppressHydrationWarning>
       <link rel="manifest" href="/manifest.json" />
-      <meta name="apple-mobile-web-app-capable" content="yes" />
+      <meta name="mobile-web-app-capable" content="yes"></meta>
       <meta name="apple-mobile-web-app-title" content="blog"></meta>
       <link rel="apple-touch-icon" href="/favor/apple-touch-icon.png" />
       <body>

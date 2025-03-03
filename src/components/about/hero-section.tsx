@@ -5,6 +5,7 @@ import { Badge } from "../ui/badge";
 import { motion } from "motion/react";
 import { useEffect, useState, useRef } from "react";
 import { useTransform, useScroll } from "motion/react";
+import GreetingMessage from "./greeting-card";
 function useMousePosition() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -120,6 +121,7 @@ export const HeroSection = () => {
               </motion.div>
             </div>
           </motion.div>
+          <GreetingMessage />
         </div>
       </motion.section>
     </div>

@@ -34,7 +34,9 @@ export function SignupForm() {
               </ul>
             </div>
           )}
-          <button type="submit">{pending ? "pending" : "sigh up"}</button>
+          <button disabled type="submit">
+            {pending ? "pending" : "sigh up"}
+          </button>
           {state?.message && <p>{state.message}</p>}
         </form>
       </CardContent>

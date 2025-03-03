@@ -54,15 +54,15 @@ export default function GreetingMessage() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.8 }}
-      className="relative mx-auto mt-8 max-w-3xl rounded-xl border border-primary/10 bg-gradient-to-r from-primary/10 via-background to-primary/10 p-6 shadow-lg backdrop-blur-sm dark:from-primary/20 dark:to-primary/20"
+      transition={{ duration: 0.8, delay: 0.6 }}
+      className="relative mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-primary/10 p-8 shadow-xl backdrop-blur-sm dark:from-primary/20 dark:via-background/60 dark:to-primary/20"
     >
       <Button
         onClick={handleRegenerate}
         disabled={isGenerating}
         variant="ghost"
         size="icon"
-        className={`} absolute right-4 top-4 z-10 p-2 hover:bg-primary/20`}
+        className={`absolute right-4 top-4 z-10 p-2 transition-all duration-300 hover:bg-primary/20`}
       >
         <RotateCw className={`${isGenerating ? "animate-spin" : ""}`} />
       </Button>
@@ -73,7 +73,7 @@ export default function GreetingMessage() {
         transition={{ duration: 1, delay: 0.2 }}
         className="relative"
       >
-        <p className="greeting-text whitespace-pre-line text-xl font-normal leading-relaxed tracking-wide text-foreground md:text-2xl lg:text-3xl">
+        <p className="greeting-text whitespace-pre-line text-xl font-normal leading-relaxed tracking-wide text-foreground/90 md:text-2xl lg:text-3xl">
           {displayedText}
           <span
             className={`${cursorVisible ? "opacity-100" : "opacity-0"} transition-opacity duration-100`}

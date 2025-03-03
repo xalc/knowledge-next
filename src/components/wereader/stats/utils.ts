@@ -52,19 +52,19 @@ export const groupDataByMonth = (year: number) => {
 export const getGithubBGcolorClassName = (level: number) => {
   switch (level) {
     case 0:
-      return "bg-muted";
+      return "bg-muted dark:bg-zinc-800";
     case 1:
-      return "bg-green-300";
+      return "bg-green-100 dark:bg-green-800/40";
     case 2:
-      return "bg-green-500";
+      return "bg-green-300 dark:bg-green-600/60";
     case 3:
-      return "bg-green-700";
+      return "bg-green-500 dark:bg-green-500/80";
     case 4:
-      return "bg-green-800";
+      return "bg-green-700 dark:bg-green-400";
     case 5:
-      return "bg-green-900";
+      return "bg-green-900 dark:bg-green-300";
     default:
-      return "bg-muted";
+      return "bg-muted dark:bg-zinc-800";
   }
 };
 export const getPrimaryBGcolorClassName = (level: number) => {
@@ -107,10 +107,9 @@ export const getReadingText = (level: number) => {
 
 export const getGridCellClasses = (level: number) => {
   return clsx(
-    getPrimaryBGcolorClassName(level),
-    "rounded-sm",
+    getGithubBGcolorClassName(level),
     "transition-all duration-200",
-    "hover:ring-2 hover:ring-primary hover:ring-offset-1 hover:ring-offset-background",
+    "hover:ring-2  hover:ring-offset-1 hover:ring-offset-background",
     "border border-border/50",
   );
 };

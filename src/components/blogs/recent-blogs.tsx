@@ -1,9 +1,8 @@
 import { Card, CardContent, CardTitle, CardHeader, CardDescription } from "../ui/card";
-
 import { getRecentPosts } from "@/lib/blogs/blogs";
 import BlogItem from "./blog-item";
-import { Button } from "../ui/button";
-import Link from "next/link";
+import { MotionButton } from "../ui/motion-button";
+import { Rss } from "lucide-react";
 
 export default async function RecentPosts() {
   const posts = await getRecentPosts();
@@ -13,13 +12,13 @@ export default async function RecentPosts() {
         <CardHeader>
           <div className="flex justify-between">
             <div>
-              <CardTitle>最新思考</CardTitle>
+              <CardTitle className="flex items-center gap-2">最新思考</CardTitle>
               <CardDescription>分享技术见解，探讨开发心得</CardDescription>
             </div>
 
-            <Button variant="outline" asChild>
-              <Link href="/blogs">查看更多</Link>
-            </Button>
+            <MotionButton href="/blogs" icon={<Rss className="h-5 w-5" />}>
+              查看全部文章
+            </MotionButton>
           </div>
         </CardHeader>
         <CardContent>

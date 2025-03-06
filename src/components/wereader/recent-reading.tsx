@@ -2,8 +2,8 @@ import { Card, CardContent, CardTitle, CardHeader } from "../ui/card";
 
 import { getRecentBooks } from "@/lib/wereader/wr-db";
 
-import { Button } from "../ui/button";
-import Link from "next/link";
+import { MotionButton } from "../ui/motion-button";
+import { BookOpen } from "lucide-react";
 import BookItem from "./book-list-item";
 
 export default async function RecentReadingBooks() {
@@ -14,9 +14,9 @@ export default async function RecentReadingBooks() {
         <CardHeader>
           <div className="flex justify-between">
             <CardTitle>最近在读的书</CardTitle>
-            <Button variant="outline" asChild>
-              <Link href="/reading">查看更多</Link>
-            </Button>
+            <MotionButton href="/reading" icon={<BookOpen className="mr-2 h-4 w-4" />}>
+              查看更多
+            </MotionButton>
           </div>
         </CardHeader>
         <CardContent>

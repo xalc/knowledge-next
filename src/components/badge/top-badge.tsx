@@ -1,8 +1,7 @@
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { BadgeCard } from "./badge-card";
-
-import Link from "next/link";
+import { MotionButton } from "@/components/ui/motion-button";
+import { Trophy } from "lucide-react";
 import { getCredly } from "@/lib/credly";
 
 export default async function TopBadge() {
@@ -17,9 +16,9 @@ export default async function TopBadge() {
               <CardTitle className="text-2xl">技能认证</CardTitle>
               <CardDescription>获得的专业技能认证和徽章</CardDescription>
             </div>
-            <Button variant="outline" asChild>
-              <Link href="/badges">查看更多</Link>
-            </Button>
+            <MotionButton href="/badges" icon={<Trophy className="h-5 w-5" />}>
+              查看更多
+            </MotionButton>
           </div>
         </CardHeader>
         <CardContent>

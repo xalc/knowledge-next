@@ -37,6 +37,10 @@ const ROUTES = [
     href: "/utils",
     label: "工具箱",
   },
+  {
+    href: "/utils/timeline",
+    label: "3D 时间轴",
+  },
 ];
 const LinkButton = ({ href, children, ...props }) => {
   return (

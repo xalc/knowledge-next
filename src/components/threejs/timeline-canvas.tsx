@@ -29,6 +29,27 @@ export default function TimelineCanvas() {
   const [hoveredEvent, setHoveredEvent] = useState<TimelineEvent | null>(null);
   const [isVerticalLayout, setIsVerticalLayout] = useState<boolean>(false);
 
+  // 检测设备屏幕宽度，设置初始布局方向
+  useEffect(() => {
+    const checkScreenSize = () => {
+      // 移动端默认竖屏显示，桌面端默认横屏显示
+      // 使用768px作为移动设备和桌面设备的分界点
+      const isMobile = window.innerWidth < 768;
+      setIsVerticalLayout(isMobile);
+    };
+
+    // 组件挂载时检测屏幕宽度
+    checkScreenSize();
+
+    // 添加窗口大小变化的监听器
+    window.addEventListener("resize", checkScreenSize);
+
+    // 组件卸载时清理监听器
+    return () => {
+      window.removeEventListener("resize", checkScreenSize);
+    };
+  }, []);
+
   const handleReset = () => {
     if (cameraRef.current && controlsRef.current) {
       // 重置相机位置
@@ -48,7 +69,7 @@ export default function TimelineCanvas() {
       // 恢复所有标签的显示状态
       const labels = document.querySelectorAll(".timeline-label");
       labels.forEach(label => {
-        (label as HTMLElement).style.opacity = "1";
+        (label as HTMLElement).style.visibility = "visible";
       });
 
       // 重置鼠标样式
@@ -57,91 +78,7 @@ export default function TimelineCanvas() {
   };
 
   const toggleLayout = () => {
-    // 移除所有标签元素
-    const labels = document.querySelectorAll(".timeline-label");
-    labels.forEach(label => {
-      if (label.parentNode) {
-        label.parentNode.removeChild(label);
-      }
-    });
-
-    // 移除所有事件详情弹窗
-    const dialogs = document.querySelectorAll(".event-detail-dialog");
-    dialogs.forEach(dialog => {
-      if (dialog.parentNode) {
-        dialog.parentNode.removeChild(dialog);
-      }
-    });
-
-    // 移除CSS2D渲染器的DOM元素并重新创建
-    if (labelRendererRef.current) {
-      const parent = canvasRef.current?.parentElement;
-      if (parent && parent.contains(labelRendererRef.current.domElement)) {
-        parent.removeChild(labelRendererRef.current.domElement);
-      }
-      // 销毁渲染器
-      labelRendererRef.current.domElement.remove();
-      labelRendererRef.current = null;
-    }
-
-    // 确保所有标签元素都被移除，使用更彻底的方法
-    document.querySelectorAll(".CSS2DObject").forEach(element => {
-      if (element.parentNode) {
-        element.parentNode.removeChild(element);
-      }
-    });
-
-    // 清除所有可能的CSS2D相关元素
-    document.querySelectorAll('div[style*="transform"]').forEach(element => {
-      if (
-        element.classList.contains("timeline-label") ||
-        element.parentElement?.classList.contains("CSS2DObject") ||
-        element.style.position === "absolute"
-      ) {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      }
-    });
-
-    // 强制清除所有绝对定位的元素，这些可能是CSS2DRenderer创建的
-    document
-      .querySelectorAll('div[style*="position: absolute"][style*="pointer-events: none"]')
-      .forEach(element => {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      });
-
-    // 查找并移除所有可能的CSS2D相关容器
-    document.querySelectorAll("div").forEach(element => {
-      if (
-        element.childElementCount === 0 &&
-        (element.style.position === "absolute" ||
-          element.style.transform.includes("translate") ||
-          element.style.pointerEvents === "none")
-      ) {
-        if (element.parentNode) {
-          element.parentNode.removeChild(element);
-        }
-      }
-    });
-
-    // 移除body下所有可能的残留CSS2D容器
-    Array.from(document.body.children).forEach(element => {
-      if (
-        element instanceof HTMLDivElement &&
-        !element.id &&
-        element.className === "" &&
-        element.style.position === "absolute"
-      ) {
-        document.body.removeChild(element);
-      }
-    });
-
-    // 重置悬停状态
-    setHoveredEvent(null);
-
+    // 手动切换布局方向
     setIsVerticalLayout(!isVerticalLayout);
   };
 
@@ -215,7 +152,12 @@ export default function TimelineCanvas() {
     // 计算每个事件的实际时间位置，用于后续曲线点的分布
     const eventTimePositions = timelineEvents.map(event => {
       const eventDate = new Date(event.time);
-      return (eventDate.getTime() - startDate.getTime()) / timeRange;
+      // 在垂直布局时，反转时间位置，使最新的事件（时间较大的）显示在底部
+      if (isVerticalLayout) {
+        return 1 - (eventDate.getTime() - startDate.getTime()) / timeRange;
+      } else {
+        return (eventDate.getTime() - startDate.getTime()) / timeRange;
+      }
     });
 
     for (let i = 0; i <= segmentCount; i++) {
@@ -346,7 +288,20 @@ export default function TimelineCanvas() {
 
       // 只显示标题，点击时显示详细信息
       if (shouldShowLabel) {
-        labelDiv.innerHTML = `<div>${event.title}</div>`;
+        // 格式化日期显示
+        const eventDate = new Date(event.time);
+        const formattedDate = eventDate.toLocaleDateString("zh-CN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
+
+        labelDiv.innerHTML = `
+                    <div style="font-weight: bold;">${event.title}</div>
+                    <div style="font-size: 10px; margin-top: 2px; color: ${isDarkTheme ? "#a1a1aa" : "#71717a"};">${formattedDate}</div>
+                `;
+        // 增加一点padding以适应更多内容
+        labelDiv.style.padding = "6px 8px";
       } else {
         // 对于较小的事件或者密集区域的事件，只显示一个小点标记
         labelDiv.innerHTML = `<div style="width: 6px; height: 6px; background-color: ${event.color}; border-radius: 50%; margin: 0 auto;"></div>`;
@@ -400,14 +355,9 @@ export default function TimelineCanvas() {
       eventLabel.position.copy(curvePoint);
       // 将标签位置调整，避免与球体重叠，并根据索引交错显示
       eventLabel.position.y += yOffset;
-      if (eventLabels[index]) {
-        scene.remove(eventLabels[index]);
-        scene.add(eventLabel);
-        eventLabels[index] = eventLabel;
-      } else {
-        scene.add(eventLabel);
-        eventLabels.push(eventLabel);
-      }
+
+      scene.add(eventLabel);
+      eventLabels.push(eventLabel);
 
       // 延迟显示标签，创建淡入效果
       setTimeout(() => {
@@ -527,7 +477,7 @@ export default function TimelineCanvas() {
         setHoveredEvent(null);
         // 清除所有标签的显示
         eventLabels.forEach(label => {
-          (label.element as HTMLDivElement).style.opacity = "0";
+          (label.element as HTMLDivElement).style.visibility = "hidden";
         });
 
         // 更新当前焦点索引
@@ -553,7 +503,7 @@ export default function TimelineCanvas() {
           // 只显示当前焦点的标签
           const label = eventLabels[currentFocusIndex];
           if (label) {
-            (label.element as HTMLDivElement).style.opacity = "1";
+            (label.element as HTMLDivElement).style.visibility = "visible";
           }
 
           // 移动相机到小球位置
@@ -652,7 +602,7 @@ export default function TimelineCanvas() {
 
           // 清除所有标签的显示
           eventLabels.forEach(label => {
-            (label.element as HTMLDivElement).style.opacity = "0";
+            (label.element as HTMLDivElement).style.visibility = "hidden";
           });
 
           // 找到点击的球体索引并更新当前焦点
@@ -663,7 +613,7 @@ export default function TimelineCanvas() {
             // 只显示当前焦点的标签
             const label = eventLabels[currentFocusIndex];
             if (label) {
-              (label.element as HTMLDivElement).style.opacity = "1";
+              (label.element as HTMLDivElement).style.visibility = "visible";
             }
           }
 
@@ -771,70 +721,6 @@ export default function TimelineCanvas() {
     const easeInOutCubic = (t: number): number => {
       return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
     };
-
-    // 显示事件详细信息弹窗
-    // const showEventDetailDialog = (event: TimelineEvent) => {
-    //     const dialogRoot = document.createElement('div');
-    //     dialogRoot.className = 'event-detail-dialog';
-    //     dialogRoot.innerHTML = `
-    //         <div class="fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0">
-    //             <div class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg rounded-lg animate-in zoom-in-95">
-    //                 <div class="absolute right-4 top-4">
-    //                     <button class="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none">
-    //                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-    //                     </button>
-    //                 </div>
-    //                 <div class="flex flex-col space-y-1.5 text-center sm:text-left">
-    //                     <h3 class="text-lg font-semibold leading-none tracking-tight">${event.title}</h3>
-    //                     <p class="text-sm text-muted-foreground">${event.time}</p>
-    //                 </div>
-    //                 <div class="p-1 rounded-md" style="border-left: 4px solid ${event.color}; background-color: ${event.color}10;">
-    //                     <p>${event.description}</p>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //     `;
-
-    //     document.body.appendChild(dialogRoot);
-
-    //     // 添加关闭按钮事件
-    //     const closeButton = dialogRoot.querySelector('button');
-    //     if (closeButton) {
-    //         closeButton.addEventListener('click', () => {
-    //             // 添加淡出动画
-    //             const dialog = dialogRoot.querySelector('.fixed.left-\\[50\\%\\]');
-    //             if (dialog) {
-    //                 dialog.classList.remove('zoom-in-95');
-    //                 dialog.classList.add('zoom-out-95');
-    //             }
-
-    //             // 延迟移除元素，等待动画完成
-    //             setTimeout(() => {
-    //                 document.body.removeChild(dialogRoot);
-    //             }, 200);
-    //         });
-    //     }
-
-    //     // 点击背景关闭对话框
-    //     const overlay = dialogRoot.querySelector('.fixed.inset-0');
-    //     if (overlay) {
-    //         overlay.addEventListener('click', (e) => {
-    //             if (e.target === overlay) {
-    //                 // 添加淡出动画
-    //                 const dialog = dialogRoot.querySelector('.fixed.left-\\[50\\%\\]');
-    //                 if (dialog) {
-    //                     dialog.classList.remove('zoom-in-95');
-    //                     dialog.classList.add('zoom-out-95');
-    //                 }
-
-    //                 // 延迟移除元素，等待动画完成
-    //                 setTimeout(() => {
-    //                     document.body.removeChild(dialogRoot);
-    //                 }, 200);
-    //             }
-    //         });
-    //     }
-    // };
 
     window.addEventListener("click", handleMouseClick);
 
@@ -975,14 +861,14 @@ export default function TimelineCanvas() {
       if (labelRendererRef.current) {
         canvasRef.current?.parentElement?.removeChild(labelRendererRef.current.domElement);
       }
-
+      scene.clear();
       // 移除所有可能存在的事件详情弹窗
       const dialogs = document.querySelectorAll(".event-detail-dialog");
       dialogs.forEach(dialog => {
         document.body.removeChild(dialog);
       });
     };
-  }, [theme, isVerticalLayout]); // 添加theme和isVerticalLayout作为依赖，当主题或布局变化时重新渲染
+  }, [isDarkTheme, isVerticalLayout]); // 添加theme和isVerticalLayout作为依赖，当主题或布局变化时重新渲染
 
   return (
     <div className="relative h-full w-full">

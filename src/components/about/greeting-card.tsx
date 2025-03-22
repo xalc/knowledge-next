@@ -55,17 +55,20 @@ export default function GreetingMessage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.6 }}
-      className="relative mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-primary/10 p-8 shadow-xl backdrop-blur-sm dark:from-primary/20 dark:via-background/60 dark:to-primary/20"
+      className="relative mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-primary/10 p-8 pt-1 shadow-xl backdrop-blur-sm dark:from-primary/20 dark:via-background/60 dark:to-primary/20"
     >
-      <Button
-        onClick={handleRegenerate}
-        disabled={isGenerating}
-        variant="ghost"
-        size="icon"
-        className={`absolute right-4 top-4 z-10 p-2 transition-all duration-300 hover:bg-primary/20`}
-      >
-        <RotateCw className={`${isGenerating ? "animate-spin" : ""}`} />
-      </Button>
+      <div className="flex flex-nowrap items-center justify-end gap-2">
+        <span className="py-1 text-xs font-bold text-foreground/70">由 Qwen生成</span>
+        <Button
+          onClick={handleRegenerate}
+          disabled={isGenerating}
+          variant="ghost"
+          size="icon"
+          className="z-10 transition-all duration-300 hover:bg-primary/10"
+        >
+          <RotateCw className={`${isGenerating ? "animate-spin" : ""}`} />
+        </Button>
+      </div>
 
       <motion.div
         initial={{ y: 20 }}

@@ -96,6 +96,7 @@
     "server-only": "^0.0.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
+    "three": "^0.174.0",
     "tippy.js": "^6.3.7",
     "tough-cookie": "^5.0.0",
     "use-debounce": "^10.0.4",

@@ -19,11 +19,7 @@ const ROUTES = [
     href: "/blogs",
     label: "博客",
   },
-  {
-    href: "/blogs/new",
-    label: "写博客",
-    hideWhenMobile: true,
-  },
+
   {
     href: "/reading",
     label: "读书",
@@ -63,7 +59,7 @@ export default function Header() {
             hideWhenDetached
             className="mt-2 flex w-screen flex-col gap-2 rounded-md shadow-lg"
           >
-            {ROUTES.filter(r => r.hideWhenMobile !== true).map((route, index) => (
+            {ROUTES.map((route, index) => (
               <LinkButton
                 href={route.href}
                 key={`route_${index}`}

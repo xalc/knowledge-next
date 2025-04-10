@@ -92,17 +92,17 @@ export const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
-                智能前端 - 与AI同行
+                AI 驱动的全栈开发
               </motion.h1>
 
-              <motion.p
+              {/* <motion.p
                 className="mx-auto max-w-[700px] text-lg font-medium text-muted-foreground/90 sm:text-xl md:text-2xl"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4, duration: 0.8 }}
               >
                 AI 驱动的全栈开发者 & 个人成长的分享者
-              </motion.p>
+              </motion.p> */}
 
               <motion.div
                 className="flex flex-wrap justify-center gap-2"

@@ -83,3 +83,14 @@ model WRBookShelt {
   readProgress          Json? 
   @@map("WR_book_shelt")
 }
+
+model Timeline {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  time        String
+  title       String
+  description String
+  color       String
+  size        Float
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

@@ -3,12 +3,12 @@ import { HeroSection } from "@/components/about/hero-section";
 import TopBadge from "@/components/badge/top-badge";
 import RecentPosts from "@/components/blogs/recent-blogs";
 import RecentReadingBooks from "@/components/wereader/recent-reading";
-import SmallHeader from "@/components/header/small-header";
+import Header from "@/components/header/header";
 export default function RootPage() {
   return (
     <>
       <HeroSection />
-      <SmallHeader />
+      <Header />
       <ContentCard />
       <RecentPosts />
       <RecentReadingBooks />

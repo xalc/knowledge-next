@@ -5,13 +5,12 @@ import * as THREE from "three";
 import { useTheme } from "next-themes";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { CSS2DRenderer, CSS2DObject } from "three/addons/renderers/CSS2DRenderer.js";
-import timelineData from "@/mockup/timeline.json";
 import { Button } from "@/components/ui/button";
 import { RotateCw, AlignStartHorizontal, AlignStartVertical } from "lucide-react";
 
 // 定义时间线事件类型
 interface TimelineEvent {
-  id: number;
+  id: string | number;
   time: string;
   title: string;
   description: string;
@@ -19,7 +18,11 @@ interface TimelineEvent {
   size: number;
 }
 
-export default function TimelineCanvas() {
+interface TimelineCanvasProps {
+  timelineEvents: TimelineEvent[];
+}
+
+export default function TimelineCanvas({ timelineEvents }: TimelineCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const labelRendererRef = useRef<CSS2DRenderer | null>(null);
   const controlsRef = useRef<OrbitControls | null>(null);
@@ -134,8 +137,7 @@ export default function TimelineCanvas() {
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    // 解析时间线数据，提前获取以便计算时间间隔
-    const timelineEvents = timelineData as TimelineEvent[];
+    // 使用传入的时间线数据，提前获取以便计算时间间隔
 
     // 计算时间范围
     const startDate = new Date(timelineEvents[0].time);

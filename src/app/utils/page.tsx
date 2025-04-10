@@ -64,6 +64,23 @@ const NAVIGATION_ITEMS = [
     pattern: "radial-gradient(circle at 100% 100%, rgba(239, 68, 68, 0.08) 0%, transparent 50%)",
   },
   {
+    title: "写博客",
+    description: "快速创建一篇新的博客文章",
+    icon: FileText,
+    href: "/blogs/new",
+    color: "text-indigo-500 dark:text-indigo-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(99, 102, 241, 0.08) 0%, transparent 50%)",
+    hideWhenMobile: true,
+  },
+  {
+    title: "3D 时间轴",
+    description: "探索时间轴的3D可视化效果",
+    icon: CalendarIcon,
+    href: "/utils/timeline",
+    color: "text-cyan-500 dark:text-cyan-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.08) 0%, transparent 50%)",
+  },
+  {
     title: "AdminDashBoard",
     description: "后台数据(private)",
     icon: Lock,

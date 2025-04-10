@@ -19,11 +19,7 @@ const ROUTES = [
     href: "/blogs",
     label: "博客",
   },
-  {
-    href: "/blogs/new",
-    label: "写博客",
-    hideWhenMobile: true,
-  },
+
   {
     href: "/reading",
     label: "读书",
@@ -36,10 +32,6 @@ const ROUTES = [
   {
     href: "/utils",
     label: "工具箱",
-  },
-  {
-    href: "/utils/timeline",
-    label: "3D 时间轴",
   },
 ];
 const LinkButton = ({ href, children, ...props }) => {

@@ -59,7 +59,7 @@ export default function Header() {
             hideWhenDetached
             className="mt-2 flex w-screen flex-col gap-2 rounded-md shadow-lg"
           >
-            {ROUTES.filter(r => r.hideWhenMobile !== true).map((route, index) => (
+            {ROUTES.map((route, index) => (
               <LinkButton
                 href={route.href}
                 key={`route_${index}`}

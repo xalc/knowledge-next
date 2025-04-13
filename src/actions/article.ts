@@ -20,7 +20,7 @@ export async function saveArticleAction(
       message: "Unauthorized",
     };
   }
-  const { title, description, slug, tags, author, contentId, id } = JSON.parse(metadata);
+  const { title, description, slug, tags, author, contentId, id, cover } = JSON.parse(metadata);
   const existSlug = await prisma.post.findUnique({
     where: {
       slug: slug,
@@ -45,6 +45,7 @@ export async function saveArticleAction(
           slug: slug,
           title: title,
           description: description,
+          cover: cover,
           metadata: {
             date: "2024-12-27",
             tags: tags,
@@ -85,6 +86,7 @@ export async function saveArticleAction(
         slug: slug,
         title: title,
         description: description,
+        cover: cover,
         metadata: {
           date: "2024-12-27",
           tags: tags,

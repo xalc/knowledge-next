@@ -9,7 +9,7 @@ import { usePathname } from "next/navigation";
 import UserProfile from "./profile";
 import { useState } from "react";
 import { HeaderLogo } from "./header-logo";
-
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
 const ROUTES = [
   {
     href: "/",
@@ -45,9 +45,24 @@ const LinkButton = ({ href, children, ...props }) => {
 };
 export default function Header() {
   const [open, setOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const { scrollY } = useScroll();
   const pathname = usePathname();
+
+  useMotionValueEvent(scrollY, "change", latest => {
+    setIsScrolled(latest > 0);
+  });
+
   return (
-    <header className="sticky top-0 z-50 flex basis-12 items-center justify-between border bg-background/95 px-4 shadow-xl">
+    <motion.header
+      className={cn(
+        "sticky top-0 z-50 flex w-full basis-16 items-center justify-between border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+        isScrolled ? "border-border shadow-sm" : "border-transparent",
+      )}
+      initial={{ y: 0, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
       <div className="md:hidden">
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
@@ -91,6 +106,6 @@ export default function Header() {
         <ModeToggle />
         <UserProfile />
       </div>
-    </header>
+    </motion.header>
   );
 }

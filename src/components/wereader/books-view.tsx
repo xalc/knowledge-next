@@ -28,7 +28,7 @@ export default function BooksView({ books }) {
     });
 
   return (
-    <div className="space-y-6">
+    <div className="mb-12 space-y-6">
       <BooksSelector filter={filter} sort={sort} setFilter={setFilter} setSort={setSort} />
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
         <Tabs value={view} onValueChange={v => setView(v as "grid" | "list")}>

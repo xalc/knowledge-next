@@ -5,6 +5,7 @@ import { Link } from "./ui/link";
 
 import { RouteTransition } from "@/components/transition/route-transition";
 import { ProgressTranstion } from "./transition/progress-transition";
+import SmallHeader from "./header/small-header";
 export default function UILayout({ children }) {
   const pathname = usePathname();
   const landingPage = pathname === "/";
@@ -16,7 +17,20 @@ export default function UILayout({ children }) {
           name="google-site-verification"
           content="_lv6oskWRfi00Z3rjMkNWOr9jHofZIU71abSExDAeUs"
         />
-        <ProgressTranstion>{children}</ProgressTranstion>
+        <div className="flex min-h-screen flex-col">
+          <SmallHeader />
+
+          <main className="w-auto flex-1">
+            <ProgressTranstion>{children}</ProgressTranstion>
+          </main>
+
+          <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
+            <p>
+              <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+            </p>
+            {/* <PWA /> */}
+          </footer>
+        </div>
       </>
     );
   }
@@ -28,7 +42,7 @@ export default function UILayout({ children }) {
         <RouteTransition>{children}</RouteTransition>
       </main>
 
-      <footer className="flex w-full shrink-0 basis-12 items-center justify-center border shadow-xl">
+      <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
         <p>
           <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
         </p>

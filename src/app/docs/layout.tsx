@@ -7,7 +7,7 @@ export default async function DocLayout({ children }: { children: React.ReactNod
   const tree = getDocTree();
 
   return (
-    <div className="top-12">
+    <div className="border-t border-border shadow-sm md:max-h-[calc(100vh_-_132px)]">
       <div className="hidden md:block">
         <ResizablePanelGroup direction="horizontal">
           <ResizablePanel defaultSize={20} minSize={15} maxSize={40}>

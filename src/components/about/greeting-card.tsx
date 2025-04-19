@@ -55,7 +55,8 @@ export default function GreetingMessage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.8, delay: 0.6 }}
-      className="relative mx-auto mt-12 max-w-3xl rounded-xl border border-primary/20 bg-gradient-to-r from-primary/10 via-background to-primary/10 p-8 pt-1 shadow-xl backdrop-blur-sm dark:from-primary/20 dark:via-background/60 dark:to-primary/20"
+      whileHover={{ scale: 1.01, transition: { duration: 0.3 } }}
+      className="relative mx-auto mt-12 max-w-3xl rounded-xl bg-gradient-to-r from-primary/5 via-background/80 to-primary/5 p-8 pt-1 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-md dark:bg-gradient-to-r dark:from-primary/10 dark:via-background/40 dark:to-primary/10 dark:shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
     >
       <div className="flex flex-nowrap items-center justify-end gap-2">
         <span className="py-1 text-xs font-bold text-foreground/70">由 Qwen生成</span>
@@ -71,9 +72,9 @@ export default function GreetingMessage() {
       </div>
 
       <motion.div
-        initial={{ y: 20 }}
-        animate={{ y: 0 }}
-        transition={{ duration: 1, delay: 0.2 }}
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 1, delay: 0.2, ease: "easeOut" }}
         className="relative"
       >
         <p className="greeting-text whitespace-pre-line text-xl font-normal leading-relaxed tracking-wide text-foreground/90 md:text-2xl lg:text-3xl">

@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-
 const ROUTES = [
   {
     href: "/blogs",
@@ -48,16 +47,15 @@ export default function SmallHeader() {
   }, []);
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait" initial={false}>
       {isVisible && (
         <motion.header
           initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          transition={{ duration: 0.3, type: "spring", stiffness: 100, damping: 15 }}
-          className="sticky top-4 z-50 flex basis-12 justify-center px-4"
+          animate={{ y: 0, opacity: 0.9 }}
+          transition={{ duration: 0.6, type: "spring", stiffness: 100, damping: 15 }}
+          className="sticky top-4 z-50 flex justify-center px-4"
         >
-          <div className="flex w-full max-w-[520px] items-center justify-between space-x-3 rounded-full border border-primary/15 bg-background/85 px-6 py-2.5 text-primary shadow-xl backdrop-blur-2xl transition-all duration-300 hover:border-primary/30 hover:bg-background/95 hover:shadow-primary/20">
+          <div className="duration-400 flex w-full max-w-[520px] items-center justify-between space-x-3 rounded-full border border-primary/15 bg-background/85 px-6 py-2.5 text-primary shadow-xl backdrop-blur-2xl transition-all hover:border-primary/30 hover:bg-background/95 hover:shadow-primary/20">
             {ROUTES.map((route, index) => (
               <LinkButton
                 href={route.href}

@@ -8,7 +8,7 @@ export default async function TopBadge() {
   const badges = await getCredly();
 
   return (
-    <div className="container mx-auto mt-12 lg:max-w-[1024px]">
+    <div className="container mx-auto my-12 lg:max-w-[1024px]">
       <Card className="mx-6">
         <CardHeader>
           <div className="flex items-center justify-between">

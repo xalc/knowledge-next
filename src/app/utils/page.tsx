@@ -108,7 +108,7 @@ const NAVIGATION_ITEMS = [
 
 export default function NavigationPage() {
   return (
-    <div className="container mx-auto py-10 lg:max-w-[1024px]">
+    <div className="container mx-auto pb-4 pt-12 lg:max-w-[1024px]">
       <div className="mx-6 space-y-4 sm:mx-12">
         {/* Page Header */}
         <div className="space-y-2">

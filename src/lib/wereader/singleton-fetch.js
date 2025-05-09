@@ -61,7 +61,7 @@ const fetchInstance = async () => {
   const fetch = new MyFetch();
 
   await fetch.init();
-  // await fetch.syncCookies(WEREAD_URL);
+  await fetch.syncCookies(WEREAD_URL);
   return () => fetch;
 };
 //When the project initial , the fetchInstance is executed,this should improve.

@@ -23,7 +23,7 @@ export async function getRecentBooks() {
       orderBy: {
         readUpdateTime: "desc",
       },
-      take: 4,
+      take: 8,
     });
     return bookShelf;
   } catch (e) {

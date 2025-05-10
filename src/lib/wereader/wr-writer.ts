@@ -201,7 +201,7 @@ const syncWRReadingtimeSummary = async () => {
 
 export const syncWRDataToDB = async () => {
   try {
-    await syncWRReadingtimeSummary();
+    // await syncWRReadingtimeSummary();
     await syncWRBookShelf();
   } catch (error) {
     console.log(`sync weread date error: ${error}`);

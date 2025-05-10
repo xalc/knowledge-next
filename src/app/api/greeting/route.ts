@@ -8,7 +8,7 @@ const qwen = createQwen({
   baseURL: "https://dashscope.aliyuncs.com/compatible-mode/v1",
   apiKey: process.env.DASHSCOPE_API_KEY,
 });
-const model = qwen("qwen-plus");
+const model = qwen("qwen-max-latest");
 
 // 1. **技术载体**：选取编程概念或AI特性
 // 2. **自然映射**：关联自然规律
@@ -24,6 +24,7 @@ const poemPrompt = `
 7. 要求能够自动换行
 8. 无需任何解释的内容（包括字数、创作思路等）
 9. 只需要创作一首即可
+10. nothinking
 
 `;
 

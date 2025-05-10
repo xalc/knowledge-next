@@ -1,6 +1,6 @@
 export const WEREAD_URL = "https://weread.qq.com";
-export const BOOK_SHELF_URL = "https://i.weread.qq.com/shelf/sync";
-export const READING_TIMES = "https://i.weread.qq.com/readdata/summary";
+export const BOOK_SHELF_URL = "https://weread.qq.com/web/shelf/sync";
+export const READING_TIMES = "https://weread.qq.com/web/readdata/summary";
 
 export const KNOWLEDGE_DB_NAME = "knowledge";
 export const WE_READER_DB_NAME = "wereader";

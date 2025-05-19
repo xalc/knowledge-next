@@ -135,7 +135,17 @@ export const HeroSection = () => {
               className="mx-auto flex flex-col items-center"
             >
               <p className="mb-2 text-lg font-medium text-muted-foreground/80">向下滚动查看更多</p>
-              <ChevronDown className="h-6 w-6 text-primary/80" />
+              <button
+                onClick={() => {
+                  document
+                    .querySelector("#contentCard")
+                    ?.scrollIntoView({ behavior: "smooth", block: "center" });
+                }}
+                className="rounded-full p-2 transition-colors hover:bg-primary/10"
+                aria-label="Scroll to content"
+              >
+                <ChevronDown className="h-6 w-6 text-primary/80" />
+              </button>
             </motion.div>
           </motion.div>
         </div>

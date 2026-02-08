@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 import { cache } from "react";
 
 /**
@@ -18,8 +17,6 @@ export const getTimelines = cache(async () => {
   } catch (e) {
     console.error(e);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 });
 
@@ -40,8 +37,6 @@ export const getRecentTimelines = cache(async (count: number = 5) => {
   } catch (e) {
     console.error(e);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 });
 
@@ -61,8 +56,6 @@ export const getTimelineById = cache(async (id: string) => {
   } catch (e) {
     console.error(e);
     return null;
-  } finally {
-    await prisma.$disconnect();
   }
 });
 
@@ -87,8 +80,6 @@ export const getTimelinesByYear = cache(async (year: string) => {
   } catch (e) {
     console.error(e);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 });
 

@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 import { cache } from "react";
 const getPosts = cache(async () => {
   try {
@@ -12,8 +11,6 @@ const getPosts = cache(async () => {
     return allPosts;
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 });
 const getRecentPosts = cache(async () => {
@@ -28,8 +25,6 @@ const getRecentPosts = cache(async () => {
     return allPosts;
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 });
 
@@ -72,8 +67,6 @@ const getAllTags = cache(async () => {
   } catch (e) {
     console.error(e);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 });
 export const revalidate = 60;

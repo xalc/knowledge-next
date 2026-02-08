@@ -1,8 +1,6 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
 import { verifySession } from "@/lib/dal";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 interface ResponseType {
   code: number;
   message: string;
@@ -56,8 +54,6 @@ export async function saveArticleAction(
       });
     } catch (e) {
       console.error(e);
-    } finally {
-      await prisma.$disconnect();
     }
     return {
       code: 200,
@@ -102,8 +98,6 @@ export async function saveArticleAction(
     });
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
   return {
     code: 200,

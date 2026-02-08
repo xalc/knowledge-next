@@ -5,6 +5,8 @@ import { DocBreadcrumb } from "@/components/docs/doc-breadcrumb";
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
+export const revalidate = 3600;
+
 export async function generateStaticParams() {
   const slugs = getAllSlugs();
   return slugs.map(s => ({

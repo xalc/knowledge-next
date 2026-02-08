@@ -1,5 +1,6 @@
 import { COOKIES_TOKENS, READING_TIME_SYNC_KEY } from "./constant";
 import { prisma } from "@/lib/prisma";
+import { unstable_cache } from "next/cache";
 
 import moment from "moment";
 
@@ -24,50 +25,63 @@ export async function updateWRToken(token: string) {
     console.error(e);
   }
 }
-export async function getRecentBooks() {
-  try {
-    const bookShelf = await prisma.wRBookShelt.findMany({
-      orderBy: {
-        readUpdateTime: "desc",
-      },
-      take: 8,
-    });
-    return bookShelf;
-  } catch (e) {
-    console.error(e);
-  }
-}
-export async function getAllBooks() {
-  try {
-    const bookShelf = await prisma.wRBookShelt.findMany({
-      orderBy: {
-        readUpdateTime: "desc",
-      },
-    });
-    return bookShelf;
-  } catch (e) {
-    console.error(e);
-  }
-}
+export const getRecentBooks = unstable_cache(
+  async () => {
+    try {
+      const bookShelf = await prisma.wRBookShelt.findMany({
+        orderBy: {
+          readUpdateTime: "desc",
+        },
+        take: 8,
+      });
+      return bookShelf;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  ["wereader-recent-books"],
+  { revalidate: 300, tags: ["wereader"] },
+);
 
-export async function getReadingSummary() {
-  try {
-    const summarys = await prisma.wRReadingSummary.findMany({
-      orderBy: {
-        id: "asc",
-      },
-    });
-    const result = await prisma.wRMeta.findUnique({
-      where: {
-        keyName: READING_TIME_SYNC_KEY,
-      },
-    });
-    const lastSyncTime = result.keyValue;
-    return { summarys, lastSyncTime };
-  } catch (e) {
-    console.error(e);
-  }
-}
+export const getAllBooks = unstable_cache(
+  async () => {
+    try {
+      const bookShelf = await prisma.wRBookShelt.findMany({
+        orderBy: {
+          readUpdateTime: "desc",
+        },
+      });
+      return bookShelf;
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  ["wereader-all-books"],
+  { revalidate: 300, tags: ["wereader"] },
+);
+
+export const getReadingSummary = unstable_cache(
+  async () => {
+    try {
+      const summarys = await prisma.wRReadingSummary.findMany({
+        orderBy: {
+          id: "asc",
+        },
+      });
+      const result = await prisma.wRMeta.findUnique({
+        where: {
+          keyName: READING_TIME_SYNC_KEY,
+        },
+      });
+      const lastSyncTime = result.keyValue;
+      return { summarys, lastSyncTime };
+    } catch (e) {
+      console.error(e);
+    }
+  },
+  ["wereader-summary"],
+  { revalidate: 600, tags: ["wereader"] },
+);
 export async function getReadingSummaryByYear(year: number) {
   const firstDay = moment(String(year)).startOf("year");
   const lastDay = firstDay.subtract(1, "day").unix();

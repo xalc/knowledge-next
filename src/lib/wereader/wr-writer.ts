@@ -1,6 +1,7 @@
 import { getWrReadingTimes, getShelf } from "@/lib/wereader/wereader-api";
 import { READING_TIME_SYNC_KEY, BOOKS_SYNC_KEY, REGISTER_TIME_KEY } from "@/lib/wereader/constant";
 import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 /* eslint-disable */
 
 const getShelfSyncId = async () => {
@@ -202,6 +203,7 @@ export const syncWRDataToDB = async () => {
   try {
     // await syncWRReadingtimeSummary();
     await syncWRBookShelf();
+    revalidateTag("wereader");
   } catch (error) {
     console.log(`sync weread date error: ${error}`);
   }

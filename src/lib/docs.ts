@@ -1,48 +1,53 @@
 import fs from "fs";
 import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
+import { unstable_cache } from "next/cache";
 import { DocType, DocNode } from "@/types/docs";
 import { mdxComponents } from "@/components/docs/mdx-components";
 
-export async function getAllDocs(): Promise<DocType[]> {
-  const docsDirectory = path.join(process.cwd(), "src", "notes");
-  try {
-    const allFiles = fs.readdirSync(docsDirectory);
-    const markdownFiles = allFiles.filter(filename => {
-      const filePath = path.join(docsDirectory, filename);
-      const stats = fs.statSync(filePath);
-      return stats.isFile() && /\.(md|mdx)$/.test(filename);
-    });
-
-    // 处理合法的文件
-    const docs = await Promise.all(
-      markdownFiles.map(async filename => {
+export const getAllDocs = unstable_cache(
+  async (): Promise<DocType[]> => {
+    const docsDirectory = path.join(process.cwd(), "src", "notes");
+    try {
+      const allFiles = fs.readdirSync(docsDirectory);
+      const markdownFiles = allFiles.filter(filename => {
         const filePath = path.join(docsDirectory, filename);
-        const fileContent = fs.readFileSync(filePath, "utf8");
         const stats = fs.statSync(filePath);
+        return stats.isFile() && /\.(md|mdx)$/.test(filename);
+      });
 
-        const { content } = await compileMDX({
-          source: fileContent,
-          options: { parseFrontmatter: true },
-        });
+      // 处理合法的文件
+      const docs = await Promise.all(
+        markdownFiles.map(async filename => {
+          const filePath = path.join(docsDirectory, filename);
+          const fileContent = fs.readFileSync(filePath, "utf8");
+          const stats = fs.statSync(filePath);
 
-        const slug = filename.replace(/\.mdx?$/, "");
+          const { content } = await compileMDX({
+            source: fileContent,
+            options: { parseFrontmatter: true },
+          });
 
-        return {
-          slug,
-          title: slug.replace(/-/g, " "),
-          content: content,
-          createdAt: stats.birthtimeMs,
-        };
-      }),
-    );
+          const slug = filename.replace(/\.mdx?$/, "");
 
-    return docs.sort((a, b) => b.createdAt - a.createdAt);
-  } catch (error) {
-    console.error("Error reading docs:", error);
-    return [];
-  }
-}
+          return {
+            slug,
+            title: slug.replace(/-/g, " "),
+            content: content,
+            createdAt: stats.birthtimeMs,
+          };
+        }),
+      );
+
+      return docs.sort((a, b) => b.createdAt - a.createdAt);
+    } catch (error) {
+      console.error("Error reading docs:", error);
+      return [];
+    }
+  },
+  ["docs-all"],
+  { revalidate: 3600, tags: ["docs"] },
+);
 
 export function findDocNodeBySlug(tree: DocNode[], slug: string): DocNode | null {
   for (const node of tree) {
@@ -145,49 +150,53 @@ const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
 
   visitNode(tree);
 };
-export async function getDocBySlug(slug: string): Promise<DocType | null> {
-  try {
-    const tree = getDocTree();
-    const docNode = findDocNodeBySlug(tree, slug);
+export const getDocBySlug = unstable_cache(
+  async (slug: string): Promise<DocType | null> => {
+    try {
+      const tree = getDocTree();
+      const docNode = findDocNodeBySlug(tree, slug);
 
-    if (!docNode || docNode.type === "directory") {
-      return null;
-    }
+      if (!docNode || docNode.type === "directory") {
+        return null;
+      }
 
-    const docsDirectory = path.join(process.cwd(), "src", "notes");
-    const filePath = path.join(docsDirectory, docNode.path);
+      const docsDirectory = path.join(process.cwd(), "src", "notes");
+      const filePath = path.join(docsDirectory, docNode.path);
 
-    const stats = fs.statSync(filePath);
-    if (!stats.isFile()) {
-      return null;
-    }
+      const stats = fs.statSync(filePath);
+      if (!stats.isFile()) {
+        return null;
+      }
 
-    if (!filePath.match(/\.(md|mdx)$/)) {
-      return null;
-    }
+      if (!filePath.match(/\.(md|mdx)$/)) {
+        return null;
+      }
 
-    const fileContent = fs.readFileSync(filePath, "utf8");
+      const fileContent = fs.readFileSync(filePath, "utf8");
 
-    const { content } = await compileMDX({
-      source: fileContent,
-      options: {
-        parseFrontmatter: true,
-        mdxOptions: {
-          remarkPlugins: [remarkImgToAbsolute(docsDirectory, docNode.path)],
+      const { content } = await compileMDX({
+        source: fileContent,
+        options: {
+          parseFrontmatter: true,
+          mdxOptions: {
+            remarkPlugins: [remarkImgToAbsolute(docsDirectory, docNode.path)],
+          },
         },
-      },
 
-      components: mdxComponents,
-    });
+        components: mdxComponents,
+      });
 
-    return {
-      slug: docNode.slug,
-      title: docNode.name,
-      content,
-      createdAt: stats.birthtimeMs,
-    };
-  } catch (error) {
-    console.error("Error in getDocBySlug:", error);
-    return null;
-  }
-}
+      return {
+        slug: docNode.slug,
+        title: docNode.name,
+        content,
+        createdAt: stats.birthtimeMs,
+      };
+    } catch (error) {
+      console.error("Error in getDocBySlug:", error);
+      return null;
+    }
+  },
+  ["docs-by-slug"],
+  { revalidate: 3600, tags: ["docs"] },
+);

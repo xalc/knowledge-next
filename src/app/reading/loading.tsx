@@ -29,8 +29,12 @@ export default function Loading() {
       </div>
 
       <div className="space-y-6">
-        <div className="flex flex-wrap gap-3">
-          <Skeleton className="h-9 w-24" />
+        <div className="hidden flex-wrap gap-3 sm:flex">
+          <Skeleton className="h-9 w-40" />
+          <Skeleton className="h-9 w-40" />
+        </div>
+
+        <div className="flex items-center gap-3">
           <Skeleton className="h-9 w-24" />
           <Skeleton className="h-9 w-24" />
         </div>

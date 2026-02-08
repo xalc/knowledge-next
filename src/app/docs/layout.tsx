@@ -1,10 +1,10 @@
-import { getDocTree } from "@/lib/docs";
+import { getDocTreeCached } from "@/lib/docs";
 import { DocNav } from "@/components/docs/doc-nav";
 import { MobileNav } from "@/components/docs/mobile-nav";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { ScrollArea } from "@/components/ui/scroll-area";
 export default async function DocLayout({ children }: { children: React.ReactNode }) {
-  const tree = getDocTree();
+  const tree = await getDocTreeCached();
 
   return (
     <div className="border-t border-border shadow-sm md:max-h-[calc(100vh_-_132px)]">

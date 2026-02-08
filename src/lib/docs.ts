@@ -106,28 +106,39 @@ export function getDocTree(basePath: string = ""): DocNode[] {
     })
     .filter(Boolean) as DocNode[];
 }
-export function getAllSlugs(): string[] {
-  const tree = getDocTree();
-  const slugs = [];
-  const visitNode = nodes => {
-    nodes.forEach(node => {
-      if (node.type === "file") {
-        slugs.push(node.slug);
-      } else if (node.type === "directory" && node.children) {
-        visitNode(node.children);
+
+export const getDocTreeCached = unstable_cache(
+  async (basePath: string = "") => getDocTree(basePath),
+  ["docs-tree"],
+  { revalidate: 3600, tags: ["docs"] },
+);
+
+export const getAllSlugs = unstable_cache(
+  async (): Promise<string[]> => {
+    const tree = await getDocTreeCached();
+    const slugs: string[] = [];
+    const visitNode = nodes => {
+      nodes.forEach(node => {
+        if (node.type === "file") {
+          slugs.push(node.slug);
+        } else if (node.type === "directory" && node.children) {
+          visitNode(node.children);
+        }
+      });
+    };
+
+    tree.forEach(t => {
+      if (t.type === "file") {
+        slugs.push(t.slug);
+      } else if (t.type === "directory" && t.children) {
+        visitNode(t.children);
       }
     });
-  };
-
-  tree.forEach(t => {
-    if (t.type === "file") {
-      slugs.push(t.slug);
-    } else if (t.type === "directory" && t.children) {
-      visitNode(t.children);
-    }
-  });
-  return slugs;
-}
+    return slugs;
+  },
+  ["docs-slugs"],
+  { revalidate: 3600, tags: ["docs"] },
+);
 const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
   const visitNode = node => {
     if (node.type === "image") {
@@ -153,7 +164,7 @@ const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
 export const getDocBySlug = unstable_cache(
   async (slug: string): Promise<DocType | null> => {
     try {
-      const tree = getDocTree();
+      const tree = await getDocTreeCached();
       const docNode = findDocNodeBySlug(tree, slug);
 
       if (!docNode || docNode.type === "directory") {

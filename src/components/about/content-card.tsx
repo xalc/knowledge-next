@@ -2,40 +2,44 @@ import { BookOpen, Code, Coffee, Wrench } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-const SECTIONS = [
-  {
-    icon: Code,
-    title: "技术文章",
-    description: "分享对技术和工具的使用踩坑记录，也包括一些DIY过程",
-    color: "text-green-500 dark:text-green-400",
-    href: "/blogs",
-  },
-  {
-    icon: BookOpen,
-    title: "笔记归档",
-    description: "持续同比个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
-    color: "text-blue-500 dark:text-blue-400",
-    href: "/docs",
-  },
+import { getLocale, getMessages } from "@/lib/i18n";
 
-  {
-    icon: Coffee,
-    title: "思维实验",
-    description: "分享个人的想法和灵感，涵盖从旅行到读书，个人三观的方方面面。",
-    color: "text-amber-500 dark:text-amber-400",
-    href: "/reading",
-  },
-  {
-    icon: Wrench,
-    title: "更多尝试",
-    description:
-      "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人既服务的模式（PAAS）",
-    color: "text-purple-500 dark:text-purple-400",
-    href: "/utils",
-  },
-];
+export default async function ContentCard() {
+  const locale = await getLocale();
+  const messages = getMessages(locale);
 
-export default function ContentCard() {
+  const SECTIONS = [
+    {
+      icon: Code,
+      title: messages.sections.techArticles,
+      description: messages.sections.techArticlesDesc,
+      color: "text-green-500 dark:text-green-400",
+      href: "/blogs",
+    },
+    {
+      icon: BookOpen,
+      title: messages.sections.noteArchive,
+      description: messages.sections.noteArchiveDesc,
+      color: "text-blue-500 dark:text-blue-400",
+      href: "/docs",
+    },
+
+    {
+      icon: Coffee,
+      title: messages.sections.thoughtExperiments,
+      description: messages.sections.thoughtExperimentsDesc,
+      color: "text-amber-500 dark:text-amber-400",
+      href: "/reading",
+    },
+    {
+      icon: Wrench,
+      title: messages.sections.moreExplorations,
+      description: messages.sections.moreExplorationsDesc,
+      color: "text-purple-500 dark:text-purple-400",
+      href: "/utils",
+    },
+  ];
+
   return (
     <div id="contentCard" className="container mx-auto lg:max-w-[1024px]">
       <div className="mx-6 grid gap-6 sm:grid-cols-2">

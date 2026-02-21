@@ -3,21 +3,23 @@ import { getRecentPosts } from "@/lib/blogs/blogs";
 import BlogItem from "./blog-item";
 import { MotionButton } from "../ui/motion-button";
 import { Rss } from "lucide-react";
+import { getLocale, getMessages } from "@/lib/i18n";
 
 export default async function RecentPosts() {
-  const posts = await getRecentPosts();
+  const [posts, locale] = await Promise.all([getRecentPosts(), getLocale()]);
+  const messages = getMessages(locale);
   return (
     <div className="container mx-auto mt-12 lg:max-w-[1024px]">
       <Card className="mx-6">
         <CardHeader>
           <div className="flex justify-between">
             <div>
-              <CardTitle className="flex items-center gap-2">最新思考</CardTitle>
-              <CardDescription>分享技术见解，探讨开发心得</CardDescription>
+              <CardTitle className="flex items-center gap-2">{messages.recentPosts.title}</CardTitle>
+              <CardDescription>{messages.recentPosts.description}</CardDescription>
             </div>
 
             <MotionButton href="/blogs" icon={<Rss className="h-5 w-5" />}>
-              查看全部文章
+              {messages.recentPosts.viewAll}
             </MotionButton>
           </div>
         </CardHeader>

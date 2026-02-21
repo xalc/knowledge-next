@@ -14,9 +14,11 @@ import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useLocale } from "@/context/locale-provider";
 
 const Tiptap = () => {
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage("ttcontent", null);
+  const { t } = useLocale();
 
   const [deBouncedValue] = useDebounce(storageValue, 1000);
   const debouncedUpdates = editor => {
@@ -29,7 +31,7 @@ const Tiptap = () => {
       ...extensions,
       Placeholder.configure({
         // Use a placeholder:
-        placeholder: "可以开始写作了... 试试斜杠",
+        placeholder: t("blogs.placeholder"),
       }),
     ],
     editorProps: {
@@ -86,7 +88,7 @@ const Tiptap = () => {
         <BellRing className="h-4 w-4" />
 
         <AlertDescription>
-          可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同一设备访问不会丢失，但只有登陆后才能上传
+          {t("blogs.editorNote")}
         </AlertDescription>
       </Alert>
 

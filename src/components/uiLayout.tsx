@@ -6,8 +6,10 @@ import { Link } from "./ui/link";
 import { RouteTransition } from "@/components/transition/route-transition";
 import { ProgressTranstion } from "./transition/progress-transition";
 import SmallHeader from "./header/small-header";
+import { useLocale } from "@/context/locale-provider";
 export default function UILayout({ children }) {
   const pathname = usePathname();
+  const { t } = useLocale();
   const landingPage = pathname === "/";
 
   if (landingPage) {
@@ -26,7 +28,7 @@ export default function UILayout({ children }) {
 
           <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
             <p>
-              <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+              <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © {t("footer.icp")}
             </p>
             {/* <PWA /> */}
           </footer>
@@ -44,7 +46,7 @@ export default function UILayout({ children }) {
 
       <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
         <p>
-          <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+          <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © {t("footer.icp")}
         </p>
         {/* <PWA /> */}
       </footer>

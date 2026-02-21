@@ -6,8 +6,10 @@ import { ChevronsDown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useThrottledCallback } from "use-debounce";
+import { useLocale } from "@/context/locale-provider";
 export default function Page() {
   const router = useRouter();
+  const { t } = useLocale();
   const [hidden, setHidden] = useState(true);
   const navigate = useThrottledCallback(() => router.push("/blogs"), 500);
   useEffect(() => {
@@ -49,22 +51,22 @@ export default function Page() {
       />
       <div className="hidden animate-bounce justify-center pt-12 text-sm font-bold text-muted-foreground md:flex">
         <ChevronsDown className="h-6 w-6" />
-        向下滚动以开始阅读
+        {t("readingLanding.scrollDown")}
       </div>
       {!hidden && (
         <div className={"container relative space-y-6 px-4 text-center"}>
           <h1 className="duration-2000 bg-gradient-to-r from-primary to-primary-foreground bg-clip-text text-4xl font-bold tracking-tighter text-transparent animate-in fade-in slide-in-from-bottom-3 md:text-6xl">
-            在Debug中寻找自我
+            {t("readingLanding.tagline")}
           </h1>
           <p className="mx-auto max-w-2xl text-xl text-muted-foreground mix-blend-difference duration-1000 animate-in fade-in slide-in-from-bottom-4">
-            读书/写作/思考/分享/探索
+            {t("readingLanding.subtitle")}
           </p>
           <div className="flex justify-center gap-4 duration-1000 animate-in fade-in slide-in-from-bottom-5">
             <Button size="lg" asChild>
-              <Link href="/blogs">开始阅读</Link>
+              <Link href="/blogs">{t("readingLanding.startReading")}</Link>
             </Button>
             <Button size="lg" asChild variant="outline">
-              <Link href="/about">关于</Link>
+              <Link href="/about">{t("readingLanding.about")}</Link>
             </Button>
           </div>
         </div>

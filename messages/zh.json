@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "title": "我的博客",
+    "description": "技术即工具，专注前端和AI，个人即服务"
+  },
+  "navigation": {
+    "welcome": "WELCOME",
+    "blogs": "博客",
+    "reading": "读书",
+    "docs": "印记",
+    "utils": "工具箱"
+  },
+  "hero": {
+    "title": "AI 驱动的全栈开发",
+    "scrollDown": "向下滚动查看更多",
+    "generatedBy": "由 Qwen生成"
+  },
+  "sections": {
+    "techArticles": "技术文章",
+    "techArticlesDesc": "分享对技术和工具的使用踩坑记录，也包括一些DIY过程",
+    "noteArchive": "笔记归档",
+    "noteArchiveDesc": "持续同比个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
+    "thoughtExperiments": "思维实验",
+    "thoughtExperimentsDesc": "分享个人的想法和灵感，涵盖从旅行到读书，个人三观的方方面面。",
+    "moreExplorations": "更多尝试",
+    "moreExplorationsDesc": "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人既服务的模式（PAAS）"
+  },
+  "recentPosts": {
+    "title": "最新思考",
+    "description": "分享技术见解，探讨开发心得",
+    "viewAll": "查看全部文章"
+  },
+  "recentReading": {
+    "title": "最近在读的书",
+    "viewMore": "查看更多"
+  },
+  "bookshelf": {
+    "title": "我的书架",
+    "description": "记录读过的每一本书",
+    "stats": "阅读统计"
+  },
+  "readingStats": {
+    "title": "阅读数据",
+    "subtitle": "读书KPI",
+    "backToShelf": "返回书架",
+    "yearlyDuration": "当年读书时长"
+  },
+  "readingLanding": {
+    "scrollDown": "向下滚动以开始阅读",
+    "tagline": "在Debug中寻找自我",
+    "subtitle": "读书/写作/思考/分享/探索",
+    "startReading": "开始阅读",
+    "about": "关于"
+  },
+  "docs": {
+    "title": "文档"
+  },
+  "blogs": {
+    "backToList": "返回文章列表",
+    "placeholder": "可以开始写作了... 试试斜杠",
+    "editorNote": "可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同一设备访问不会丢失，但只有登陆后才能上传"
+  },
+  "footer": {
+    "icp": "陕ICP备2024057216号-1"
+  },
+  "language": {
+    "switchTo": "English",
+    "current": "中文"
+  },
+  "dashboard": {
+    "syncTitle": "同步微信读书数据",
+    "syncButton": "立即同步",
+    "syncing": "同步中...",
+    "syncResult": "同步结果:",
+    "updateCookies": "更新 Cookies",
+    "cookiesPlaceholder": "在此处粘贴您的 Cookie...",
+    "updateCookiesButton": "更新 Cookies",
+    "updatingCookies": "更新中...",
+    "successTitle": "成功",
+    "successDesc": "Cookies 更新成功！",
+    "failTitle": "失败",
+    "failDesc": "Cookies 更新失败，请查看控制台获取更多信息。",
+    "errorTitle": "错误",
+    "errorDesc": "更新 Cookies 时发生错误，请查看控制台获取更多信息。"
+  }
+}

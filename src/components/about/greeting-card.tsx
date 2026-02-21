@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import { RotateCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLocale } from "@/context/locale-provider";
 
 export default function GreetingMessage() {
+  const { t } = useLocale();
   const { completion, complete, isLoading } = useCompletion({
     api: "/api/greeting",
     onError: error => {
@@ -59,7 +61,7 @@ export default function GreetingMessage() {
       className="relative mx-auto mt-12 max-w-3xl rounded-xl bg-gradient-to-r from-primary/5 via-background/80 to-primary/5 p-8 pt-1 shadow-[0_8px_30px_rgb(0,0,0,0.06)] backdrop-blur-md dark:bg-gradient-to-r dark:from-primary/10 dark:via-background/40 dark:to-primary/10 dark:shadow-[0_8px_30px_rgb(0,0,0,0.12)]"
     >
       <div className="flex flex-nowrap items-center justify-end gap-2">
-        <span className="py-1 text-xs font-bold text-foreground/70">由 Qwen生成</span>
+        <span className="py-1 text-xs font-bold text-foreground/70">{t("hero.generatedBy")}</span>
         <Button
           onClick={handleRegenerate}
           disabled={isGenerating}

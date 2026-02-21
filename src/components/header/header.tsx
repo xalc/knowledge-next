@@ -10,29 +10,16 @@ import UserProfile from "./profile";
 import { useState } from "react";
 import { HeaderLogo } from "./header-logo";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
-const ROUTES = [
-  {
-    href: "/",
-    label: "WELCOME",
-  },
-  {
-    href: "/blogs",
-    label: "博客",
-  },
+import { LanguageSwitcher } from "./language-switcher";
+import { useLocale } from "@/context/locale-provider";
+import type { MessageKey } from "@/lib/i18n";
 
-  {
-    href: "/reading",
-    label: "读书",
-  },
-
-  {
-    href: "/docs",
-    label: "印记",
-  },
-  {
-    href: "/utils",
-    label: "工具箱",
-  },
+const ROUTE_KEYS: { href: string; key: MessageKey }[] = [
+  { href: "/", key: "navigation.welcome" },
+  { href: "/blogs", key: "navigation.blogs" },
+  { href: "/reading", key: "navigation.reading" },
+  { href: "/docs", key: "navigation.docs" },
+  { href: "/utils", key: "navigation.utils" },
 ];
 const LinkButton = ({ href, children, ...props }) => {
   return (
@@ -48,6 +35,7 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const { scrollY } = useScroll();
   const pathname = usePathname();
+  const { t } = useLocale();
 
   useMotionValueEvent(scrollY, "change", latest => {
     setIsScrolled(latest > 0);
@@ -74,14 +62,14 @@ export default function Header() {
             hideWhenDetached
             className="mt-2 flex w-screen flex-col gap-2 rounded-md shadow-lg"
           >
-            {ROUTES.map((route, index) => (
+            {ROUTE_KEYS.map((route, index) => (
               <LinkButton
                 href={route.href}
                 key={`route_${index}`}
                 className="w-full"
                 onClick={() => setOpen(false)}
               >
-                {route.label}
+                {t(route.key)}
               </LinkButton>
             ))}
           </PopoverContent>
@@ -92,17 +80,18 @@ export default function Header() {
       </h1>
 
       <div className="hidden space-x-4 md:flex">
-        {ROUTES.map((route, index) => (
+        {ROUTE_KEYS.map((route, index) => (
           <LinkButton
             href={route.href}
             key={`route_${index}`}
             className={cn("w-full", pathname === route.href && "text-primary")}
           >
-            {route.label}
+            {t(route.key)}
           </LinkButton>
         ))}
       </div>
       <div className="flex items-center gap-1">
+        <LanguageSwitcher />
         <ModeToggle />
         <UserProfile />
       </div>

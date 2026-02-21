@@ -7,6 +7,7 @@ import { useEffect, useState, useRef } from "react";
 import { useTransform, useScroll } from "motion/react";
 import GreetingMessage from "./greeting-card";
 import { ChevronDown } from "lucide-react";
+import { useLocale } from "@/context/locale-provider";
 function useMousePosition() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
@@ -36,6 +37,7 @@ export const HeroSection = () => {
   const headerY = useTransform(scrollY, [0, 100], ["0%", "-100%"]);
   const headerScale = useTransform(scrollY, [0, 100], [0.8, 1]);
   const headerOpacity = useTransform(scrollY, [0, 100], [0, 1]);
+  const { t } = useLocale();
 
   return (
     <div className="relative h-screen">
@@ -92,7 +94,7 @@ export const HeroSection = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.2, duration: 0.8 }}
               >
-                AI 驱动的全栈开发
+                {t("hero.title")}
               </motion.h1>
 
               {/* <motion.p
@@ -134,7 +136,7 @@ export const HeroSection = () => {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="mx-auto flex flex-col items-center"
             >
-              <p className="mb-2 text-lg font-medium text-muted-foreground/80">向下滚动查看更多</p>
+              <p className="mb-2 text-lg font-medium text-muted-foreground/80">{t("hero.scrollDown")}</p>
               <button
                 onClick={() => {
                   document

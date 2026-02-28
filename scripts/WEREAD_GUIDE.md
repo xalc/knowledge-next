@@ -1,6 +1,7 @@
 # 微信读书数据接入与同步指南
 
 本文档说明本项目中微信读书（WeRead）相关能力，包括：
+
 - 网页端如何使用
 - API 如何调用
 - 如何从手机抓取认证信息（`wr_vid` / `wr_skey`）
@@ -20,12 +21,14 @@
 ## 2. 相关文件索引
 
 - API
+
   - `src/app/api/wereader/validate/route.ts`：验证 token 是否可用
   - `src/app/api/wereader/summary/route.ts`：代理调用 summary 接口并返回详情
   - `src/app/api/update-cookies/route.ts`：保存 token 到数据库
   - `src/app/api/dashboard/route.ts`：网页“立即同步”触发入口
 
 - WeRead 逻辑
+
   - `src/lib/wereader/constant.js`：WeRead 相关 URL 常量
   - `src/lib/wereader/singleton-fetch.js`：请求封装（自动识别移动端接口并附带 `vid/skey`）
   - `src/lib/wereader/wr-writer.ts`：同步书架/阅读数据到 DB 的主逻辑
@@ -47,6 +50,7 @@ wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white
 ```
 
 至少要有：
+
 - `wr_vid`
 - `wr_skey`
 
@@ -63,8 +67,9 @@ wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white
    - 调用：`POST /api/update-cookies`
 4. 点“立即同步”
    - 调用：`GET /api/dashboard`
-  - 同步书架 + 阅读统计（reading summary）
-  - 页面会流式显示日志，包含每一步的成功/失败信息及最终结构化结果
+
+- 同步书架 + 阅读统计（reading summary）
+- 页面会流式显示日志，包含每一步的成功/失败信息及最终结构化结果
 
 > 说明：`/api/dashboard` 现在会依次执行 `bookshelf` 和 `readingSummary` 两个步骤；即使某一步失败，也会继续输出完整日志并给出汇总结果。
 
@@ -109,6 +114,7 @@ npx tsx scripts/sync-reading-summary.ts
 ```
 
 脚本行为：
+
 1. 从 DB 读取 `cookieToken`
 2. 解析 `wr_vid` / `wr_skey`
 3. 请求 `https://i.weread.qq.com/readdata/summary?synckey=0`
@@ -133,10 +139,11 @@ mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ```
 
 > 脚本新行为：抓到完整 `vid + skey` 后会自动：
-> 1) 写入 `scripts/weread_headers.json`
-> 2) 写入标准化 `scripts/weread_cookie.txt`
-> 3) 复制标准化 cookie 到系统剪贴板
-> 4) 自动结束抓包进程
+>
+> 1. 写入 `scripts/weread_headers.json`
+> 2. 写入标准化 `scripts/weread_cookie.txt`
+> 3. 复制标准化 cookie 到系统剪贴板
+> 4. 自动结束抓包进程
 
 ### 7.3 手机设置代理
 
@@ -153,20 +160,24 @@ mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ### 7.4 触发抓包
 
 打开微信读书 App，进入书架/阅读页，脚本会在控制台打印认证信息。抓包成功后会自动完成并退出，同时输出：
+
 - `scripts/weread_headers.json`
 - `scripts/weread_cookie.txt`
 
 控制台关键成功标志：
+
 - `📋 已复制标准化 Cookie 到剪贴板`
 - `🎉 首次成功捕获认证信息！已自动复制并准备退出抓包`
 
 ### 7.5 写回数据库
 
 可选方式 A（网页）：
+
 - Dashboard 页面粘贴 `scripts/weread_cookie.txt` 内容
 - 依次点“验证 Cookies”“更新 Cookies”
 
 可选方式 B（脚本）：
+
 - 修改 `scripts/update-token.ts` 的 `newToken`
 - 执行：
   ```bash
@@ -176,6 +187,7 @@ mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ### 7.6 清理代理（重要）
 
 抓完后务必关闭手机代理：
+
 - iPhone：HTTP 代理 -> 关闭
 
 ---
@@ -193,12 +205,15 @@ cd /Users/chao/Documents/coding/knowledge-next && mitmdump -s scripts/weread_coo
 ## 8. 常见问题
 
 ### Q1: 返回 `errcode = -2010` / 用户不存在
+
 通常是 `vid/skey` 不匹配或已失效，重新抓包并更新 `cookieToken`。
 
 ### Q2: 返回登录超时
+
 重新抓包获取新的认证信息。
 
 ### Q3: 有 `wr_fp` 但没有 `wr_vid/wr_skey`
+
 说明只拿到普通 Cookie，未抓到关键认证头；继续在 App 内操作，直到命中 `i.weread.qq.com` 的认证请求。
 
 ---

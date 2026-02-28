@@ -9,7 +9,7 @@ export async function getWRToken(): Promise<string> {
     const cookies = await prisma.wRMeta.findUnique({
       where: { keyName: COOKIES_TOKENS },
     });
-    return cookies.keyValue;
+    return cookies?.keyValue ?? "";
   } catch (e) {
     console.error(e);
   }

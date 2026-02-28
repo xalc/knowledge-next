@@ -10,17 +10,31 @@ class MyFetch {
   async init() {
     this.cookieJar = new CookieJar();
     let cookieStr = await getWRToken();
-
-    this.cookieStr = cookieStr;
-    cookieStr.split(";").forEach(async c => {
-      let cookie = Cookie.parse(c);
-      await this.cookieJar.setCookie(cookie, WEREAD_URL);
-    });
+    this.cookieStr = cookieStr || "";
+    if (!this.cookieStr) {
+      return;
+    }
+    cookieStr
+      .split(";")
+      .map(c => c.trim())
+      .filter(Boolean)
+      .forEach(async c => {
+        const cookie = Cookie.parse(c);
+        if (cookie) {
+          await this.cookieJar.setCookie(cookie, WEREAD_URL);
+        }
+      });
   }
 
   async syncCookies() {
+    if (!this.cookieJar) {
+      await this.init();
+    }
     const initialCookiesForSync = await this.cookieJar.getCookies(WEREAD_URL);
     const initialCookieStringForSync = initialCookiesForSync.map(c => c.cookieString()).join("; ");
+    if (!initialCookieStringForSync) {
+      throw new Error("WeRead cookie is missing. Update cookie token first.");
+    }
 
     const response = await fetch(WEREAD_URL, {
       method: "get",
@@ -40,20 +54,21 @@ class MyFetch {
 
     const cookieHeaders = response.headers.get("Set-Cookie");
     if (cookieHeaders) {
-      // 检查 cookieHeaders 是否存在
-      // tough-cookie 的 Cookie.parse 在输入为 null 或 undefined 时可能会出问题
-      // 并且 Set-Cookie 可能是一个数组，需要正确处理
-      const cookiesToSet = Array.isArray(cookieHeaders) ? cookieHeaders : [cookieHeaders];
+      // 支持多个 Set-Cookie 头（Node Fetch 会用逗号拼接）
+      const cookiesToSet = Array.isArray(cookieHeaders)
+        ? cookieHeaders
+        : cookieHeaders
+            .split(/,(?=[^;]+=[^;]+)/)
+            .map(header => header.trim())
+            .filter(Boolean);
       for (const cookieHeader of cookiesToSet) {
-        if (cookieHeader) {
-          try {
-            const resCookie = Cookie.parse(cookieHeader);
-            if (resCookie) {
-              await this.cookieJar.setCookie(resCookie, WEREAD_URL);
-            }
-          } catch (e) {
-            console.error("Failed to parse or set cookie from Set-Cookie header:", cookieHeader, e);
+        try {
+          const resCookie = Cookie.parse(cookieHeader);
+          if (resCookie) {
+            await this.cookieJar.setCookie(resCookie, WEREAD_URL);
           }
+        } catch (e) {
+          console.error("Failed to parse or set cookie from Set-Cookie header:", cookieHeader, e);
         }
       }
 
@@ -77,8 +92,19 @@ class MyFetch {
     }
   }
   async request(url) {
+    if (!this.cookieJar) {
+      await this.init();
+    }
+    try {
+      await this.syncCookies();
+    } catch (error) {
+      console.error("syncCookies failed:", error);
+    }
     const cookies = await this.cookieJar.getCookies(WEREAD_URL);
     const updatedCookie = cookies.map(c => c.cookieString()).join(";");
+    if (!updatedCookie) {
+      throw new Error("WeRead cookie is missing. Update cookie token first.");
+    }
     const response = await fetch(url, {
       headers: {
         cookie: updatedCookie,

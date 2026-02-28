@@ -11,6 +11,10 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [cookies, setCookies] = useState("");
   const [updatingCookies, setUpdatingCookies] = useState(false);
+  const [cookieStatus, setCookieStatus] = useState<"idle" | "checking" | "valid" | "invalid">(
+    "idle",
+  );
+  const [cookieMessage, setCookieMessage] = useState("");
   const handleStream = async () => {
     setLoading(true);
     const response = await fetch("/api/dashboard");
@@ -64,6 +68,47 @@ export default function DashboardPage() {
     setUpdatingCookies(false);
   };
 
+  const handleValidateCookies = async () => {
+    if (!cookies) return;
+    setCookieStatus("checking");
+    setCookieMessage("");
+    try {
+      const response = await fetch("/api/wereader/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ cookies }),
+      });
+      const result = await response.json();
+      if (result.ok) {
+        setCookieStatus("valid");
+        setCookieMessage("验证通过");
+        toast({
+          title: "验证通过",
+          description: "Cookie 有效，可以更新。",
+        });
+      } else {
+        setCookieStatus("invalid");
+        setCookieMessage(result.error || "验证失败");
+        toast({
+          variant: "destructive",
+          title: "验证失败",
+          description: result.error || "Cookie 无效或已过期。",
+        });
+      }
+    } catch (error) {
+      setCookieStatus("invalid");
+      setCookieMessage("验证请求失败");
+      toast({
+        variant: "destructive",
+        title: "验证失败",
+        description: "验证请求失败，请查看控制台。",
+      });
+      console.error("Error validating cookies:", error);
+    }
+  };
+
   return (
     <div className="container mx-auto space-y-8 p-4">
       <div className="rounded-lg border p-6 shadow-md">
@@ -86,16 +131,39 @@ export default function DashboardPage() {
         <Textarea
           placeholder="在此处粘贴您的 Cookie..."
           value={cookies}
-          onChange={e => setCookies(e.target.value)}
+          onChange={e => {
+            setCookies(e.target.value);
+            setCookieStatus("idle");
+            setCookieMessage("");
+          }}
           className="mb-4 min-h-[100px]"
         />
-        <Button
-          onClick={handleUpdateCookies}
-          disabled={updatingCookies || !cookies}
-          className="w-full sm:w-auto"
-        >
-          {updatingCookies ? "更新中..." : "更新 Cookies"}
-        </Button>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button
+            onClick={handleValidateCookies}
+            disabled={!cookies || cookieStatus === "checking"}
+            className="w-full sm:w-auto"
+            variant="outline"
+          >
+            {cookieStatus === "checking" ? "验证中..." : "验证 Cookies"}
+          </Button>
+          <Button
+            onClick={handleUpdateCookies}
+            disabled={updatingCookies || !cookies || cookieStatus !== "valid"}
+            className="w-full sm:w-auto"
+          >
+            {updatingCookies ? "更新中..." : "更新 Cookies"}
+          </Button>
+          {cookieMessage && (
+            <span
+              className={`text-sm ${
+                cookieStatus === "valid" ? "text-emerald-600" : "text-red-600"
+              }`}
+            >
+              {cookieMessage}
+            </span>
+          )}
+        </div>
       </div>
       <Toaster />
     </div>

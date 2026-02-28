@@ -11,12 +11,32 @@ import { BlogMetaForm } from "./blog-meta-form";
 import BlogMetaPopup from "./blog-meta-popup";
 import { clsx } from "clsx";
 import { getHierarchicalIndexes, TableOfContents } from "@tiptap-pro/extension-table-of-contents";
-import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck } from "lucide-react";
+import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck, Trash2 } from "lucide-react";
 import { ToC } from "./toc";
+import EditorToolbar from "./editor-toolbar";
+import { deleteArticleAction } from "@/actions/article";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 const BlogEditor = ({ post }) => {
   const user = useContext(UserContext);
   const [items, setItems] = useState([]);
   const [editable, setEditable] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const router = useRouter();
+  const { toast } = useToast();
+
   const editor = useEditor({
     editable: editable,
     extensions: [
@@ -30,7 +50,7 @@ const BlogEditor = ({ post }) => {
     ],
     editorProps: {
       attributes: {
-        class: clsx("focus:outline-none py-4", editable && "border-2"),
+        class: clsx("focus:outline-none py-4", editable && "border-2 rounded-lg p-4"),
       },
     },
     content: post.postcontent.content,
@@ -41,6 +61,25 @@ const BlogEditor = ({ post }) => {
       return !e;
     });
   };
+
+  const handleDelete = async () => {
+    setIsDeleting(true);
+    try {
+      const resp = await deleteArticleAction(post.id);
+      toast({
+        title: resp.code === 200 ? "成功" : "失败",
+        description: resp.message,
+      });
+      if (resp.code === 200) {
+        router.push("/blogs");
+      }
+    } catch {
+      toast({ title: "错误", description: "删除失败" });
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   if (!editor) {
     return null;
   }
@@ -62,11 +101,11 @@ const BlogEditor = ({ post }) => {
 
             <span className="inline-flex items-center gap-1">
               <BarChart2 className="h-4 w-4" />
-              {editor.storage.characterCount.words()}
+              {editor.storage.characterCount.words()} 字
             </span>
             <span className="inline-flex items-center gap-1">
-              <Clock className="h-4 w-4" />
-              {(editor.storage.characterCount.words() / 200).toFixed(0)}分钟阅读
+              <Clock className="h-4 w-4" />约{" "}
+              {Math.max(1, Math.round(editor.storage.characterCount.words() / 200))} 分钟阅读
             </span>
           </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -85,27 +124,68 @@ const BlogEditor = ({ post }) => {
           <p className="text-xl italic text-muted-foreground">{post.description}</p>
         </div>
         {user && (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="outline"
-                  onClick={editContent}
-                  disabled={!user.isAuth}
-                  className="mb-8 mr-8"
-                >
-                  {editable ? <PencilOff /> : <Pencil />} {editable ? "只读" : "编辑"}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{editable ? "只读" : "编辑"}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <div className="flex flex-wrap items-center gap-2">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="outline" size="sm" onClick={editContent} disabled={!user.isAuth}>
+                    {editable ? (
+                      <PencilOff className="mr-1 h-4 w-4" />
+                    ) : (
+                      <Pencil className="mr-1 h-4 w-4" />
+                    )}
+                    {editable ? "退出编辑" : "编辑"}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{editable ? "切换到只读模式" : "切换到编辑模式"}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+            {editable && (
+              <BlogMetaPopup editor={editor}>
+                <BlogMetaForm content={JSON.stringify(editor.getJSON())} meta={post} />
+              </BlogMetaPopup>
+            )}
+            {user.isAuth && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-destructive hover:text-destructive"
+                  >
+                    <Trash2 className="mr-1 h-4 w-4" />
+                    删除
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>确认删除文章？</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      将永久删除「{post.title}」，此操作无法撤销。
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>取消</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      disabled={isDeleting}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {isDeleting ? "删除中..." : "确认删除"}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            )}
+          </div>
         )}
-        {user && editable && (
-          <BlogMetaPopup editor={editor}>
-            <BlogMetaForm content={JSON.stringify(editor.getJSON())} meta={post} />
-          </BlogMetaPopup>
+
+        {editable && (
+          <div className="sticky top-16 z-40">
+            <EditorToolbar editor={editor} />
+          </div>
         )}
+
         {post.cover && (
           <div className="my-8 overflow-hidden border duration-1000 animate-in fade-in zoom-in">
             <div className="relative aspect-[2/1]">

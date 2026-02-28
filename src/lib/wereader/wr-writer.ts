@@ -75,7 +75,8 @@ const creatManyBooks = async (books, bookProgress) => {
   console.log(result.count + " is insert into db");
 };
 const updateOrInsertBooks = async (books, bookProgress) => {
-  let documents = [];
+  const documentsMap = new Map();
+
   books.forEach(b => {
     const {
       bookId,
@@ -91,7 +92,7 @@ const updateOrInsertBooks = async (books, bookProgress) => {
       finishReading,
     } = b;
     const ISODate = publishTime ? new Date(publishTime).toISOString() : null;
-    documents.push({
+    documentsMap.set(bookId, {
       bookId,
       title,
       author,
@@ -105,28 +106,20 @@ const updateOrInsertBooks = async (books, bookProgress) => {
       finishReading,
     });
   });
+
   bookProgress.forEach(bp => {
     const { bookId, progress, updateTime, readingTime } = bp;
-    let doc = documents.find(d => d.bookId === bookId);
-    if (doc.bookId) {
-      doc.readProgress = {
-        progress,
-        updateTime,
-        readingTime,
-      };
-    } else {
-      doc = {
-        bookId,
-        readProgress: {
-          id: bookId,
-          progress,
-          updateTime,
-          readingTime,
-        },
-      };
-    }
-    documents.push(doc);
+    const existing = documentsMap.get(bookId) || { bookId };
+    existing.readProgress = {
+      id: bookId,
+      progress,
+      updateTime,
+      readingTime,
+    };
+    documentsMap.set(bookId, existing);
   });
+
+  const documents = Array.from(documentsMap.values());
   const dbResult = await Promise.all(
     documents.map(doc =>
       prisma.wRBookShelt.upsert({
@@ -144,6 +137,11 @@ const syncWRBookShelf = async () => {
 
     const wrResponse = await getShelf(syncId);
     const { books, bookProgress, synckey } = wrResponse;
+
+    if (!Array.isArray(books) || !Array.isArray(bookProgress)) {
+      throw new Error("Invalid shelf response format");
+    }
+
     if (syncId === "0") {
       //create many
       await creatManyBooks(books, bookProgress);

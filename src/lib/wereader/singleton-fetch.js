@@ -91,27 +91,62 @@ class MyFetch {
       console.log("No Set-Cookie header received from server during syncCookies.");
     }
   }
+  /**
+   * Parse vid/skey from cookie string for mobile API auth (i.weread.qq.com)
+   */
+  _parseMobileAuth() {
+    const cookieMap = {};
+    if (this.cookieStr) {
+      this.cookieStr.split(";").forEach(pair => {
+        const [key, ...vals] = pair.trim().split("=");
+        if (key) cookieMap[key.trim()] = vals.join("=").trim();
+      });
+    }
+    return {
+      vid: cookieMap["wr_vid"] || "",
+      skey: cookieMap["wr_skey"] || "",
+    };
+  }
+
   async request(url) {
     if (!this.cookieJar) {
       await this.init();
     }
-    try {
-      await this.syncCookies();
-    } catch (error) {
-      console.error("syncCookies failed:", error);
+
+    const isMobileApi = url.includes("i.weread.qq.com");
+    const headers = { "Content-type": "application/json" };
+
+    if (isMobileApi) {
+      // Mobile API: use vid/skey HTTP headers
+      const { vid, skey } = this._parseMobileAuth();
+      if (!vid || !skey) {
+        throw new Error("WeRead mobile auth missing. Set wr_vid and wr_skey in cookie token.");
+      }
+      headers.vid = vid;
+      headers.skey = skey;
+      headers["User-Agent"] = "WeRead/10.0.3 (iPhone; iOS 26.3; Scale/3.00)";
+      if (this.cookieStr) {
+        headers.cookie = this.cookieStr;
+      }
+    } else {
+      // Web API: use cookie-based auth
+      try {
+        await this.syncCookies();
+      } catch (error) {
+        console.error("syncCookies failed:", error);
+      }
+      const cookies = await this.cookieJar.getCookies(WEREAD_URL);
+      const updatedCookie = cookies.map(c => c.cookieString()).join(";");
+      if (!updatedCookie) {
+        throw new Error("WeRead cookie is missing. Update cookie token first.");
+      }
+      headers.cookie = updatedCookie;
+      headers["User-Agent"] =
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36";
     }
-    const cookies = await this.cookieJar.getCookies(WEREAD_URL);
-    const updatedCookie = cookies.map(c => c.cookieString()).join(";");
-    if (!updatedCookie) {
-      throw new Error("WeRead cookie is missing. Update cookie token first.");
-    }
+
     const response = await fetch(url, {
-      headers: {
-        cookie: updatedCookie,
-        "User-Agent":
-          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36",
-        "Content-type": "application/json",
-      },
+      headers,
       credentials: "include",
       redirect: "follow",
     });
@@ -123,14 +158,25 @@ class MyFetch {
     return await response.json();
   }
 }
-const fetchInstance = async () => {
-  const fetch = new MyFetch();
 
-  await fetch.init();
-  // await fetch.syncCookies(WEREAD_URL);
-  return () => fetch;
+let singletonPromise = null;
+
+const getSingleton = async () => {
+  if (!singletonPromise) {
+    singletonPromise = (async () => {
+      const fetchClient = new MyFetch();
+      await fetchClient.init();
+      return fetchClient;
+    })();
+  }
+  return singletonPromise;
 };
-//When the project initial , the fetchInstance is executed,this should improve.
-const Singleton = (await fetchInstance())();
-// const Singleton = await fetchInstance();
+
+const Singleton = {
+  async request(url) {
+    const fetchClient = await getSingleton();
+    return await fetchClient.request(url);
+  },
+};
+
 export default Singleton;

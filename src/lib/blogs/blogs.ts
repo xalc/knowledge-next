@@ -1,6 +1,6 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
 import { cache } from "react";
+
 const getPosts = cache(async () => {
   try {
     const allPosts = await prisma.post.findMany({
@@ -8,14 +8,13 @@ const getPosts = cache(async () => {
         createdAt: "desc",
       },
     });
-    console.log("get posts from db without cache");
     return allPosts;
   } catch (e) {
-    console.error(e);
-  } finally {
-    await prisma.$disconnect();
+    console.error("Failed to fetch posts:", e);
+    return [];
   }
 });
+
 const getRecentPosts = cache(async () => {
   try {
     const allPosts = await prisma.post.findMany({
@@ -24,12 +23,10 @@ const getRecentPosts = cache(async () => {
       },
       take: 8,
     });
-    console.log("get posts from db without cache");
     return allPosts;
   } catch (e) {
-    console.error(e);
-  } finally {
-    await prisma.$disconnect();
+    console.error("Failed to fetch recent posts:", e);
+    return [];
   }
 });
 
@@ -42,7 +39,6 @@ const getPost = cache(async (slug: string) => {
       postcontent: true,
     },
   });
-  console.log("get post from db without cache");
   return post;
 });
 
@@ -54,7 +50,6 @@ const getAllTags = cache(async () => {
       },
     });
 
-    // 统计标签出现次数
     const tagCount = new Map<string, number>();
     posts.forEach(post => {
       const tags = post.metadata?.tags || [];
@@ -63,18 +58,16 @@ const getAllTags = cache(async () => {
       });
     });
 
-    // 转换为所需格式并按数量排序
     const tags = Array.from(tagCount.entries())
       .map(([tag, count]) => ({ tag, count }))
       .sort((a, b) => b.count - a.count);
 
     return tags;
   } catch (e) {
-    console.error(e);
+    console.error("Failed to fetch tags:", e);
     return [];
-  } finally {
-    await prisma.$disconnect();
   }
 });
+
 export const revalidate = 60;
 export { getPosts, getPost, getRecentPosts, getAllTags };

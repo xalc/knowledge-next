@@ -1,9 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { COOKIES_TOKENS, READING_TIME_SYNC_KEY } from "./constant";
 
 import moment from "moment";
 
-const prisma = new PrismaClient();
 export async function getWRToken(): Promise<string> {
   try {
     const cookies = await prisma.wRMeta.findUnique({
@@ -12,8 +11,6 @@ export async function getWRToken(): Promise<string> {
     return cookies.keyValue;
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -25,8 +22,6 @@ export async function updateWRToken(token: string) {
     });
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 export async function getRecentBooks() {
@@ -40,8 +35,6 @@ export async function getRecentBooks() {
     return bookShelf;
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 export async function getAllBooks() {
@@ -54,8 +47,6 @@ export async function getAllBooks() {
     return bookShelf;
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 
@@ -75,8 +66,6 @@ export async function getReadingSummary() {
     return { summarys, lastSyncTime };
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
 }
 export async function getReadingSummaryByYear(year: number) {

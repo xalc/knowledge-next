@@ -3,6 +3,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPost, getPosts } from "@/lib/blogs/blogs";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
 export const revalidate = 60;
 export const dynamicParams = true;
 
@@ -14,15 +17,50 @@ export async function generateStaticParams() {
   }));
 }
 
-export default async function BlogPage({ params }) {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
   const slug = (await params).slug;
   const post = await getPost(slug);
+
+  if (!post) {
+    return { title: "文章未找到" };
+  }
+
+  return {
+    title: post.title,
+    description: post.description,
+    keywords: post.metadata.tags,
+    openGraph: {
+      title: post.title,
+      description: post.description,
+      type: "article",
+      publishedTime: post.createdAt.toISOString(),
+      modifiedTime: post.updatedAt.toISOString(),
+      tags: post.metadata.tags,
+      ...(post.cover && { images: [{ url: post.cover }] }),
+    },
+    twitter: {
+      card: post.cover ? "summary_large_image" : "summary",
+      title: post.title,
+      description: post.description,
+      ...(post.cover && { images: [post.cover] }),
+    },
+  };
+}
+
+export default async function BlogPage({ params }: { params: Promise<{ slug: string }> }) {
+  const slug = (await params).slug;
+  const post = await getPost(slug);
+
+  if (!post) {
+    notFound();
+  }
+
   return (
     <div className="container mx-auto">
-      <title>{post.title}</title>
-      <meta name="keywords" content={post.metadata.tags.toString()} />
-      <meta name="description" content={post.description} />
-
       <div className="mx-12 mt-8">
         <Button variant="ghost" className="mb-6 gap-2 pl-0" asChild>
           <Link href="/blogs">

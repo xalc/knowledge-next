@@ -1,3 +1,10 @@
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "我的书架",
+  description: "记录读过的每一本书，微信读书同步",
+};
+
 import { Button } from "@/components/ui/button";
 
 import Link from "next/link";

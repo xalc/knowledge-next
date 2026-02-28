@@ -1,8 +1,7 @@
 "use server";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { verifySession } from "@/lib/dal";
 
-const prisma = new PrismaClient();
 interface ResponseType {
   code: number;
   message: string;

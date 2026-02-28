@@ -1,8 +1,7 @@
 import { getWrReadingTimes, getShelf } from "@/lib/wereader/wereader-api";
-import { PrismaClient } from "@prisma/client";
+import prisma from "@/lib/prisma";
 import { READING_TIME_SYNC_KEY, BOOKS_SYNC_KEY, REGISTER_TIME_KEY } from "@/lib/wereader/constant";
 /* eslint-disable */
-const prisma = new PrismaClient();
 
 const getShelfSyncId = async () => {
   const shelfResult = await prisma.wRMeta.findFirst({

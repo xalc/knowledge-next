@@ -7,6 +7,17 @@ import { Toaster } from "@/components/ui/toaster";
 
 export default function DashboardPage() {
   const { toast } = useToast();
+  const captureCommand = "mitmdump -s scripts/weread_cookie_capture.py --set block_global=false";
+  const macIpCommand = "ifconfig en0 | grep \"inet \" | awk '{print $2}'";
+  const cookieFormat = "wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white";
+
+  const maskSensitive = (text: string) =>
+    text
+      .replace(/(wr_skey=)([^;\s]+)/gi, "$1***")
+      .replace(/(skey["'=: ]+)([^"'\s,}]+)/gi, "$1***")
+      .replace(/(wr_vid=)([^;\s]+)/gi, "$1***")
+      .replace(/(vid["'=: ]+)([^"'\s,}]+)/gi, "$1***");
+
   const [data, setData] = useState("");
   const [loading, setLoading] = useState(false);
   const [cookies, setCookies] = useState("");
@@ -26,7 +37,7 @@ export default function DashboardPage() {
       if (done) break;
 
       accumulatedData += decoder.decode(value);
-      setData(accumulatedData);
+      setData(maskSensitive(accumulatedData));
     }
     setLoading(false);
   };
@@ -45,9 +56,12 @@ export default function DashboardPage() {
       if (response.ok) {
         // Optionally, provide feedback to the user
         console.log("Cookies updated successfully");
+        setCookies("");
+        setCookieStatus("idle");
+        setCookieMessage("已更新并自动清空输入");
         toast({
           title: "成功",
-          description: "Cookies 更新成功！",
+          description: "Cookies 更新成功，已自动清空输入。",
         });
       } else {
         console.error("Failed to update cookies");
@@ -109,6 +123,23 @@ export default function DashboardPage() {
     }
   };
 
+  const handleCopy = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast({
+        title: "已复制",
+        description: `${label} 已复制到剪贴板。`,
+      });
+    } catch (error) {
+      console.error(`Copy ${label} failed:`, error);
+      toast({
+        variant: "destructive",
+        title: "复制失败",
+        description: `请手动复制${label}。`,
+      });
+    }
+  };
+
   return (
     <div className="container mx-auto space-y-8 p-4">
       <div className="rounded-lg border p-6 shadow-md">
@@ -163,6 +194,52 @@ export default function DashboardPage() {
               {cookieMessage}
             </span>
           )}
+        </div>
+      </div>
+
+      <div className="rounded-lg border p-6 shadow-md">
+        <h2 className="mb-2 text-xl font-semibold">Cookie 获取指南（手机抓包）</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          当 Cookie 失效时，按以下步骤重新抓取。脚本抓到有效 vid/skey
+          后会自动复制到剪贴板并自动退出。
+          页面不会展示你的本机绝对路径，同步日志会对敏感字段做脱敏显示。
+        </p>
+
+        <ol className="mb-4 list-decimal space-y-3 pl-5 text-sm">
+          <li>
+            启动抓包命令：
+            <div className="mt-2 break-all rounded-md bg-muted p-3 font-mono text-xs">
+              {captureCommand}
+            </div>
+            <Button
+              variant="outline"
+              className="mt-2"
+              onClick={() => handleCopy(captureCommand, "抓包命令")}
+            >
+              复制抓包命令
+            </Button>
+          </li>
+          <li>
+            获取 Mac IP 并配置手机 Wi-Fi 代理（服务器=Mac IP，端口=8080）：
+            <div className="mt-2 break-all rounded-md bg-muted p-3 font-mono text-xs">
+              {macIpCommand}
+            </div>
+            <Button
+              variant="outline"
+              className="mt-2"
+              onClick={() => handleCopy(macIpCommand, "IP 查询命令")}
+            >
+              复制 IP 查询命令
+            </Button>
+          </li>
+          <li>打开微信读书 App（书架/阅读页），触发 i.weread.qq.com 请求。</li>
+          <li>抓包成功后，直接粘贴剪贴板内容到上方输入框，先“验证 Cookies”再“更新 Cookies”。</li>
+          <li>抓包结束后，记得关闭手机代理。</li>
+        </ol>
+
+        <div className="rounded-md bg-muted p-3 text-xs">
+          <p className="mb-2 font-medium">标准 Cookie 格式</p>
+          <p className="break-all font-mono">{cookieFormat}</p>
         </div>
       </div>
       <Toaster />

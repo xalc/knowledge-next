@@ -14,16 +14,16 @@ class MyFetch {
     if (!this.cookieStr) {
       return;
     }
-    cookieStr
+    const parts = cookieStr
       .split(";")
       .map(c => c.trim())
-      .filter(Boolean)
-      .forEach(async c => {
-        const cookie = Cookie.parse(c);
-        if (cookie) {
-          await this.cookieJar.setCookie(cookie, WEREAD_URL);
-        }
-      });
+      .filter(Boolean);
+    for (const c of parts) {
+      const cookie = Cookie.parse(c);
+      if (cookie) {
+        await this.cookieJar.setCookie(cookie, WEREAD_URL);
+      }
+    }
   }
 
   async syncCookies() {
@@ -163,11 +163,17 @@ let singletonPromise = null;
 
 const getSingleton = async () => {
   if (!singletonPromise) {
-    singletonPromise = (async () => {
+    const currentPromise = (async () => {
       const fetchClient = new MyFetch();
       await fetchClient.init();
       return fetchClient;
     })();
+    currentPromise.catch(() => {
+      if (singletonPromise === currentPromise) {
+        singletonPromise = null;
+      }
+    });
+    singletonPromise = currentPromise;
   }
   return singletonPromise;
 };

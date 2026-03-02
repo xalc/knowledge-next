@@ -9,14 +9,7 @@ const getPosts = unstable_cache(
           createdAt: "desc",
         },
       });
-      console.log("get posts from db without cache");
-      return allPosts;
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
-  },
-  ["posts"],
+      console.log("loading posts from db (cache miss)");
   { revalidate: 60, tags: ["posts"] },
 );
 
@@ -29,14 +22,7 @@ const getRecentPosts = unstable_cache(
         },
         take: 8,
       });
-      console.log("get posts from db without cache");
-      return allPosts;
-    } catch (e) {
-      console.error(e);
-      return [];
-    }
-  },
-  ["recent-posts"],
+      console.log("loading recent posts from db (cache miss)");
   { revalidate: 60, tags: ["posts"] },
 );
 
@@ -51,7 +37,7 @@ const getPost = unstable_cache(
           postcontent: true,
         },
       });
-      console.log("get post from db without cache");
+      console.log("loading post from db (cache miss)");
       return post;
     } catch (e) {
       console.error(e);

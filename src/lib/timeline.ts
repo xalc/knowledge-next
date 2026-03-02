@@ -13,7 +13,7 @@ export const getTimelines = unstable_cache(
           time: "asc",
         },
       });
-      console.log("获取时间轴数据，无缓存");
+      console.log("loading timeline data from db (cache miss)");
       return timelines;
     } catch (e) {
       console.error(e);
@@ -37,7 +37,7 @@ export const getRecentTimelines = unstable_cache(
         },
         take: count,
       });
-      console.log("获取最近时间轴数据，无缓存");
+      console.log("loading recent timeline data from db (cache miss)");
       return timelines;
     } catch (e) {
       console.error(e);
@@ -60,7 +60,7 @@ export const getTimelineById = unstable_cache(
           id: id,
         },
       });
-      console.log("获取单个时间轴数据，无缓存");
+      console.log("loading timeline by id from db (cache miss)");
       return timeline;
     } catch (e) {
       console.error(e);
@@ -88,7 +88,7 @@ export const getTimelinesByYear = unstable_cache(
           time: "asc",
         },
       });
-      console.log(`获取${year}年时间轴数据，无缓存`);
+      console.log(`loading timeline for year ${year} from db (cache miss)`);
       return timelines;
     } catch (e) {
       console.error(e);

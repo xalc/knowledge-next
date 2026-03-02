@@ -90,9 +90,7 @@ export async function POST(request: Request) {
       readTimesCount: readTimes ? Object.keys(readTimes).length : 0,
       readTimesPreview,
       readTimesTailPreview,
-      parsedBody: parsed,
       rawLength: rawText.length,
-      rawSample: rawText.slice(0, 2000),
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";

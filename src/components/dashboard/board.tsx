@@ -22,9 +22,9 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [cookies, setCookies] = useState("");
   const [updatingCookies, setUpdatingCookies] = useState(false);
-  const [cookieStatus, setCookieStatus] = useState<"idle" | "checking" | "valid" | "invalid">(
-    "idle",
-  );
+  const [cookieStatus, setCookieStatus] = useState<
+    "idle" | "checking" | "valid" | "invalid" | "success"
+  >("idle");
   const [cookieMessage, setCookieMessage] = useState("");
   const handleStream = async () => {
     setLoading(true);
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         // Optionally, provide feedback to the user
         console.log("Cookies updated successfully");
         setCookies("");
-        setCookieStatus("idle");
+        setCookieStatus("success");
         setCookieMessage("已更新并自动清空输入");
         toast({
           title: "成功",
@@ -188,7 +188,9 @@ export default function DashboardPage() {
           {cookieMessage && (
             <span
               className={`text-sm ${
-                cookieStatus === "valid" ? "text-emerald-600" : "text-red-600"
+                cookieStatus === "valid" || cookieStatus === "success"
+                  ? "text-emerald-600"
+                  : "text-red-600"
               }`}
             >
               {cookieMessage}

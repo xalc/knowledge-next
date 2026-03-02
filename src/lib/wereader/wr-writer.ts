@@ -27,7 +27,7 @@ const getShelfSyncId = async () => {
       keyName: BOOKS_SYNC_KEY,
     },
   });
-  const syncId = shelfResult.keyValue;
+  const syncId = shelfResult?.keyValue ?? "0";
   return syncId;
 };
 const updateSyncId = async (syncKey, logger: SyncLogger) => {
@@ -181,37 +181,18 @@ const syncWRReadingtimeSummary = async (logger: SyncLogger) => {
     throw new Error("Invalid reading summary response format");
   }
 
-  const readingTimeRecord = await prisma.wRReadingSummary.findMany({});
-  let created = 0;
-  let updated = 0;
-  let skipped = 0;
+  const entries = Object.entries(readTimes);
+  await Promise.all(
+    entries.map(([key, value]) =>
+      prisma.wRReadingSummary.upsert({
+        where: { id: key },
+        update: { readingSeconds: Number(value) },
+        create: { id: key, readingSeconds: Number(value) },
+      }),
+    ),
+  );
+  logger(`upserted ${entries.length} reading summary records`);
 
-  for (let [key, value] of Object.entries(readTimes)) {
-    const find = readingTimeRecord.find(record => record.id === key);
-    if (!find) {
-      const result = await prisma.wRReadingSummary.create({
-        data: {
-          id: key,
-          readingSeconds: Number(value),
-        },
-      });
-      created++;
-      logger(`record ${result.id} is added with ${result.readingSeconds}`);
-    } else if (find && find.readingSeconds !== value) {
-      const result = await prisma.wRReadingSummary.update({
-        where: {
-          id: key,
-        },
-        data: {
-          readingSeconds: value,
-        },
-      });
-      updated++;
-      logger(`record ${result.id} is updated with ${result.readingSeconds}`);
-    } else {
-      skipped++;
-    }
-  }
   const bactchUpdated = await Promise.all([
     prisma.wRMeta.upsert({
       where: { keyName: READING_TIME_SYNC_KEY },
@@ -228,10 +209,7 @@ const syncWRReadingtimeSummary = async (logger: SyncLogger) => {
   bactchUpdated.forEach(result => logger(`update ${result.keyName} with ${result.keyValue}`));
 
   return {
-    total: Object.keys(readTimes).length,
-    created,
-    updated,
-    skipped,
+    total: entries.length,
     synckey: String(synckey),
     registTime: String(registTime),
   };
@@ -255,7 +233,7 @@ export const syncWRDataToDB = async (logger: SyncLogger = defaultLogger) => {
 
   try {
     const readingResult = await syncWRReadingtimeSummary(logger);
-    const details = `total=${readingResult.total}, created=${readingResult.created}, updated=${readingResult.updated}, skipped=${readingResult.skipped}, synckey=${readingResult.synckey}`;
+    const details = `total=${readingResult.total}, synckey=${readingResult.synckey}`;
     logger(`[SYNC][readingSummary] success: ${details}`);
     steps.push({ step: "readingSummary", ok: true, details });
   } catch (error) {
@@ -265,7 +243,9 @@ export const syncWRDataToDB = async (logger: SyncLogger = defaultLogger) => {
   }
 
   const allOk = steps.every(step => step.ok);
-  revalidateTag("wereader");
+  if (steps.some(step => step.ok)) {
+    revalidateTag("wereader");
+  }
 
   const result: SyncWRResult = {
     ok: allOk,

@@ -16,6 +16,23 @@ const COOKIES_TOKENS = "cookieToken";
 const READING_TIME_SYNC_KEY = "readingTime";
 const REGISTER_TIME_KEY = "registerTime";
 
+type LogMeta = Record<string, unknown>;
+
+function writeLog(level: "INFO" | "WARN" | "ERROR", message: string, meta?: LogMeta) {
+  const prefix = `[sync-reading-summary] [${level}]`;
+  if (!meta) {
+    console.log(`${prefix} ${message}`);
+    return;
+  }
+  console.log(`${prefix} ${message} ${JSON.stringify(meta)}`);
+}
+
+function maskToken(value: string) {
+  if (!value) return "";
+  if (value.length <= 8) return "***";
+  return `${value.slice(0, 4)}***${value.slice(-4)}`;
+}
+
 /** 从数据库读取 cookie 字符串并解析出 vid/skey */
 function parseMobileAuth(cookieStr: string) {
   const map: Record<string, string> = {};
@@ -33,18 +50,24 @@ async function main() {
   });
   const cookieStr = tokenRow?.keyValue ?? "";
   if (!cookieStr) {
-    console.error("❌ 数据库中没有 cookieToken，请先运行抓包并更新 Token");
-    process.exit(1);
+    writeLog("ERROR", "Missing required token in database.", { keyName: COOKIES_TOKENS });
+    throw new Error("Missing required token in database.");
   }
 
   const { vid, skey } = parseMobileAuth(cookieStr);
   if (!vid || !skey) {
-    console.error("❌ cookieToken 中缺少 wr_vid 或 wr_skey");
-    console.error("   当前值:", cookieStr);
-    process.exit(1);
+    writeLog("ERROR", "Mobile auth headers are missing in cookie token.", {
+      hasWrVid: Boolean(vid),
+      hasWrSkey: Boolean(skey),
+      cookieLength: cookieStr.length,
+    });
+    throw new Error("Mobile auth headers are missing in cookie token.");
   }
 
-  console.log(`📖 使用 vid=${vid} 请求阅读时长数据...`);
+  writeLog("INFO", "Requesting reading summary from mobile API.", {
+    vid: maskToken(vid),
+    endpoint: READING_TIMES_URL,
+  });
 
   // 2. 调用微信读书移动端 API
   const response = await fetch(`${READING_TIMES_URL}?synckey=0`, {
@@ -58,29 +81,35 @@ async function main() {
   });
 
   if (!response.ok) {
-    console.error(`❌ API 请求失败: ${response.status} ${response.statusText}`);
-    process.exit(1);
+    writeLog("ERROR", "Reading summary request failed.", {
+      status: response.status,
+      statusText: response.statusText,
+    });
+    throw new Error(`Reading summary request failed: ${response.status}`);
   }
 
   const data = await response.json();
 
   if (data.errcode) {
-    console.error(`❌ API 返回错误: ${data.errcode} - ${data.errmsg}`);
+    writeLog("ERROR", "Reading summary API returned an error.", {
+      errcode: data.errcode,
+      errmsg: data.errmsg,
+    });
     if (data.errcode === -2010) {
-      console.error("   Token 可能已过期，请重新抓包获取");
+      writeLog("WARN", "Token may be expired. Refresh cookie token from capture.");
     }
-    process.exit(1);
+    throw new Error(`Reading summary API returned errcode ${data.errcode}`);
   }
 
   const { registTime, synckey, readTimes } = data;
 
   if (!readTimes || typeof readTimes !== "object") {
-    console.error("❌ 返回数据中没有 readTimes 字段");
-    process.exit(1);
+    writeLog("ERROR", "Invalid API payload: readTimes is missing.");
+    throw new Error("Invalid API payload: readTimes is missing.");
   }
 
   const entries = Object.entries(readTimes) as [string, number][];
-  console.log(`✅ 获取到 ${entries.length} 条阅读记录`);
+  writeLog("INFO", "Reading summary payload parsed.", { records: entries.length });
 
   // 3. 读取数据库中已有的记录
   const existingRecords = await prisma.wRReadingSummary.findMany();
@@ -136,17 +165,20 @@ async function main() {
     }),
   ]);
 
-  console.log(`\n📊 同步完成:`);
-  console.log(`   新增: ${created} 条`);
-  console.log(`   更新: ${updated} 条`);
-  console.log(`   跳过: ${skipped} 条 (无变化)`);
-  console.log(`   synckey: ${synckey}`);
-  console.log(`   registTime: ${registTime}`);
+  writeLog("INFO", "Synchronization completed.", {
+    created,
+    updated,
+    skipped,
+    synckey: String(synckey),
+    registTime: String(registTime),
+  });
 }
 
 main()
   .catch(err => {
-    console.error("❌ 脚本执行失败:", err);
-    process.exit(1);
+    writeLog("ERROR", "Script execution failed.", {
+      message: err instanceof Error ? err.message : String(err),
+    });
+    process.exitCode = 1;
   })
   .finally(() => prisma.$disconnect());

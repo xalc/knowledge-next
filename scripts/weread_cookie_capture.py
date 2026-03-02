@@ -19,6 +19,23 @@ CAPTURED = False
 AUTH_HEADERS = ["vid", "accesstoken", "skey", "wr_skey", "wr_vid", "baseapi", "appver", "osver"]
 
 
+def log(level: str, message: str, **meta) -> None:
+    now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    prefix = f"[weread-cookie-capture] [{level}] [{now}]"
+    if meta:
+        print(f"{prefix} {message} {json.dumps(meta, ensure_ascii=False)}")
+    else:
+        print(f"{prefix} {message}")
+
+
+def mask_value(value: str) -> str:
+    if not value:
+        return ""
+    if len(value) <= 8:
+        return "***"
+    return f"{value[:4]}***{value[-4:]}"
+
+
 def parse_cookie_string(cookie_str: str) -> dict:
     cookie_map = {}
     if not cookie_str:
@@ -91,34 +108,21 @@ def request(flow: http.HTTPFlow) -> None:
     if not found_auth:
         return
 
-    # 打印请求信息
-    print("\n" + "=" * 70)
-    print(f"🎯 捕获到 i.weread.qq.com 认证请求!")
-    print(f"   URL: {flow.request.url}")
-    print(f"   Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"=" * 70)
+    log("INFO", "Captured candidate auth request.", host=host, url=flow.request.url)
+    log(
+        "INFO",
+        "Detected auth headers.",
+        headerKeys=sorted(found_auth.keys()),
+        headerPreview={k: mask_value(v) for k, v in found_auth.items()},
+    )
 
-    # 打印认证相关 Header
-    print("\n🔑 认证 Headers:")
-    for key, val in found_auth.items():
-        display_val = val if len(val) < 50 else val[:47] + "..."
-        print(f"   {key}: {display_val}")
-
-    # 打印 Cookie（如有）
     cookie_header = all_headers.get("cookie", "")
-    if cookie_header:
-        print(f"\n🍪 Cookie: {cookie_header[:80]}{'...' if len(cookie_header) > 80 else ''}")
+    log("INFO", "Cookie header inspected.", hasCookie=bool(cookie_header), cookieLength=len(cookie_header))
 
-    # 构建可用于 API 请求的完整 header 集合
-    useful_headers = {}
     lower_headers = {}
     for key, value in all_headers.items():
         lower_key = key.lower()
         lower_headers[lower_key] = value
-        # 跳过 mitmproxy 内部和不需要的头
-        if lower_key in ("host", "connection", "accept-encoding", "content-length"):
-            continue
-        useful_headers[key] = value
 
     # 构建标准化 Cookie：去重 + 分号分隔 + 固定关键字段顺序
     cookie_map = parse_cookie_string(cookie_header)
@@ -127,7 +131,7 @@ def request(flow: http.HTTPFlow) -> None:
 
     # 只有拿到 vid+skey 才认为抓包成功
     if not vid or not skey:
-        print("⚠️  未检测到完整认证信息（vid/skey），继续等待...")
+        log("WARN", "Incomplete mobile auth headers, waiting for next request.", hasVid=bool(vid), hasSkey=bool(skey))
         return
 
     if vid:
@@ -141,10 +145,11 @@ def request(flow: http.HTTPFlow) -> None:
     save_data = {
         "captured_at": datetime.now().isoformat(),
         "url": flow.request.url,
-        "auth_headers": found_auth,
-        "all_headers": useful_headers,
-        "original_cookie": cookie_header,
-        "constructed_cookie": constructed_cookie,
+        "auth_header_keys": sorted(found_auth.keys()),
+        "auth_headers_masked": {k: mask_value(v) for k, v in found_auth.items()},
+        "cookie_length": len(cookie_header),
+        "constructed_cookie_length": len(constructed_cookie),
+        "constructed_cookie_preview": mask_value(constructed_cookie),
     }
 
     with open(HEADERS_FILE, "w", encoding="utf-8") as f:
@@ -154,19 +159,16 @@ def request(flow: http.HTTPFlow) -> None:
     with open(COOKIE_FILE, "w", encoding="utf-8") as f:
         f.write(constructed_cookie)
 
-    print(f"\n✅ Headers 已保存到: {HEADERS_FILE}")
-    print(f"✅ Cookie 已保存到: {COOKIE_FILE}")
-    print(f"📏 标准化 Cookie: {constructed_cookie[:80]}{'...' if len(constructed_cookie) > 80 else ''}")
+    log("INFO", "Capture metadata written.", file=HEADERS_FILE)
+    log("INFO", "Standardized cookie written.", file=COOKIE_FILE, cookieLength=len(constructed_cookie))
 
     copied = copy_to_clipboard(constructed_cookie)
     if copied:
-        print("📋 已复制标准化 Cookie 到剪贴板")
+        log("INFO", "Standardized cookie copied to clipboard.")
     else:
-        print("⚠️  复制到剪贴板失败，请手动从 weread_cookie.txt 复制")
+        log("WARN", "Clipboard copy failed. Use weread_cookie.txt instead.")
 
     if not CAPTURED:
         CAPTURED = True
-        print("\n" + "=" * 70)
-        print("🎉 首次成功捕获认证信息！已自动复制并准备退出抓包")
-        print("=" * 70)
+        log("INFO", "First successful capture completed. Shutting down mitmproxy.")
         ctx.master.shutdown()

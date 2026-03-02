@@ -37,7 +37,6 @@
 - 脚本
   - `scripts/weread_cookie_capture.py`：mitmproxy 抓包脚本
   - `scripts/sync-reading-summary.ts`：同步 reading summary 到 DB
-  - `scripts/update-token.ts`：手动更新 DB 里的 `cookieToken`
 
 ---
 
@@ -56,6 +55,14 @@ wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white
 
 ---
 
+## 3.1 隐私与安全约束
+
+1. 不要在日志、Issue、聊天记录中粘贴完整 `cookieToken`。
+2. 只允许在本地受控环境保存 `scripts/weread_cookie.txt`，并按需清理。
+3. 调试输出统一使用脱敏格式（仅长度或掩码），禁止打印原始认证值。
+
+---
+
 ## 4. 网页端使用流程
 
 页面：Dashboard（组件在 `src/components/dashboard/board.tsx`）
@@ -68,10 +75,9 @@ wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white
 4. 点“立即同步”
    - 调用：`GET /api/dashboard`
 
-- 同步书架 + 阅读统计（reading summary）
+- 默认同步书架数据
+- `reading summary` 建议通过 `scripts/sync-reading-summary.ts` 单独同步
 - 页面会流式显示日志，包含每一步的成功/失败信息及最终结构化结果
-
-> 说明：`/api/dashboard` 现在会依次执行 `bookshelf` 和 `readingSummary` 两个步骤；即使某一步失败，也会继续输出完整日志并给出汇总结果。
 
 ---
 
@@ -134,13 +140,13 @@ brew install mitmproxy
 ### 7.2 启动抓包脚本
 
 ```bash
-cd /Users/chao/Documents/coding/knowledge-next
+cd <project-root>
 mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ```
 
 > 脚本新行为：抓到完整 `vid + skey` 后会自动：
 >
-> 1. 写入 `scripts/weread_headers.json`
+> 1. 写入 `scripts/weread_headers.json`（脱敏元数据）
 > 2. 写入标准化 `scripts/weread_cookie.txt`
 > 3. 复制标准化 cookie 到系统剪贴板
 > 4. 自动结束抓包进程
@@ -159,30 +165,20 @@ mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 
 ### 7.4 触发抓包
 
-打开微信读书 App，进入书架/阅读页，脚本会在控制台打印认证信息。抓包成功后会自动完成并退出，同时输出：
+打开微信读书 App，进入书架/阅读页。抓包成功后会自动完成并退出，同时输出：
 
 - `scripts/weread_headers.json`
 - `scripts/weread_cookie.txt`
 
-控制台关键成功标志：
+控制台关键成功标志（结构化日志）：
 
-- `📋 已复制标准化 Cookie 到剪贴板`
-- `🎉 首次成功捕获认证信息！已自动复制并准备退出抓包`
+- `[weread-cookie-capture] [INFO] Standardized cookie copied to clipboard.`
+- `[weread-cookie-capture] [INFO] First successful capture completed. Shutting down mitmproxy.`
 
 ### 7.5 写回数据库
 
-可选方式 A（网页）：
-
 - Dashboard 页面粘贴 `scripts/weread_cookie.txt` 内容
 - 依次点“验证 Cookies”“更新 Cookies”
-
-可选方式 B（脚本）：
-
-- 修改 `scripts/update-token.ts` 的 `newToken`
-- 执行：
-  ```bash
-  npx tsx scripts/update-token.ts
-  ```
 
 ### 7.6 清理代理（重要）
 
@@ -195,7 +191,7 @@ mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ## 7.7 一次性抓取命令（推荐）
 
 ```bash
-cd /Users/chao/Documents/coding/knowledge-next && mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
+cd <project-root> && mitmdump -s scripts/weread_cookie_capture.py --set block_global=false
 ```
 
 执行后不用手动 Ctrl+C：脚本在首次成功抓取后会自动退出。

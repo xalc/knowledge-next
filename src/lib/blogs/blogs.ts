@@ -13,6 +13,7 @@ const getPosts = unstable_cache(
       return allPosts;
     } catch (e) {
       console.error(e);
+      return [];
     }
   },
   ["posts"],
@@ -32,6 +33,7 @@ const getRecentPosts = unstable_cache(
       return allPosts;
     } catch (e) {
       console.error(e);
+      return [];
     }
   },
   ["recent-posts"],
@@ -40,16 +42,21 @@ const getRecentPosts = unstable_cache(
 
 const getPost = unstable_cache(
   async (slug: string) => {
-    const post = await prisma.post.findUnique({
-      where: {
-        slug: slug,
-      },
-      include: {
-        postcontent: true,
-      },
-    });
-    console.log("get post from db without cache");
-    return post;
+    try {
+      const post = await prisma.post.findUnique({
+        where: {
+          slug: slug,
+        },
+        include: {
+          postcontent: true,
+        },
+      });
+      console.log("get post from db without cache");
+      return post;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
   },
   ["post-by-slug"],
   { revalidate: 60, tags: ["posts"] },

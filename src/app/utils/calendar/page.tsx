@@ -2,30 +2,42 @@ import { Calendar } from "@/components/calendar/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import fs from "fs/promises";
 import path from "path";
+
 async function getHolidays() {
-  const date = new Date();
-  const year = date.getFullYear();
-  const filePath = path.join(process.cwd(), `public/holidays/${year}.json`);
   try {
+    const currentYear = new Date().getFullYear();
+    const holidaysDir = path.join(process.cwd(), "public/holidays");
+    const files = await fs.readdir(holidaysDir);
+    const availableYears = files
+      .map(file => Number(file.replace(".json", "")))
+      .filter(year => Number.isInteger(year))
+      .sort((a, b) => b - a);
+
+    if (availableYears.length === 0) {
+      return { holidays: [], year: currentYear };
+    }
+
+    const selectedYear = availableYears.includes(currentYear) ? currentYear : availableYears[0];
+    const filePath = path.join(holidaysDir, `${selectedYear}.json`);
     const jsonData = await fs.readFile(filePath, "utf-8");
     const holidays = JSON.parse(jsonData);
-    return { holidays, year };
+    return { holidays, year: selectedYear };
   } catch (error) {
     console.log("error fetching holidays", error);
-    throw error;
+    return { holidays: [], year: new Date().getFullYear() };
   }
 }
 export default async function CalendarPage() {
   const description =
-    "小型客车收费公路免费通行时间范围为春节、清明节、劳动节、国庆节4个国家法定节假日。根据国务院办公厅印发的《关于2025年部分节假日安排的通知》梳理发现，2025年共有24天，小型客车可享受高速公路免费通行政策。其中，春节8天、清明节3天、劳动节5天、国庆节8天。";
+    "小型客车收费公路免费通行时间范围为春节、清明节、劳动节、国庆节4个国家法定节假日。";
 
   const { holidays, year } = await getHolidays();
   return (
     <Card className="border-0 p-0 shadow-none">
       <CardHeader className="flex space-y-4">
-        <title>2025年假期高速日历</title>
+        <title>{year}年假期高速日历</title>
         <meta name="description" content={description} />
-        <CardTitle className="self-center text-2xl">2025年节假日日历</CardTitle>
+        <CardTitle className="self-center text-2xl">{year}年节假日日历</CardTitle>
         <div className="flex flex-wrap justify-end gap-4 text-sm">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1">

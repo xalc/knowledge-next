@@ -2,11 +2,10 @@
 
 import { FormState, SignupFormSchema } from "@/components/auth/signup";
 import { SignInFormState, SigninFormSchema } from "@/components/auth/signin";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";
-const prisma = new PrismaClient();
 
 export async function signup(state: FormState, formData: FormData) {
   const validatedFields = SignupFormSchema.safeParse({

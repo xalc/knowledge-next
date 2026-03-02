@@ -23,7 +23,7 @@ export default async function TopBadge() {
         </CardHeader>
         <CardContent>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {badges.slice(0, 4).map(badge => (
+            {badges.slice(0, 8).map(badge => (
               <BadgeCard key={badge.id} badge={badge} />
             ))}
           </div>

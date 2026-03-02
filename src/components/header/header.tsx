@@ -36,11 +36,9 @@ const ROUTES = [
 ];
 const LinkButton = ({ href, children, ...props }) => {
   return (
-    <Link href={href} legacyBehavior passHref>
-      <Button variant="ghost" {...props}>
-        {children}
-      </Button>
-    </Link>
+    <Button variant="ghost" asChild {...props}>
+      <Link href={href}>{children}</Link>
+    </Button>
   );
 };
 export default function Header() {

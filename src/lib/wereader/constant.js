@@ -1,4 +1,5 @@
 export const WEREAD_URL = "https://weread.qq.com";
+export const WEREAD_MOBILE_API = "https://i.weread.qq.com";
 export const BOOK_SHELF_URL = "https://i.weread.qq.com/shelf/sync";
 export const READING_TIMES = "https://i.weread.qq.com/readdata/summary";
 

@@ -3,11 +3,12 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPost, getPosts } from "@/lib/blogs/blogs";
+import { notFound } from "next/navigation";
 export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
-  const posts = await getPosts();
+  const posts = (await getPosts()) || [];
 
   return posts.map(post => ({
     slug: post.slug,
@@ -17,6 +18,10 @@ export async function generateStaticParams() {
 export default async function BlogPage({ params }) {
   const slug = (await params).slug;
   const post = await getPost(slug);
+  if (!post) {
+    notFound();
+  }
+
   return (
     <div className="container mx-auto">
       <title>{post.title}</title>

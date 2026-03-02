@@ -3,9 +3,8 @@ import "server-only";
 import { cookies } from "next/headers";
 import { decrypt } from "./session";
 import { cache } from "react";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import { UserType } from "@/context/user-provider";
-const prisma = new PrismaClient();
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;
   if (!cookie) return { isAuth: false };

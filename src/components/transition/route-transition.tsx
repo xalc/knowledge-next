@@ -11,13 +11,13 @@ export function RouteTransition({ children }: RouteTransitionProps) {
   const pathname = usePathname();
   const motionKey = pathname.split("/")[1];
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <AnimatePresence mode="sync" initial={false}>
       <motion.div
         key={motionKey}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
-          duration: 0.5,
+          duration: 0.25,
           ease: "easeInOut",
         }}
       >

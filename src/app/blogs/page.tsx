@@ -1,6 +1,8 @@
 import { getPosts, getAllTags } from "@/lib/blogs/blogs";
 import ClientTagFilter from "@/components/blogs/client-tag-filter";
 
+export const revalidate = 60;
+
 export default async function BlogsPage() {
   const [posts, tags] = await Promise.all([getPosts(), getAllTags()]);
 

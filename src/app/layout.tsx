@@ -9,17 +9,38 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/toaster";
 export const metadata: Metadata = {
-  title: "我的博客",
-  description: "技术即工具，专注前端和AI，个人即服务",
-  applicationName: "knowledge next",
+  title: {
+    default: "HunterX 博客 | 技术即工具",
+    template: "%s | HunterX 博客",
+  },
+  description: "技术即工具，专注前端和AI，个人即服务。分享 React、Next.js、AI 等技术实践。",
+  applicationName: "HunterX Blog",
   authors: [{ name: "HunterX" }],
-  keywords: ["knowledge", "blog", "react", "前端"],
+  keywords: ["前端", "React", "Next.js", "AI", "博客", "技术分享", "全栈开发"],
   icons: "/images/HX.svg",
+  metadataBase: new URL("https://blog.huntx.cn"),
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    url: "https://blog.huntx.cn",
+    siteName: "HunterX 博客",
+    title: "HunterX 博客 | 技术即工具",
+    description: "技术即工具，专注前端和AI，个人即服务",
+  },
+  twitter: {
+    card: "summary",
+    title: "HunterX 博客",
+    description: "技术即工具，专注前端和AI，个人即服务",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="zh-CN" suppressHydrationWarning>
       <link rel="manifest" href="/manifest.json" />
       <meta name="mobile-web-app-capable" content="yes"></meta>
       <meta name="apple-mobile-web-app-title" content="blog"></meta>

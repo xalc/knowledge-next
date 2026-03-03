@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import type { ComponentProps, ReactNode } from "react";
 const ROUTES = [
   {
     href: "/blogs",
@@ -22,13 +23,16 @@ const ROUTES = [
   },
 ];
 
-const LinkButton = ({ href, children, ...props }) => {
+type LinkButtonProps = Omit<ComponentProps<typeof Button>, "asChild"> & {
+  href: string;
+  children: ReactNode;
+};
+
+const LinkButton = ({ href, children, variant = "ghost", ...props }: LinkButtonProps) => {
   return (
-    <Link href={href} legacyBehavior passHref>
-      <Button variant="ghost" {...props}>
-        {children}
-      </Button>
-    </Link>
+    <Button asChild variant={variant} {...props}>
+      <Link href={href}>{children}</Link>
+    </Button>
   );
 };
 

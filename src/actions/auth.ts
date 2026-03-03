@@ -2,7 +2,7 @@
 
 import { FormState, SignupFormSchema } from "@/components/auth/signup";
 import { SignInFormState, SigninFormSchema } from "@/components/auth/signin";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
 import { createSession, deleteSession } from "@/lib/session";
 import { redirect } from "next/navigation";

@@ -3,7 +3,7 @@ import "server-only";
 import { cookies } from "next/headers";
 import { decrypt } from "./session";
 import { cache } from "react";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { UserType } from "@/context/user-provider";
 export const verifySession = cache(async () => {
   const cookie = (await cookies()).get("session")?.value;

@@ -10,7 +10,7 @@ import BooksSelector from "./books-view-selector";
 export default function BooksView({ books }) {
   const [view, setView] = useState("grid");
   const [filter, setFilter] = useState("");
-  const [sort, setSort] = useState("");
+  const [sort, setSort] = useState("recent");
   const filteredBooks = books
     .filter(book => {
       if (filter === "all") return true;
@@ -24,7 +24,7 @@ export default function BooksView({ books }) {
       } else if (sort === "progress") {
         return b.readProgress?.progress - a.readProgress?.progress;
       }
-      return true;
+      return 0;
     });
 
   return (

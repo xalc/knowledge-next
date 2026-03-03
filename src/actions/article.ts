@@ -1,7 +1,7 @@
 "use server";
-import prisma from "@/lib/prisma";
 import { verifySession } from "@/lib/dal";
-
+import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 interface ResponseType {
   code: number;
   message: string;
@@ -55,9 +55,8 @@ export async function saveArticleAction(
       });
     } catch (e) {
       console.error(e);
-    } finally {
-      await prisma.$disconnect();
     }
+    revalidateTag("posts");
     return {
       code: 200,
       message: "update success",
@@ -101,9 +100,8 @@ export async function saveArticleAction(
     });
   } catch (e) {
     console.error(e);
-  } finally {
-    await prisma.$disconnect();
   }
+  revalidateTag("posts");
   return {
     code: 200,
     message: "create success",

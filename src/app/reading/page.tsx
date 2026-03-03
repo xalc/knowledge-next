@@ -11,6 +11,9 @@ import Link from "next/link";
 import { BarChart2 } from "lucide-react";
 import { getAllBooks } from "@/lib/wereader/wr-db";
 import BooksView from "@/components/wereader/books-view";
+
+export const revalidate = 300;
+
 export default async function ReadingPage() {
   const allBooks = await getAllBooks();
 

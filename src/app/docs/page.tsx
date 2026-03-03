@@ -2,6 +2,8 @@ import { getDocBySlug } from "@/lib/docs";
 import { notFound } from "next/navigation";
 import { DocBreadcrumb } from "@/components/docs/doc-breadcrumb";
 
+export const revalidate = 3600;
+
 export default async function DocPage() {
   const defaultSlug = "index";
   const doc = await getDocBySlug(decodeURIComponent(defaultSlug));

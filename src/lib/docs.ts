@@ -1,10 +1,12 @@
 import fs from "fs";
 import path from "path";
 import { compileMDX } from "next-mdx-remote/rsc";
+import { unstable_cache } from "next/cache";
+import { cache } from "react";
 import { DocType, DocNode } from "@/types/docs";
 import { mdxComponents } from "@/components/docs/mdx-components";
 
-export async function getAllDocs(): Promise<DocType[]> {
+export const getAllDocs = cache(async (): Promise<DocType[]> => {
   const docsDirectory = path.join(process.cwd(), "src", "notes");
   try {
     const allFiles = fs.readdirSync(docsDirectory);
@@ -42,7 +44,7 @@ export async function getAllDocs(): Promise<DocType[]> {
     console.error("Error reading docs:", error);
     return [];
   }
-}
+});
 
 export function findDocNodeBySlug(tree: DocNode[], slug: string): DocNode | null {
   for (const node of tree) {
@@ -101,28 +103,39 @@ export function getDocTree(basePath: string = ""): DocNode[] {
     })
     .filter(Boolean) as DocNode[];
 }
-export function getAllSlugs(): string[] {
-  const tree = getDocTree();
-  const slugs = [];
-  const visitNode = nodes => {
-    nodes.forEach(node => {
-      if (node.type === "file") {
-        slugs.push(node.slug);
-      } else if (node.type === "directory" && node.children) {
-        visitNode(node.children);
+
+export const getDocTreeCached = unstable_cache(
+  async (basePath: string = "") => getDocTree(basePath),
+  ["docs-tree"],
+  { revalidate: 3600, tags: ["docs"] },
+);
+
+export const getAllSlugs = unstable_cache(
+  async (): Promise<string[]> => {
+    const tree = await getDocTreeCached();
+    const slugs: string[] = [];
+    const visitNode = nodes => {
+      nodes.forEach(node => {
+        if (node.type === "file") {
+          slugs.push(node.slug);
+        } else if (node.type === "directory" && node.children) {
+          visitNode(node.children);
+        }
+      });
+    };
+
+    tree.forEach(t => {
+      if (t.type === "file") {
+        slugs.push(t.slug);
+      } else if (t.type === "directory" && t.children) {
+        visitNode(t.children);
       }
     });
-  };
-
-  tree.forEach(t => {
-    if (t.type === "file") {
-      slugs.push(t.slug);
-    } else if (t.type === "directory" && t.children) {
-      visitNode(t.children);
-    }
-  });
-  return slugs;
-}
+    return slugs;
+  },
+  ["docs-slugs"],
+  { revalidate: 3600, tags: ["docs"] },
+);
 const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
   const visitNode = node => {
     if (node.type === "image") {
@@ -145,9 +158,9 @@ const remarkImgToAbsolute = (docsDir, nodePath) => () => tree => {
 
   visitNode(tree);
 };
-export async function getDocBySlug(slug: string): Promise<DocType | null> {
+export const getDocBySlug = cache(async (slug: string): Promise<DocType | null> => {
   try {
-    const tree = getDocTree();
+    const tree = await getDocTreeCached();
     const docNode = findDocNodeBySlug(tree, slug);
 
     if (!docNode || docNode.type === "directory") {
@@ -190,4 +203,4 @@ export async function getDocBySlug(slug: string): Promise<DocType | null> {
     console.error("Error in getDocBySlug:", error);
     return null;
   }
-}
+});

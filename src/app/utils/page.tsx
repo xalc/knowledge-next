@@ -41,7 +41,7 @@ const NAVIGATION_ITEMS = [
   },
   {
     title: "节假日日历",
-    description: "2025年节假日安排，包含调休和高速免费等信息",
+    description: "节假日安排，包含调休和高速免费等信息",
     icon: CalendarIcon,
     href: "/utils/calendar",
     color: "text-purple-500 dark:text-purple-400",

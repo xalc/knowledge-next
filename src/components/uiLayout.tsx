@@ -26,7 +26,10 @@ export default function UILayout({ children }) {
 
           <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
             <p>
-              <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+              <Link href="mailto:huntxalc@gmail.com">HunterX</Link> ©{" "}
+              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+                陕ICP备2024057216号-1
+              </a>
             </p>
             {/* <PWA /> */}
           </footer>
@@ -44,7 +47,10 @@ export default function UILayout({ children }) {
 
       <footer className="flex w-full shrink-0 basis-16 items-center justify-center border shadow-xl">
         <p>
-          <Link href="mailto:huntxalc@gmail.com">HunterX</Link> © 陕ICP备2024057216号-1
+          <Link href="mailto:huntxalc@gmail.com">HunterX</Link> ©{" "}
+          <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">
+            陕ICP备2024057216号-1
+          </a>
         </p>
         {/* <PWA /> */}
       </footer>

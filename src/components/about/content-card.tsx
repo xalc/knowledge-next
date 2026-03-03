@@ -13,7 +13,7 @@ const SECTIONS = [
   {
     icon: BookOpen,
     title: "笔记归档",
-    description: "持续同比个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
+    description: "持续同步个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
     color: "text-blue-500 dark:text-blue-400",
     href: "/docs",
   },
@@ -29,7 +29,7 @@ const SECTIONS = [
     icon: Wrench,
     title: "更多尝试",
     description:
-      "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人既服务的模式（PAAS）",
+      "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人即服务的模式（PaaS）",
     color: "text-purple-500 dark:text-purple-400",
     href: "/utils",
   },

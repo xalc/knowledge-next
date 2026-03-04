@@ -16,6 +16,8 @@ module.exports = {
           "Arial",
           "sans-serif",
         ],
+        serif: ['"Noto Serif SC"', "serif"],
+        mono: ['"JetBrains Mono"', "monospace"],
       },
       colors: {
         border: "hsl(var(--border))",

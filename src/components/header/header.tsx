@@ -10,6 +10,7 @@ import UserProfile from "./profile";
 import { useState } from "react";
 import { HeaderLogo } from "./header-logo";
 import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import type { ComponentProps, ReactNode } from "react";
 const ROUTES = [
   {
     href: "/",
@@ -34,13 +35,16 @@ const ROUTES = [
     label: "工具箱",
   },
 ];
-const LinkButton = ({ href, children, ...props }) => {
+type LinkButtonProps = Omit<ComponentProps<typeof Button>, "asChild"> & {
+  href: string;
+  children: ReactNode;
+};
+
+const LinkButton = ({ href, children, variant = "ghost", ...props }: LinkButtonProps) => {
   return (
-    <Link href={href} legacyBehavior passHref>
-      <Button variant="ghost" {...props}>
-        {children}
-      </Button>
-    </Link>
+    <Button asChild variant={variant} {...props}>
+      <Link href={href}>{children}</Link>
+    </Button>
   );
 };
 export default function Header() {

@@ -13,7 +13,7 @@ const SECTIONS = [
   {
     icon: BookOpen,
     title: "笔记归档",
-    description: "持续同比个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
+    description: "持续同步个人Notion笔记中的内容，归档和备忘，为个人私有大模型提供训练数据",
     color: "text-blue-500 dark:text-blue-400",
     href: "/docs",
   },
@@ -29,7 +29,7 @@ const SECTIONS = [
     icon: Wrench,
     title: "更多尝试",
     description:
-      "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人既服务的模式（PAAS）",
+      "分享开发的小工具和脚本，帮助提高工作效率或让生活更加有趣。探索个人即服务的模式（PaaS）",
     color: "text-purple-500 dark:text-purple-400",
     href: "/utils",
   },
@@ -37,33 +37,45 @@ const SECTIONS = [
 
 export default function ContentCard() {
   return (
-    <div id="contentCard" className="container mx-auto lg:max-w-[1024px]">
-      <div className="mx-6 grid gap-6 sm:grid-cols-2">
-        {SECTIONS.map(section => (
-          <Card key={section.title} className="group relative overflow-hidden">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div
-                  className={cn(
-                    "rounded-lg bg-background/50 p-2 ring-1 ring-background/10 backdrop-blur",
-                    section.color,
-                  )}
-                >
-                  <section.icon className="h-6 w-6" />
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-semibold leading-none tracking-tight">{section.title}</h3>
-                  <p className="text-sm text-muted-foreground">{section.description}</p>
-                </div>
-              </div>
-            </CardContent>
+    <section id="contentCard" className="container mx-auto mt-12 lg:max-w-[1024px]">
+      <div className="mx-6 space-y-6">
+        <div className="space-y-2">
+          <p className="font-geek text-xs uppercase tracking-[0.35em] text-muted-foreground">
+            Sections
+          </p>
+          <h2 className="text-2xl font-semibold tracking-tight text-foreground">内容入口</h2>
+          <p className="max-w-[520px] text-sm text-muted-foreground">
+            按主题浏览，快速定位到你感兴趣的内容与工具。
+          </p>
+        </div>
 
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100">
-              <Link href={section.href} className="absolute inset-0"></Link>
-            </div>
-          </Card>
-        ))}
+        <div className="grid gap-6 sm:grid-cols-2">
+          {SECTIONS.map(section => (
+            <Card key={section.title} className="group relative overflow-hidden">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div
+                    className={cn(
+                      "rounded-lg bg-background/50 p-2 ring-1 ring-background/10 backdrop-blur",
+                      section.color,
+                    )}
+                  >
+                    <section.icon className="h-6 w-6" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="font-semibold leading-none tracking-tight">{section.title}</h3>
+                    <p className="text-sm text-muted-foreground">{section.description}</p>
+                  </div>
+                </div>
+              </CardContent>
+
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-transparent opacity-0 transition-opacity group-hover:opacity-100">
+                <Link href={section.href} className="absolute inset-0"></Link>
+              </div>
+            </Card>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

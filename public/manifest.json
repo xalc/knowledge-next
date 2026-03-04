@@ -1,12 +1,12 @@
 {
-  "name": "HunterX'blog",
+  "name": "HunterX's Blog",
   "short_name": "HunterX",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-
-  "description": "Hunterx's blog, personal as a service",
+  "theme_color": "#000000",
+  "description": "技术即工具，专注前端和AI，个人即服务",
   "screenshots": [
     {
       "src": "/favor/screenshot.png",

@@ -9,6 +9,10 @@ import { Blog } from "@/types/blogs";
 export default function BlogItem({ blog, className }: { blog: Blog; className: string }) {
   const { title, description, slug } = blog;
   const cover = blog.cover;
+  const createdAt = blog.createdAt instanceof Date ? blog.createdAt : new Date(blog.createdAt);
+  const displayDate = Number.isNaN(createdAt.getTime())
+    ? "—"
+    : createdAt.toLocaleDateString("zh-CN");
   return (
     <Link
       href={`/blogs/${slug}`}
@@ -50,7 +54,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground/80">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.createdAt.toLocaleDateString()}</span>
+                  <span>{displayDate}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors duration-300 group-hover:text-primary">
@@ -80,7 +84,7 @@ export default function BlogItem({ blog, className }: { blog: Blog; className: s
 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground/80">
                   <Calendar className="h-4 w-4" />
-                  <span>{blog.createdAt.toLocaleDateString()}</span>
+                  <span>{displayDate}</span>
                 </div>
               </div>
               <h3 className="text-xl font-bold leading-tight tracking-tight transition-colors duration-300 group-hover:text-primary">

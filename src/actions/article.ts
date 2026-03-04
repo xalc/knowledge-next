@@ -1,6 +1,8 @@
 "use server";
-import prisma from "@/lib/prisma";
+
 import { verifySession } from "@/lib/dal";
+import { prisma } from "@/lib/prisma";
+import { revalidateTag } from "next/cache";
 
 interface ResponseType {
   code: number;
@@ -19,6 +21,7 @@ export async function saveArticleAction(
       message: "未登录，请先登录",
     };
   }
+
   const { title, description, slug, tags, author, contentId, id, cover } = JSON.parse(metadata);
 
   if (contentId) {
@@ -27,8 +30,9 @@ export async function saveArticleAction(
         where: { id: contentId },
         data: { content: JSON.parse(jsonContent) },
       });
+
       await prisma.post.update({
-        where: { id: id },
+        where: { id },
         data: {
           slug,
           title,
@@ -42,11 +46,13 @@ export async function saveArticleAction(
           updatedAt: new Date(),
         },
       });
-    } catch (e) {
-      console.error("Update article failed:", e);
+
+      revalidateTag("posts");
+      return { code: 200, message: "更新成功" };
+    } catch (error) {
+      console.error("Update article failed:", error);
       return { code: 500, message: "更新失败，请重试" };
     }
-    return { code: 200, message: "更新成功" };
   }
 
   try {
@@ -77,11 +83,13 @@ export async function saveArticleAction(
         updatedAt: new Date(),
       },
     });
-  } catch (e) {
-    console.error("Create article failed:", e);
+
+    revalidateTag("posts");
+    return { code: 200, message: "发布成功" };
+  } catch (error) {
+    console.error("Create article failed:", error);
     return { code: 500, message: "创建失败，请重试" };
   }
-  return { code: 200, message: "发布成功" };
 }
 
 export async function deleteArticleAction(postId: string): Promise<ResponseType> {
@@ -96,13 +104,13 @@ export async function deleteArticleAction(postId: string): Promise<ResponseType>
       return { code: 404, message: "文章不存在" };
     }
 
-    // Delete content first, then post
     await prisma.postContent.delete({ where: { id: post.contentId } });
     await prisma.post.delete({ where: { id: postId } });
 
+    revalidateTag("posts");
     return { code: 200, message: "删除成功" };
-  } catch (e) {
-    console.error("Delete article failed:", e);
+  } catch (error) {
+    console.error("Delete article failed:", error);
     return { code: 500, message: "删除失败" };
   }
 }

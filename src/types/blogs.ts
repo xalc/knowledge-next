@@ -12,7 +12,7 @@ export type Blog = {
   slug: string;
   metadata: Meta;
   stats: BlogStats;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: Date | string | number;
+  updatedAt: Date | string | number;
   cover?: string;
 };

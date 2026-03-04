@@ -12,8 +12,9 @@ import { Button } from "@/components/ui/button";
 import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 
 import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
-import { BellRing } from "lucide-react";
+import { BellRing, FileJson, FileCode, Trash2, FileText } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import EditorToolbar from "@/components/blogs/editor-toolbar";
 
 const Tiptap = () => {
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage("ttcontent", null);
@@ -28,13 +29,12 @@ const Tiptap = () => {
     extensions: [
       ...extensions,
       Placeholder.configure({
-        // Use a placeholder:
-        placeholder: "可以开始写作了... 试试斜杠",
+        placeholder: "开始写作... 输入 / 可插入各种内容块",
       }),
     ],
     editorProps: {
       attributes: {
-        class: "mx-12 my-8 p-4 focus:outline-none border-2 min-h-[600px]",
+        class: "mx-12 my-8 p-4 focus:outline-none border-2 rounded-lg min-h-[600px]",
       },
     },
     onUpdate: ({ editor }) => {
@@ -66,31 +66,59 @@ const Tiptap = () => {
 
   return (
     <div className="lg: container mx-auto max-w-[1024px]">
-      <div className="mx-12 mt-8 flex flex-wrap justify-end gap-4">
-        <BlogMetaPopup editor={editor}>
-          <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
-        </BlogMetaPopup>
-        <Button disabled={editor.isEmpty} onClick={reset}>
-          Empty Content
-        </Button>
-        <Button disabled={editor.isEmpty} onClick={() => handleExport(true)}>
-          export JSON
-        </Button>
-        <Button disabled={editor.isEmpty} onClick={() => handleExport(false)}>
-          export HTML
-        </Button>
-        <Button variant="outline">{editor.storage.characterCount.words()} words</Button>
+      <div className="mx-12 mt-8 flex flex-wrap items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <FileText className="h-5 w-5 text-muted-foreground" />
+          <h1 className="text-xl font-semibold">新文章</h1>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <BlogMetaPopup editor={editor}>
+            <BlogMetaForm content={JSON.stringify(editor.getJSON())} />
+          </BlogMetaPopup>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={editor.isEmpty}
+            onClick={() => handleExport(true)}
+          >
+            <FileJson className="mr-1 h-4 w-4" />
+            导出 JSON
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={editor.isEmpty}
+            onClick={() => handleExport(false)}
+          >
+            <FileCode className="mr-1 h-4 w-4" />
+            导出 HTML
+          </Button>
+          <Button variant="destructive" size="sm" disabled={editor.isEmpty} onClick={reset}>
+            <Trash2 className="mr-1 h-4 w-4" />
+            清空
+          </Button>
+        </div>
       </div>
 
-      <Alert className="mx-12 mt-8 w-auto bg-primary/5">
+      <Alert className="mx-12 mt-4 w-auto bg-primary/5">
         <BellRing className="h-4 w-4" />
-
         <AlertDescription>
-          可以在这里编辑，写作，也可以导出，内容临时存储在本地，下次同一设备访问不会丢失，但只有登陆后才能上传
+          内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
         </AlertDescription>
       </Alert>
 
+      <div className="mx-12 mt-4">
+        <EditorToolbar editor={editor} />
+      </div>
+
       <EditorContent editor={editor} />
+
+      <div className="mx-12 mb-8 flex items-center justify-between border-t pt-4 text-sm text-muted-foreground">
+        <span>{editor.storage.characterCount.words()} 字</span>
+        <span>
+          约 {Math.max(1, Math.round(editor.storage.characterCount.words() / 200))} 分钟阅读
+        </span>
+      </div>
     </div>
   );
 };

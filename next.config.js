@@ -4,6 +4,8 @@ const withPWA = require("next-pwa")({
   disable: process.env.NODE_ENV === "development", // 开发环境下禁用 PWA，避免干扰开发
   register: true, // 自动注册 Service Worker
   skipWaiting: true, //  Service Worker 更新时，跳过 waiting 状态立即生效
+  // Next.js 15 不再产出 /_next/app-build-manifest.json，避免预缓存 404
+  buildExcludes: [/app-build-manifest\.json$/],
   // ... 其他 next-pwa 配置选项 (可选)
 });
 

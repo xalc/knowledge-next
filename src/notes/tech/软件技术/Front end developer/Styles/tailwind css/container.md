@@ -21,9 +21,9 @@
 
 在不同的分割点设置不同的max-width 假如实际宽度为 `screenWidth`
 
-1. `screenWidth`< 640  width=100%
-2. 640< `screenWidth` <768  max-width=640
-3. 768 < `screenWidth` < 1024 max-width =768
+1. `screenWidth < 640` 时，`width = 100%`
+2. `640 <= screenWidth < 768` 时，`max-width = 640px`
+3. `768 <= screenWidth < 1024` 时，`max-width = 768px`
 
 ### 增加限定词 如 `md:container`
 
@@ -33,8 +33,8 @@
 
 即：
 
-1. `screenWidth` <md(768) width=100%
-2. 768 < `screenWidth` < 1024 max-width =768
+1. `screenWidth < md(768)` 时，`width = 100%`
+2. `768 <= screenWidth < 1024` 时，`max-width = 768px`
 
 依次类推
 

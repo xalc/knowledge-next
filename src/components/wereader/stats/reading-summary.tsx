@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Clock3, AlertTriangle } from "lucide-react";
+import { Clock3, AlertTriangle, LoaderCircle } from "lucide-react";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -30,10 +30,12 @@ const syncDateFormatter = new Intl.DateTimeFormat("zh-CN", {
 
 export default function ReadingSummary() {
   const currentYear = new Date().getFullYear();
+  const currentMonth = new Date().getMonth() + 1;
   const [year, setYear] = useState(currentYear);
   const [lastSyncTime, setLastSyncTime] = useState(0);
   const [summary, setSummary] = useState<ReadingSummaryType[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
 
   const yearOptions = useMemo(() => {
@@ -47,6 +49,7 @@ export default function ReadingSummary() {
 
   useEffect(() => {
     let cancelled = false;
+    const isInitialRequest = !hasLoadedOnce;
     setLoading(true);
     setErrorMessage("");
 
@@ -55,12 +58,15 @@ export default function ReadingSummary() {
         if (cancelled) return;
         setSummary(result?.yearSummary ?? []);
         setLastSyncTime(Number(result?.lastSyncTime ?? 0));
+        setHasLoadedOnce(true);
       })
       .catch(error => {
         if (cancelled) return;
         console.error("[reading-summary] failed to load reading summary", error);
-        setSummary([]);
-        setLastSyncTime(0);
+        if (isInitialRequest) {
+          setSummary([]);
+          setLastSyncTime(0);
+        }
         setErrorMessage("读取阅读统计失败，请稍后重试。");
       })
       .finally(() => {
@@ -70,11 +76,14 @@ export default function ReadingSummary() {
     return () => {
       cancelled = true;
     };
-  }, [year]);
+  }, [year, hasLoadedOnce]);
 
   const syncText =
     lastSyncTime > 0 ? syncDateFormatter.format(new Date(lastSyncTime * 1000)) : "暂无同步记录";
   const hasReadableData = summary.some(item => item.readingSeconds > 0);
+  const isInitialLoading = loading && !hasLoadedOnce;
+  const isRefreshing = loading && hasLoadedOnce;
+  const visibleMonthCount = year === currentYear ? currentMonth : 12;
 
   return (
     <section className="space-y-6">
@@ -84,7 +93,9 @@ export default function ReadingSummary() {
           aria-live="polite"
         >
           <Clock3 className="h-4 w-4" />
-          <span>同步时间：{loading ? "读取中..." : syncText}</span>
+          <span>
+            同步时间：{isRefreshing ? "更新中..." : isInitialLoading ? "读取中..." : syncText}
+          </span>
         </div>
         <div className="w-full overflow-x-auto pb-1 lg:w-auto">
           <div className="flex min-w-max items-center gap-2">
@@ -96,8 +107,16 @@ export default function ReadingSummary() {
                 className="rounded-full px-4"
                 onClick={() => setYear(option)}
                 aria-pressed={option === year}
+                disabled={loading}
               >
-                {option}年
+                {option === year && isRefreshing ? (
+                  <span className="inline-flex items-center gap-1.5">
+                    <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+                    {option}年
+                  </span>
+                ) : (
+                  `${option}年`
+                )}
               </Button>
             ))}
           </div>
@@ -113,65 +132,154 @@ export default function ReadingSummary() {
         </Card>
       ) : null}
 
-      {loading ? (
-        <Card className="border-border/70 bg-background/90">
-          <CardHeader className="space-y-3">
-            <Skeleton className="h-6 w-48 rounded-full" />
-            <Skeleton className="h-4 w-64 rounded-full" />
-          </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              {Array.from({ length: 4 }).map((_, index) => (
-                <Skeleton key={`stats_skeleton_${index}`} className="h-36 rounded-2xl" />
-              ))}
-            </div>
-            <Skeleton className="h-[320px] rounded-2xl" />
-          </CardContent>
-        </Card>
+      {isInitialLoading ? (
+        <InitialLoadingSkeleton year={year} visibleMonthCount={visibleMonthCount} />
       ) : (
-        <div className="space-y-6">
-          <ReadingStats summarys={summary} year={year} />
+        <div className="relative space-y-6" aria-busy={isRefreshing}>
+          {isRefreshing && <RefreshOverlay year={year} visibleMonthCount={visibleMonthCount} />}
 
-          <Card className="border-border/70 bg-background/90 shadow-sm">
-            <CardHeader className="space-y-2 pb-2">
-              <div className="flex items-baseline justify-between gap-2">
-                <h3 className="font-literary text-xl font-semibold tracking-tight">年度热力图</h3>
-                <span className="font-geek text-xs text-muted-foreground [font-variant-numeric:tabular-nums]">
-                  {year}
-                </span>
-              </div>
-              <p className="text-sm text-muted-foreground">
-                颜色越深表示阅读时长越长，共记录 {summary.length} 天。
-              </p>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="hidden w-full lg:block">
-                <Heatmap summarys={summary} year={year} lastSyncTime={Number(lastSyncTime)} />
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
+          <div className={isRefreshing ? "opacity-70 transition-opacity duration-200" : ""}>
+            <ReadingStats summarys={summary} year={year} />
+          </div>
 
-              <Accordion type="single" defaultValue="summary" collapsible className="lg:hidden">
-                <AccordionItem value="summary">
-                  <AccordionTrigger className="py-2 text-left text-sm no-underline hover:no-underline">
-                    查看按月热力图
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <div className="mt-2 grid gap-4 sm:grid-cols-2">
-                      <MonthHeatmap summarys={summary} year={year} />
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-
-              {!hasReadableData && (
-                <div className="rounded-xl border border-dashed border-border/70 bg-secondary/30 p-4 text-sm text-muted-foreground">
-                  该年度暂无有效阅读时长数据，尝试在 Dashboard 重新同步后再查看。
+          <div className={isRefreshing ? "opacity-70 transition-opacity duration-200" : ""}>
+            <Card className="border-border/70 bg-background/90 shadow-sm">
+              <CardHeader className="space-y-2 pb-2">
+                <div className="flex items-baseline justify-between gap-2">
+                  <h3 className="font-literary text-xl font-semibold tracking-tight">年度热力图</h3>
+                  <span className="font-geek text-xs text-muted-foreground [font-variant-numeric:tabular-nums]">
+                    {year}
+                  </span>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <p className="text-sm text-muted-foreground">
+                  颜色越深表示阅读时长越长，共记录 {summary.length} 天。
+                </p>
+              </CardHeader>
+              <CardContent>
+                <ScrollArea className="hidden w-full lg:block">
+                  <Heatmap summarys={summary} year={year} lastSyncTime={Number(lastSyncTime)} />
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+
+                <Accordion type="single" defaultValue="summary" collapsible className="lg:hidden">
+                  <AccordionItem value="summary">
+                    <AccordionTrigger className="py-2 text-left text-sm no-underline hover:no-underline">
+                      查看按月热力图
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <div className="mt-2 grid gap-4 sm:grid-cols-2">
+                        <MonthHeatmap summarys={summary} year={year} />
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+
+                {!hasReadableData && (
+                  <div className="rounded-xl border border-dashed border-border/70 bg-secondary/30 p-4 text-sm text-muted-foreground">
+                    该年度暂无有效阅读时长数据，尝试在 Dashboard 重新同步后再查看。
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
     </section>
+  );
+}
+
+function InitialLoadingSkeleton({
+  year,
+  visibleMonthCount,
+}: {
+  year: number;
+  visibleMonthCount: number;
+}) {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Card
+            key={`stats_skeleton_${index}`}
+            className="rounded-2xl border-border/70 p-5 shadow-sm"
+          >
+            <div className="space-y-4">
+              <Skeleton className="h-4 w-24 rounded-full" />
+              <Skeleton className="h-9 w-28 rounded-lg" />
+              <Skeleton className="h-3 w-20 rounded-full" />
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      <Card className="border-border/70 bg-background/90 shadow-sm">
+        <CardHeader className="space-y-2 pb-2">
+          <div className="flex items-center justify-between gap-2">
+            <Skeleton className="h-6 w-32 rounded-md" />
+            <span className="font-geek text-xs text-muted-foreground [font-variant-numeric:tabular-nums]">
+              {year}
+            </span>
+          </div>
+          <Skeleton className="h-4 w-64 rounded-full" />
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="hidden space-y-2 lg:block">
+            <Skeleton className="h-3 w-full rounded-full" />
+            <Skeleton className="h-3 w-[92%] rounded-full" />
+            <Skeleton className="h-3 w-[88%] rounded-full" />
+            <Skeleton className="h-3 w-[95%] rounded-full" />
+            <Skeleton className="h-3 w-[90%] rounded-full" />
+            <Skeleton className="h-3 w-[86%] rounded-full" />
+            <Skeleton className="h-3 w-[80%] rounded-full" />
+          </div>
+          <div className="grid grid-cols-2 gap-3 lg:hidden">
+            {Array.from({ length: Math.min(visibleMonthCount, 6) }).map((_, index) => (
+              <Skeleton key={`month_skeleton_${index}`} className="h-24 rounded-xl" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+function RefreshOverlay({ year, visibleMonthCount }: { year: number; visibleMonthCount: number }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 z-10 rounded-2xl bg-background/20 p-2">
+      <div className="space-y-4">
+        <div className="flex justify-end">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-background/90 px-3 py-1 text-xs text-muted-foreground shadow-sm">
+            <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
+            <span className="font-geek [font-variant-numeric:tabular-nums]">
+              正在切换到 {year} 年
+            </span>
+          </div>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton
+              key={`refresh_stats_${index}`}
+              className="h-28 rounded-2xl border border-border/50"
+            />
+          ))}
+        </div>
+        <div className="rounded-2xl border border-border/50 bg-background/85 p-4">
+          <div className="mb-4 flex items-center justify-between gap-2">
+            <Skeleton className="h-5 w-28 rounded-md" />
+            <Skeleton className="h-4 w-10 rounded-full" />
+          </div>
+          <div className="hidden space-y-2 lg:block">
+            {Array.from({ length: 10 }).map((_, index) => (
+              <Skeleton key={`refresh_heatmap_row_${index}`} className="h-3 rounded-full" />
+            ))}
+          </div>
+          <div className="grid grid-cols-2 gap-3 lg:hidden">
+            {Array.from({ length: Math.min(visibleMonthCount, 6) }).map((_, index) => (
+              <Skeleton key={`refresh_month_${index}`} className="h-24 rounded-xl" />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

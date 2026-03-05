@@ -2,7 +2,6 @@ import clsx from "clsx";
 import { useMemo } from "react";
 import { Clock } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ReadingSummaryType } from "@/types/reading-summary";
 import { getGridCellClasses, getReadingLevel, getReadingText, groupDataByMonth } from "../utils";
@@ -26,7 +25,9 @@ export default function MonthHeatmap({
   summarys: ReadingSummaryType[];
   year: number;
 }) {
-  const months = groupDataByMonth(year);
+  const currentDate = new Date();
+  const visibleMonthCount = year === currentDate.getFullYear() ? currentDate.getMonth() + 1 : 12;
+  const months = groupDataByMonth(year).slice(0, visibleMonthCount);
   const maxSeconds = summarys.reduce((acc, item) => Math.max(acc, item.readingSeconds), 0);
   const summaryMap = useMemo(
     () => new Map(summarys.map(item => [Number(item.id), item])),
@@ -92,25 +93,14 @@ const HeatmapCell = ({
   level: number;
 }) => {
   return (
-    <>
-      <Tooltip>
-        <TooltipTrigger asChild className="hidden sm:block">
-          <div className={clsx("aspect-square rounded-sm", getGridCellClasses(level))} />
-        </TooltipTrigger>
-        <TooltipContent>
-          <CellTooltip day={day} readingSeconds={summary.readingSeconds} level={level} />
-        </TooltipContent>
-      </Tooltip>
-
-      <Popover>
-        <PopoverTrigger asChild className="block sm:hidden">
-          <div className={clsx("aspect-square rounded-sm", getGridCellClasses(level))} />
-        </PopoverTrigger>
-        <PopoverContent className="w-56 border-border/70 bg-background/95 backdrop-blur">
-          <CellTooltip day={day} readingSeconds={summary.readingSeconds} level={level} />
-        </PopoverContent>
-      </Popover>
-    </>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className={clsx("aspect-square rounded-sm", getGridCellClasses(level))} />
+      </TooltipTrigger>
+      <TooltipContent>
+        <CellTooltip day={day} readingSeconds={summary.readingSeconds} level={level} />
+      </TooltipContent>
+    </Tooltip>
   );
 };
 

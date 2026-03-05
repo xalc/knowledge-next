@@ -29,17 +29,26 @@ export async function generateMetadata({
     return { title: "文章未找到" };
   }
 
+  const createdAt = post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt);
+  const updatedAt = post.updatedAt instanceof Date ? post.updatedAt : new Date(post.updatedAt);
+  const hasValidCreatedAt = !Number.isNaN(createdAt.getTime());
+  const hasValidUpdatedAt = !Number.isNaN(updatedAt.getTime());
+
+  const tags = Array.isArray(post.metadata?.tags)
+    ? post.metadata.tags.filter((tag): tag is string => typeof tag === "string")
+    : [];
+
   return {
     title: post.title,
     description: post.description,
-    keywords: post.metadata.tags,
+    keywords: tags,
     openGraph: {
       title: post.title,
       description: post.description,
       type: "article",
-      publishedTime: post.createdAt.toISOString(),
-      modifiedTime: post.updatedAt.toISOString(),
-      tags: post.metadata.tags,
+      ...(hasValidCreatedAt && { publishedTime: createdAt.toISOString() }),
+      ...(hasValidUpdatedAt && { modifiedTime: updatedAt.toISOString() }),
+      ...(tags.length > 0 && { tags }),
       ...(post.cover && { images: [{ url: post.cover }] }),
     },
     twitter: {

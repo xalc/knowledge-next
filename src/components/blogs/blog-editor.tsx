@@ -36,9 +36,18 @@ const BlogEditor = ({ post }) => {
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
+  const createdAt = post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt);
+  const updatedAt = post.updatedAt instanceof Date ? post.updatedAt : new Date(post.updatedAt);
+  const createdDateLabel = Number.isNaN(createdAt.getTime())
+    ? "—"
+    : createdAt.toLocaleDateString("zh-CN");
+  const updatedDateLabel = Number.isNaN(updatedAt.getTime())
+    ? "—"
+    : updatedAt.toLocaleDateString("zh-CN");
 
   const editor = useEditor({
     editable: editable,
+    immediatelyRender: false,
     extensions: [
       ...extensions,
       TableOfContents.configure({
@@ -90,12 +99,12 @@ const BlogEditor = ({ post }) => {
           <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <Calendar className="h-4 w-4" />
-              创建于{post.createdAt.toLocaleDateString()}
+              创建于{createdDateLabel}
             </span>
-            {post.createdAt.toLocaleDateString() !== post.updatedAt.toLocaleDateString() && (
+            {createdDateLabel !== updatedDateLabel && (
               <span className="inline-flex items-center gap-1">
                 <CalendarCheck className="h-4 w-4" />
-                修改于{post.updatedAt.toLocaleDateString()}
+                修改于{updatedDateLabel}
               </span>
             )}
 

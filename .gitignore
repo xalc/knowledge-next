@@ -6,3 +6,8 @@ node_modules
 .vercel
 
 certificates
+
+
+
+scripts/weread_headers.json
+scripts/weread_cookie.txt

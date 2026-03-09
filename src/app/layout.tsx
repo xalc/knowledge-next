@@ -8,6 +8,7 @@ import WrapUserProfile from "@/components/auth/user-profile";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Toaster } from "@/components/ui/toaster";
+import LocalServiceWorkerCleanup from "@/components/pwa/local-sw-cleanup";
 export const metadata: Metadata = {
   title: {
     default: "HunterX 博客 | 技术即工具",
@@ -46,6 +47,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <meta name="apple-mobile-web-app-title" content="blog"></meta>
       <link rel="apple-touch-icon" href="/favor/apple-touch-icon.png" />
       <body>
+        <LocalServiceWorkerCleanup />
         <ThemeProvider
           attribute="class"
           enableSystem

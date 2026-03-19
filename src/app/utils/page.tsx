@@ -12,6 +12,7 @@ import {
   Lock,
   Palette,
   FileDigit,
+  Sparkles,
 } from "lucide-react";
 
 const NAVIGATION_ITEMS = [
@@ -79,6 +80,14 @@ const NAVIGATION_ITEMS = [
     href: "/utils/timeline",
     color: "text-cyan-500 dark:text-cyan-400",
     pattern: "radial-gradient(circle at 100% 100%, rgba(6, 182, 212, 0.08) 0%, transparent 50%)",
+  },
+  {
+    title: "AI Skills",
+    description: "对话式更新博客、查看阅读计划和徽章概览",
+    icon: Sparkles,
+    href: "/utils/skills",
+    color: "text-sky-500 dark:text-sky-400",
+    pattern: "radial-gradient(circle at 100% 100%, rgba(14, 165, 233, 0.12) 0%, transparent 50%)",
   },
   {
     title: "AdminDashBoard",

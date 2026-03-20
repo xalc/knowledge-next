@@ -27,6 +27,7 @@ model User {
   updatedAt DateTime @updatedAt
   password  String
   posts     Post[]
+  mcpTokens McpToken[]
 }
 
 model PostContent {
@@ -93,4 +94,21 @@ model Timeline {
   size        Float
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model McpToken {
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId       String   @db.ObjectId
+  user         User     @relation(fields: [userId], references: [id])
+  name         String   @default("OpenClaw")
+  jti          String   @unique
+  tokenDigest  String   @unique
+  tokenPreview String
+  scope        String   @default("read")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  lastUsedAt   DateTime?
+  revokedAt    DateTime?
+
+  @@map("MCP_tokens")
 }

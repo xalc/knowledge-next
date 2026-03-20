@@ -8,7 +8,6 @@
     "build": "prisma generate && next build",
     "postbuild": "next-sitemap",
     "start": "next start",
-    "mcp:reading": "node scripts/openclaw-reading-mcp.mjs",
     "lint": "next lint",
     "format": "prettier --write .",
     "test": "echo \"Error: no test specified\" && exit 1",

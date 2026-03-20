@@ -1,9 +1,19 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Toaster } from "@/components/ui/toaster";
+
+type DashboardMcpToken = {
+  id: string;
+  name: string;
+  scope: string;
+  tokenPreview: string;
+  createdAt: string;
+  revokedAt?: string | null;
+  lastUsedAt?: string | null;
+};
 
 export default function DashboardPage() {
   const { toast } = useToast();
@@ -26,6 +36,35 @@ export default function DashboardPage() {
     "idle",
   );
   const [cookieMessage, setCookieMessage] = useState("");
+  const [mcpTokenValue, setMcpTokenValue] = useState("");
+  const [creatingMcpToken, setCreatingMcpToken] = useState(false);
+  const [loadingMcpTokens, setLoadingMcpTokens] = useState(false);
+  const [mcpTokens, setMcpTokens] = useState<DashboardMcpToken[]>([]);
+  const mcpEndpoint =
+    typeof window !== "undefined" ? `${window.location.origin}/api/ai/mcp` : "/api/ai/mcp";
+  const openClawConfig = mcpTokenValue
+    ? JSON.stringify(
+        {
+          mcpServers: {
+            "knowledge-next-remote": {
+              command: "npx",
+              args: [
+                "-y",
+                "mcp-remote@latest",
+                mcpEndpoint,
+                "--transport",
+                "http-only",
+                ...(mcpEndpoint.startsWith("http://") ? ["--allow-http"] : []),
+                "--header",
+                `Authorization: Bearer ${mcpTokenValue}`,
+              ],
+            },
+          },
+        },
+        null,
+        2,
+      )
+    : "";
   const handleStream = async () => {
     setLoading(true);
     const response = await fetch("/api/dashboard");
@@ -123,6 +162,95 @@ export default function DashboardPage() {
     }
   };
 
+  const loadMcpTokens = useCallback(async () => {
+    setLoadingMcpTokens(true);
+    try {
+      const response = await fetch("/api/ai/mcp/token", { method: "GET" });
+      const result = (await response.json()) as { ok?: boolean; tokens?: DashboardMcpToken[] };
+      if (!response.ok || !result.ok) {
+        throw new Error("加载 MCP Token 失败");
+      }
+      setMcpTokens(result.tokens ?? []);
+    } catch (error) {
+      console.error("Load MCP tokens failed:", error);
+      toast({
+        variant: "destructive",
+        title: "加载失败",
+        description: "无法读取 MCP Token 列表。",
+      });
+    } finally {
+      setLoadingMcpTokens(false);
+    }
+  }, [toast]);
+
+  const handleCreateMcpToken = async () => {
+    setCreatingMcpToken(true);
+    try {
+      const response = await fetch("/api/ai/mcp/token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: "OpenClaw" }),
+      });
+      const result = (await response.json()) as {
+        ok?: boolean;
+        token?: string;
+      };
+      if (!response.ok || !result.ok || !result.token) {
+        throw new Error("创建 MCP Token 失败");
+      }
+
+      setMcpTokenValue(result.token);
+      await loadMcpTokens();
+      toast({
+        title: "已生成",
+        description: "MCP Token 已生成，请尽快复制保存。",
+      });
+    } catch (error) {
+      console.error("Create MCP token failed:", error);
+      toast({
+        variant: "destructive",
+        title: "创建失败",
+        description: "创建 MCP Token 失败，请稍后重试。",
+      });
+    } finally {
+      setCreatingMcpToken(false);
+    }
+  };
+
+  const handleRevokeMcpToken = async (tokenId: string) => {
+    try {
+      const response = await fetch("/api/ai/mcp/token", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ tokenId }),
+      });
+      const result = (await response.json()) as { ok?: boolean; error?: string };
+      if (!response.ok || !result.ok) {
+        throw new Error(result.error || "撤销失败");
+      }
+      await loadMcpTokens();
+      toast({
+        title: "已撤销",
+        description: "该 MCP Token 已失效。",
+      });
+    } catch (error) {
+      console.error("Revoke MCP token failed:", error);
+      toast({
+        variant: "destructive",
+        title: "撤销失败",
+        description: "无法撤销该 MCP Token。",
+      });
+    }
+  };
+
+  useEffect(() => {
+    void loadMcpTokens();
+  }, [loadMcpTokens]);
+
   const handleCopy = async (text: string, label: string) => {
     try {
       await navigator.clipboard.writeText(text);
@@ -194,6 +322,98 @@ export default function DashboardPage() {
               {cookieMessage}
             </span>
           )}
+        </div>
+      </div>
+
+      <div className="rounded-lg border p-6 shadow-md">
+        <h2 className="mb-2 text-xl font-semibold">MCP 只读 Token（OpenClaw 远端直连）</h2>
+        <p className="mb-4 text-sm text-muted-foreground">
+          该 Token 用于访问远端 MCP Endpoint，仅开放阅读数据类工具。生成后请立即复制保存。
+        </p>
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button onClick={handleCreateMcpToken} disabled={creatingMcpToken}>
+            {creatingMcpToken ? "生成中..." : "生成 MCP Token"}
+          </Button>
+          <Button variant="outline" onClick={() => handleCopy(mcpEndpoint, "MCP Endpoint")}>
+            复制 MCP Endpoint
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => void loadMcpTokens()}
+            disabled={loadingMcpTokens}
+          >
+            {loadingMcpTokens ? "刷新中..." : "刷新 Token 列表"}
+          </Button>
+        </div>
+
+        {mcpTokenValue && (
+          <div className="mb-4 space-y-3">
+            <div>
+              <p className="mb-2 text-sm font-medium">新生成 Token（仅展示一次）</p>
+              <Textarea readOnly value={mcpTokenValue} className="min-h-[90px] font-mono text-xs" />
+              <Button
+                variant="outline"
+                className="mt-2"
+                onClick={() => handleCopy(mcpTokenValue, "MCP Token")}
+              >
+                复制 MCP Token
+              </Button>
+            </div>
+
+            <div>
+              <p className="mb-2 text-sm font-medium">OpenClaw 配置片段</p>
+              <Textarea
+                readOnly
+                value={openClawConfig}
+                className="min-h-[160px] font-mono text-xs"
+              />
+              <Button
+                variant="outline"
+                className="mt-2"
+                onClick={() => handleCopy(openClawConfig, "OpenClaw 配置")}
+              >
+                复制 OpenClaw 配置
+              </Button>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <p className="mb-2 text-sm font-medium">已签发 Token</p>
+          <div className="space-y-2">
+            {mcpTokens.length === 0 && (
+              <p className="text-sm text-muted-foreground">暂无 Token，点击上方按钮生成。</p>
+            )}
+            {mcpTokens.map(token => (
+              <div
+                key={token.id}
+                className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div className="text-sm">
+                  <p className="font-medium">
+                    {token.name} · {token.scope}
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground">{token.tokenPreview}</p>
+                  <p className="text-xs text-muted-foreground">
+                    创建于 {new Date(token.createdAt).toLocaleString()}
+                    {token.lastUsedAt
+                      ? ` · 最近使用 ${new Date(token.lastUsedAt).toLocaleString()}`
+                      : ""}
+                    {token.revokedAt
+                      ? ` · 已撤销 ${new Date(token.revokedAt).toLocaleString()}`
+                      : ""}
+                  </p>
+                </div>
+                <Button
+                  variant="outline"
+                  disabled={Boolean(token.revokedAt)}
+                  onClick={() => void handleRevokeMcpToken(token.id)}
+                >
+                  {token.revokedAt ? "已撤销" : "撤销"}
+                </Button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 

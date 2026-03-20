@@ -30,6 +30,7 @@
     "@ai-sdk/deepseek": "^0.1.11",
     "@ai-sdk/react": "^1.1.17",
     "@hookform/resolvers": "^3.9.1",
+    "@modelcontextprotocol/sdk": "^1.27.1",
     "@prisma/client": "^6.2.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.15",
@@ -105,7 +106,7 @@
     "usehooks-ts": "^3.1.0",
     "vaul": "^1.1.2",
     "web-push": "^3.6.7",
-    "zod": "^3.24.1"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

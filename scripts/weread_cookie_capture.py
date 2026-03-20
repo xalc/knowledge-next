@@ -14,6 +14,10 @@ SCRIPT_DIR = os.path.dirname(__file__)
 HEADERS_FILE = os.path.join(SCRIPT_DIR, "weread_headers.json")
 COOKIE_FILE = os.path.join(SCRIPT_DIR, "weread_cookie.txt")
 CAPTURED = False
+REQUEST_COUNT = 0
+TARGET_HOST_HIT_COUNT = 0
+FIRST_CLIENT_LOGGED = False
+NON_TARGET_LOG_LIMIT = 8
 
 # 移动端 App 认证相关的 Header 字段
 AUTH_HEADERS = ["vid", "accesstoken", "skey", "wr_skey", "wr_vid", "baseapi", "appver", "osver"]
@@ -86,15 +90,86 @@ def copy_to_clipboard(text: str) -> bool:
         return False
 
 
+def get_client_addr(flow: http.HTTPFlow) -> str:
+    client_conn = getattr(flow, "client_conn", None)
+    if not client_conn:
+        return "unknown"
+
+    peername = getattr(client_conn, "peername", None)
+    if not peername:
+        return "unknown"
+
+    try:
+        ip, port = peername[0], peername[1]
+        return f"{ip}:{port}"
+    except Exception:
+        return str(peername)
+
+
+def load(loader):
+    log("INFO", "Mitm capture script loaded.")
+    log("INFO", "Waiting for mobile traffic via proxy 0.0.0.0:8080 ...")
+    log("INFO", "If no traffic appears, check iPhone Wi-Fi proxy + certificate trust.")
+
+
+def running():
+    log("INFO", "Proxy is running. Open WeRead App on your phone now.")
+
+
 def request(flow: http.HTTPFlow) -> None:
-    global CAPTURED
+    global CAPTURED, REQUEST_COUNT, TARGET_HOST_HIT_COUNT, FIRST_CLIENT_LOGGED
 
     if CAPTURED:
         return
 
+    REQUEST_COUNT += 1
     host = flow.request.pretty_host
+    client_addr = get_client_addr(flow)
+
+    if not FIRST_CLIENT_LOGGED:
+        FIRST_CLIENT_LOGGED = True
+        log(
+            "INFO",
+            "First proxied request received. Your phone traffic has reached mitmproxy.",
+            client=client_addr,
+            host=host,
+            method=flow.request.method,
+            path=flow.request.path,
+        )
+
+    if REQUEST_COUNT <= NON_TARGET_LOG_LIMIT and "i.weread.qq.com" not in host:
+        log(
+            "INFO",
+            "Non-target request observed (proxy connectivity OK).",
+            seq=REQUEST_COUNT,
+            client=client_addr,
+            host=host,
+            method=flow.request.method,
+        )
+
+    if REQUEST_COUNT % 20 == 0:
+        log(
+            "INFO",
+            "Traffic heartbeat.",
+            totalRequests=REQUEST_COUNT,
+            targetHostHits=TARGET_HOST_HIT_COUNT,
+            captured=CAPTURED,
+        )
+
     if "i.weread.qq.com" not in host:
         return
+
+    TARGET_HOST_HIT_COUNT += 1
+
+    log(
+        "INFO",
+        "Target host request observed.",
+        seq=REQUEST_COUNT,
+        targetHits=TARGET_HOST_HIT_COUNT,
+        client=client_addr,
+        method=flow.request.method,
+        path=flow.request.path,
+    )
 
     # 收集所有请求头
     all_headers = dict(flow.request.headers)
@@ -108,7 +183,13 @@ def request(flow: http.HTTPFlow) -> None:
     if not found_auth:
         return
 
-    log("INFO", "Captured candidate auth request.", host=host, url=flow.request.url)
+    log(
+        "INFO",
+        "Captured candidate auth request.",
+        host=host,
+        url=flow.request.url,
+        client=client_addr,
+    )
     log(
         "INFO",
         "Detected auth headers.",

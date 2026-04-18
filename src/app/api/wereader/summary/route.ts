@@ -34,14 +34,26 @@ export async function POST(request: Request) {
       if (k) cookieMap[k.trim()] = rest.join("=").trim();
     }
 
+    const vid = cookieMap["wr_vid"] || "";
+    const authToken = cookieMap["wr_access_token"] || cookieMap["wr_skey"] || "";
+    const basever = cookieMap["wr_basever"] || "";
+    const channelid = cookieMap["wr_channelid"] || "";
+    const appver = cookieMap["wr_appver"] || basever || "";
+
     const fetchHeaders: Record<string, string> = {
-      cookie: cookies,
-      Accept: "application/json",
-      "User-Agent": "WeRead/10.0.3 (iPhone; iOS 26.3; Scale/3.00)",
+      Accept: "*/*",
+      // UA 版本必须是 3 段 (X.Y.Z)，4 段会被服务端 401
+      "User-Agent": `WeRead/${(appver || "10.0.3").split(".").slice(0, 3).join(".")} (iPhone; iOS 26.3.1; Scale/3.00)`,
+      cookie: `wr_pf=ios, wr_skey=${authToken}, wr_vid=${vid}`,
     };
-    // i.weread.qq.com 移动端 API 使用 vid + skey 作为 HTTP Headers 认证
-    if (cookieMap["wr_vid"]) fetchHeaders["vid"] = cookieMap["wr_vid"];
-    if (cookieMap["wr_skey"]) fetchHeaders["skey"] = cookieMap["wr_skey"];
+    // i.weread.qq.com 移动端 API 使用 vid + skey + basever + channelid + v
+    if (vid) fetchHeaders["vid"] = vid;
+    if (authToken) fetchHeaders["skey"] = authToken;
+    if (basever) {
+      fetchHeaders["basever"] = basever;
+      fetchHeaders["v"] = basever;
+    }
+    if (channelid) fetchHeaders["channelid"] = channelid;
 
     const response = await fetch(endpoint, {
       method: "GET",

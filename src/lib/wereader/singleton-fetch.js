@@ -104,7 +104,10 @@ class MyFetch {
     }
     return {
       vid: cookieMap["wr_vid"] || "",
-      skey: cookieMap["wr_skey"] || "",
+      token: cookieMap["wr_access_token"] || cookieMap["wr_skey"] || "",
+      basever: cookieMap["wr_basever"] || "",
+      channelid: cookieMap["wr_channelid"] || "",
+      appver: cookieMap["wr_appver"] || "",
     };
   }
 
@@ -118,16 +121,22 @@ class MyFetch {
 
     if (isMobileApi) {
       // Mobile API: use vid/skey HTTP headers
-      const { vid, skey } = this._parseMobileAuth();
-      if (!vid || !skey) {
+      const { vid, token, basever, channelid, appver } = this._parseMobileAuth();
+      if (!vid || !token) {
         throw new Error("WeRead mobile auth missing. Set wr_vid and wr_skey in cookie token.");
       }
       headers.vid = vid;
-      headers.skey = skey;
-      headers["User-Agent"] = "WeRead/10.0.3 (iPhone; iOS 26.3; Scale/3.00)";
-      if (this.cookieStr) {
-        headers.cookie = this.cookieStr;
+      headers.skey = token;
+      if (basever) {
+        headers.basever = basever;
+        headers.v = basever;
       }
+      if (channelid) headers.channelid = channelid;
+      // UA 版本必须是 3 段 (X.Y.Z)，不能用 4 段 basever (X.Y.Z.W)，否则服务端 401
+      const uaVer = (appver || "10.0.3").split(".").slice(0, 3).join(".");
+      headers["User-Agent"] = `WeRead/${uaVer} (iPhone; iOS 26.3.1; Scale/3.00)`;
+      // 发送正确格式的 cookie：wr_pf=ios, wr_skey=..., wr_vid=...
+      headers.cookie = `wr_pf=ios, wr_skey=${token}, wr_vid=${vid}`;
     } else {
       // Web API: use cookie-based auth
       try {

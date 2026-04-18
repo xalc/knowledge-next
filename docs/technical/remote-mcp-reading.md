@@ -1,44 +1,44 @@
-# Remote MCP for Reading Data
+# 阅读数据远程 MCP 方案
 
-## Overview
+## 概述
 
-This branch replaces the earlier local bridge workflow with a site-native, remote MCP server exposed by the Next.js app. OpenClaw now connects directly to the deployed site over Streamable HTTP and authenticates with a read-only Bearer JWT.
+该分支将早期“本地桥接”流程替换为由 Next.js 应用直接暴露的站点原生远程 MCP 服务。OpenClaw 现在通过 Streamable HTTP 直连已部署站点，并使用只读 Bearer JWT 完成鉴权。
 
-## What changed
+## 变更内容
 
-- Removed the local `mcp:reading` bridge script and its package script entry.
-- Kept the site-native MCP endpoint at `/api/ai/mcp`.
-- Kept the token management API at `/api/ai/mcp/token`.
-- Kept the dashboard UI for issuing, listing, and revoking read-only MCP tokens.
+- 移除了本地 `mcp:reading` 桥接脚本及其 package script 配置。
+- 保留了站点原生 MCP 端点 `/api/ai/mcp`。
+- 保留了令牌管理 API `/api/ai/mcp/token`。
+- 保留了用于签发、查看、吊销只读 MCP 令牌的 Dashboard 界面。
 
-## Architecture
+## 架构
 
 ```mermaid
 flowchart LR
-  A[OpenClaw client] --> B[Remote MCP server /api/ai/mcp]
-  B --> C[Reading insights APIs]
-  C --> D[Database]
-  E[Dashboard] --> F[Token API /api/ai/mcp/token]
+  A[OpenClaw 客户端] --> B[远程 MCP 服务 /api/ai/mcp]
+  B --> C[阅读洞察 API]
+  C --> D[数据库]
+  E[Dashboard] --> F[令牌 API /api/ai/mcp/token]
   F --> D
   E --> A
 ```
 
-## Request flow
+## 请求流程
 
-1. A user signs in to the website.
-2. The dashboard issues a read-only MCP JWT.
-3. OpenClaw connects to `/api/ai/mcp` with `Authorization: Bearer <token>`.
-4. The MCP endpoint verifies the token and proxies tool calls to the reading insights layer.
-5. The reading insights layer queries the database-backed source of truth.
+1. 用户登录网站。
+2. Dashboard 签发只读 MCP JWT。
+3. OpenClaw 通过 `Authorization: Bearer <token>` 连接 `/api/ai/mcp`。
+4. MCP 端点校验令牌后，将工具调用代理到阅读洞察层。
+5. 阅读洞察层查询以数据库为后端的事实数据源。
 
-## MCP endpoint
+## MCP 端点
 
-- Path: `/api/ai/mcp`
-- Transport: Streamable HTTP
-- Auth: Bearer JWT
-- Scope: read-only
+- 路径：`/api/ai/mcp`
+- 传输：Streamable HTTP
+- 鉴权：Bearer JWT
+- 权限范围：只读
 
-### Tools
+### 工具列表
 
 - `reading.overview`
 - `reading.trend`
@@ -46,7 +46,7 @@ flowchart LR
 - `reading.notes`
 - `reading.plan`
 
-### OpenClaw payload shape
+### OpenClaw 配置载荷示例
 
 ```json
 {
@@ -67,14 +67,14 @@ flowchart LR
 }
 ```
 
-## Token lifecycle
+## 令牌生命周期
 
-- Tokens are issued from the dashboard only after a normal app session is verified.
-- Tokens are stored in MongoDB as digest + preview + metadata.
-- Tokens can be listed and revoked from the dashboard.
-- `lastUsedAt` is updated whenever a token is successfully used.
+- 仅在常规应用会话通过验证后，才可在 Dashboard 中签发令牌。
+- 令牌以 digest + preview + metadata 的形式存储在 MongoDB 中。
+- 令牌可在 Dashboard 中查看并吊销。
+- 每当令牌被成功使用时，都会更新 `lastUsedAt`。
 
-## Important implementation files
+## 关键实现文件
 
 - `/Users/chao/Documents/coding/knowledge-next/src/app/api/ai/mcp/route.ts`
 - `/Users/chao/Documents/coding/knowledge-next/src/app/api/ai/mcp/token/route.ts`
@@ -82,13 +82,13 @@ flowchart LR
 - `/Users/chao/Documents/coding/knowledge-next/src/app/api/reading/insights/route.ts`
 - `/Users/chao/Documents/coding/knowledge-next/src/components/dashboard/board.tsx`
 
-## Removed legacy bridge code
+## 已移除的遗留桥接代码
 
 - `scripts/openclaw-reading-mcp.mjs`
-- `package.json` script entry `mcp:reading`
+- `package.json` 中的 `mcp:reading` 脚本项
 
-## Review notes
+## 评审备注
 
-- The remote MCP endpoint does not expose write tools.
-- The dashboard-generated token is intended for OpenClaw use only.
-- The site can be deployed on Vercel without any local bridge process.
+- 远程 MCP 端点不暴露写入类工具。
+- Dashboard 生成的令牌仅用于 OpenClaw。
+- 站点可直接部署到 Vercel，无需任何本地桥接进程。

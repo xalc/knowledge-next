@@ -20,14 +20,26 @@ async function validateCookie(cookieStr: string) {
     if (k) cookieMap[k.trim()] = rest.join("=").trim();
   }
 
+  const vid = cookieMap["wr_vid"] || "";
+  const authToken = cookieMap["wr_access_token"] || cookieMap["wr_skey"] || "";
+  const basever = cookieMap["wr_basever"] || "";
+  const channelid = cookieMap["wr_channelid"] || "";
+  const appver = cookieMap["wr_appver"] || basever || "";
+
   const headers: Record<string, string> = {
-    cookie: cookieStr,
-    Accept: "application/json",
-    "User-Agent": "WeRead/10.0.3 (iPhone; iOS 26.3; Scale/3.00)",
+    Accept: "*/*",
+    // UA 版本必须是 3 段 (X.Y.Z)，4 段会被服务端 401
+    "User-Agent": `WeRead/${(appver || "10.0.3").split(".").slice(0, 3).join(".")} (iPhone; iOS 26.3.1; Scale/3.00)`,
+    cookie: `wr_pf=ios, wr_skey=${authToken}, wr_vid=${vid}`,
   };
-  // i.weread.qq.com 移动端 API 使用 vid + skey 作为 HTTP Headers 认证
-  if (cookieMap["wr_vid"]) headers["vid"] = cookieMap["wr_vid"];
-  if (cookieMap["wr_skey"]) headers["skey"] = cookieMap["wr_skey"];
+  // i.weread.qq.com 移动端 API 使用 vid + skey + basever + channelid + v 作为 HTTP Headers 认证
+  if (vid) headers["vid"] = vid;
+  if (authToken) headers["skey"] = authToken;
+  if (basever) {
+    headers["basever"] = basever;
+    headers["v"] = basever;
+  }
+  if (channelid) headers["channelid"] = channelid;
 
   const response = await fetch(SUMMARY_VALIDATE_URL, {
     method: "GET",

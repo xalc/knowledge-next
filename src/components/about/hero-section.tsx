@@ -9,7 +9,6 @@ import { HeaderLogo } from "../header/header-logo";
 import { BezierLines } from "../transition/bezier-lines";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
-import GreetingMessage from "./greeting-card";
 
 function useMousePosition() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -205,8 +204,6 @@ export const HeroSection = () => {
               </div>
             </motion.div>
           </motion.div>
-
-          <GreetingMessage />
 
           <motion.div
             className="mt-16 flex items-center justify-center space-y-2 text-center"

@@ -15,7 +15,11 @@ type DashboardMcpToken = {
   lastUsedAt?: string | null;
 };
 
-export default function DashboardPage() {
+type DashboardPageProps = {
+  mcpEnabled: boolean;
+};
+
+export default function DashboardPage({ mcpEnabled }: DashboardPageProps) {
   const { toast } = useToast();
   const captureCommand = "mitmdump -s scripts/weread_cookie_capture.py --set block_global=false";
   const macIpCommand = "ifconfig en0 | grep \"inet \" | awk '{print $2}'";
@@ -248,8 +252,9 @@ export default function DashboardPage() {
   };
 
   useEffect(() => {
+    if (!mcpEnabled) return;
     void loadMcpTokens();
-  }, [loadMcpTokens]);
+  }, [loadMcpTokens, mcpEnabled]);
 
   const handleCopy = async (text: string, label: string) => {
     try {
@@ -327,94 +332,113 @@ export default function DashboardPage() {
 
       <div className="rounded-lg border p-6 shadow-md">
         <h2 className="mb-2 text-xl font-semibold">MCP 只读 Token（OpenClaw 远端直连）</h2>
-        <p className="mb-4 text-sm text-muted-foreground">
-          该 Token 用于访问远端 MCP Endpoint，仅开放阅读数据类工具。生成后请立即复制保存。
-        </p>
-        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
-          <Button onClick={handleCreateMcpToken} disabled={creatingMcpToken}>
-            {creatingMcpToken ? "生成中..." : "生成 MCP Token"}
-          </Button>
-          <Button variant="outline" onClick={() => handleCopy(mcpEndpoint, "MCP Endpoint")}>
-            复制 MCP Endpoint
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => void loadMcpTokens()}
-            disabled={loadingMcpTokens}
-          >
-            {loadingMcpTokens ? "刷新中..." : "刷新 Token 列表"}
-          </Button>
-        </div>
-
-        {mcpTokenValue && (
-          <div className="mb-4 space-y-3">
-            <div>
-              <p className="mb-2 text-sm font-medium">新生成 Token（仅展示一次）</p>
-              <Textarea readOnly value={mcpTokenValue} className="min-h-[90px] font-mono text-xs" />
-              <Button
-                variant="outline"
-                className="mt-2"
-                onClick={() => handleCopy(mcpTokenValue, "MCP Token")}
-              >
-                复制 MCP Token
-              </Button>
-            </div>
-
-            <div>
-              <p className="mb-2 text-sm font-medium">OpenClaw 配置片段</p>
-              <Textarea
-                readOnly
-                value={openClawConfig}
-                className="min-h-[160px] font-mono text-xs"
-              />
-              <Button
-                variant="outline"
-                className="mt-2"
-                onClick={() => handleCopy(openClawConfig, "OpenClaw 配置")}
-              >
-                复制 OpenClaw 配置
-              </Button>
-            </div>
-          </div>
-        )}
-
-        <div>
-          <p className="mb-2 text-sm font-medium">已签发 Token</p>
+        {!mcpEnabled ? (
           <div className="space-y-2">
-            {mcpTokens.length === 0 && (
-              <p className="text-sm text-muted-foreground">暂无 Token，点击上方按钮生成。</p>
-            )}
-            {mcpTokens.map(token => (
-              <div
-                key={token.id}
-                className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div className="text-sm">
-                  <p className="font-medium">
-                    {token.name} · {token.scope}
-                  </p>
-                  <p className="font-mono text-xs text-muted-foreground">{token.tokenPreview}</p>
-                  <p className="text-xs text-muted-foreground">
-                    创建于 {new Date(token.createdAt).toLocaleString()}
-                    {token.lastUsedAt
-                      ? ` · 最近使用 ${new Date(token.lastUsedAt).toLocaleString()}`
-                      : ""}
-                    {token.revokedAt
-                      ? ` · 已撤销 ${new Date(token.revokedAt).toLocaleString()}`
-                      : ""}
-                  </p>
-                </div>
-                <Button
-                  variant="outline"
-                  disabled={Boolean(token.revokedAt)}
-                  onClick={() => void handleRevokeMcpToken(token.id)}
-                >
-                  {token.revokedAt ? "已撤销" : "撤销"}
-                </Button>
-              </div>
-            ))}
+            <p className="text-sm text-muted-foreground">
+              MCP 当前已被服务端配置禁用。后端 `/api/ai/mcp` 和 `/api/ai/mcp/token` 会直接拒绝请求。
+            </p>
+            <div className="rounded-md bg-muted p-3 font-mono text-xs">
+              feature_flags.key=mcp.enabled, enabled=false
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            <p className="mb-4 text-sm text-muted-foreground">
+              该 Token 用于访问远端 MCP Endpoint，仅开放阅读数据类工具。生成后请立即复制保存。
+            </p>
+            <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button onClick={handleCreateMcpToken} disabled={creatingMcpToken}>
+                {creatingMcpToken ? "生成中..." : "生成 MCP Token"}
+              </Button>
+              <Button variant="outline" onClick={() => handleCopy(mcpEndpoint, "MCP Endpoint")}>
+                复制 MCP Endpoint
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => void loadMcpTokens()}
+                disabled={loadingMcpTokens}
+              >
+                {loadingMcpTokens ? "刷新中..." : "刷新 Token 列表"}
+              </Button>
+            </div>
+
+            {mcpTokenValue && (
+              <div className="mb-4 space-y-3">
+                <div>
+                  <p className="mb-2 text-sm font-medium">新生成 Token（仅展示一次）</p>
+                  <Textarea
+                    readOnly
+                    value={mcpTokenValue}
+                    className="min-h-[90px] font-mono text-xs"
+                  />
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => handleCopy(mcpTokenValue, "MCP Token")}
+                  >
+                    复制 MCP Token
+                  </Button>
+                </div>
+
+                <div>
+                  <p className="mb-2 text-sm font-medium">OpenClaw 配置片段</p>
+                  <Textarea
+                    readOnly
+                    value={openClawConfig}
+                    className="min-h-[160px] font-mono text-xs"
+                  />
+                  <Button
+                    variant="outline"
+                    className="mt-2"
+                    onClick={() => handleCopy(openClawConfig, "OpenClaw 配置")}
+                  >
+                    复制 OpenClaw 配置
+                  </Button>
+                </div>
+              </div>
+            )}
+
+            <div>
+              <p className="mb-2 text-sm font-medium">已签发 Token</p>
+              <div className="space-y-2">
+                {mcpTokens.length === 0 && (
+                  <p className="text-sm text-muted-foreground">暂无 Token，点击上方按钮生成。</p>
+                )}
+                {mcpTokens.map(token => (
+                  <div
+                    key={token.id}
+                    className="flex flex-col gap-2 rounded-md border p-3 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="text-sm">
+                      <p className="font-medium">
+                        {token.name} · {token.scope}
+                      </p>
+                      <p className="font-mono text-xs text-muted-foreground">
+                        {token.tokenPreview}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        创建于 {new Date(token.createdAt).toLocaleString()}
+                        {token.lastUsedAt
+                          ? ` · 最近使用 ${new Date(token.lastUsedAt).toLocaleString()}`
+                          : ""}
+                        {token.revokedAt
+                          ? ` · 已撤销 ${new Date(token.revokedAt).toLocaleString()}`
+                          : ""}
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      disabled={Boolean(token.revokedAt)}
+                      onClick={() => void handleRevokeMcpToken(token.id)}
+                    >
+                      {token.revokedAt ? "已撤销" : "撤销"}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <div className="rounded-lg border p-6 shadow-md">

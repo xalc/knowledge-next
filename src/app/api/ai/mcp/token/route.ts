@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { verifySession } from "@/lib/dal";
+import { isMcpEnabled } from "@/lib/site-config";
 import { issueReadOnlyMcpToken, listUserMcpTokens, revokeMcpToken } from "@/lib/mcp-token";
 
 export const runtime = "nodejs";
@@ -8,7 +9,16 @@ function unauthorized() {
   return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 }
 
+function disabled() {
+  return NextResponse.json(
+    { ok: false, error: "MCP is disabled by server configuration." },
+    { status: 503 },
+  );
+}
+
 export async function GET() {
+  if (!(await isMcpEnabled())) return disabled();
+
   const session = await verifySession();
   if (!session?.isAuth) return unauthorized();
 
@@ -17,6 +27,8 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!(await isMcpEnabled())) return disabled();
+
   const session = await verifySession();
   if (!session?.isAuth) return unauthorized();
 
@@ -34,6 +46,8 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!(await isMcpEnabled())) return disabled();
+
   const session = await verifySession();
   if (!session?.isAuth) return unauthorized();
 

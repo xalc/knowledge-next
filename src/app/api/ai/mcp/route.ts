@@ -8,6 +8,7 @@ import {
   getReadingPlan,
   getReadingTrend,
 } from "@/lib/wereader/reading-insights";
+import { isMcpEnabled } from "@/lib/site-config";
 import { verifyReadOnlyMcpBearerToken } from "@/lib/mcp-token";
 
 export const runtime = "nodejs";
@@ -129,6 +130,22 @@ function unauthorizedResponse() {
   );
 }
 
+function disabledResponse() {
+  return new Response(
+    JSON.stringify({
+      jsonrpc: "2.0",
+      error: { code: -32002, message: "MCP is disabled by server configuration." },
+      id: null,
+    }),
+    {
+      status: 503,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    },
+  );
+}
+
 export async function OPTIONS() {
   return new Response(null, {
     status: 204,
@@ -142,6 +159,9 @@ export async function OPTIONS() {
 }
 
 async function handleMcpRequest(request: Request) {
+  const enabled = await isMcpEnabled();
+  if (!enabled) return disabledResponse();
+
   const auth = await verifyReadOnlyMcpBearerToken(request.headers.get("authorization"));
   if (!auth) return unauthorizedResponse();
 

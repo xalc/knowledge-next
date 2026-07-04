@@ -3,30 +3,42 @@ import { useToast } from "@/hooks/use-toast";
 import { upload } from "@vercel/blob/client";
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
   const { toast } = useToast();
+
   const uploadFile = useCallback(
     async (file: File) => {
+      abortRef.current = new AbortController();
       setLoading(true);
       try {
         const result = await upload(`tt_images/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/upload",
+          signal: abortRef.current.signal,
         });
 
         onUpload(result.url);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (errPayload: any) {
+        if (errPayload.name === "AbortError") return;
         const error = errPayload.message || "Something went wrong";
         toast({
           title: error,
         });
       }
       setLoading(false);
+      abortRef.current = null;
     },
     [onUpload, toast],
   );
 
-  return { loading, uploadFile };
+  const cancelUpload = useCallback(() => {
+    abortRef.current?.abort();
+    setLoading(false);
+    abortRef.current = null;
+  }, []);
+
+  return { loading, uploadFile, cancelUpload };
 };
 
 export const useFileUpload = () => {

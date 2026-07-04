@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 import { ChangeEvent, useCallback } from "react";
 
 export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
-  const { loading, uploadFile } = useUploader({ onUpload });
+  const { loading, uploadFile, cancelUpload } = useUploader({ onUpload });
   const { handleUploadClick, ref } = useFileUpload();
   const { draggedInside, onDrop, onDragEnter, onDragLeave } = useDropZone({ uploader: uploadFile });
 
@@ -17,8 +17,11 @@ export const ImageUploader = ({ onUpload }: { onUpload: (url: string) => void })
 
   if (loading) {
     return (
-      <div className="flex min-h-[10rem] items-center justify-center rounded-lg bg-opacity-80 p-8">
+      <div className="flex min-h-[10rem] flex-col items-center justify-center gap-4 rounded-lg bg-opacity-80 p-8">
         <Spinner className="text-neutral-500" size={1.5} />
+        <Button variant="secondary" size="sm" onClick={cancelUpload}>
+          取消上传
+        </Button>
       </div>
     );
   }

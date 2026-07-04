@@ -48,7 +48,7 @@ async function main() {
   let totalChanged = 0;
 
   for (const post of posts) {
-    const content = post.content as TiptapNode;
+    const content = post.content as unknown as TiptapNode;
     if (!content || typeof content !== "object") continue;
 
     const { node, changed } = migrateNode(content);

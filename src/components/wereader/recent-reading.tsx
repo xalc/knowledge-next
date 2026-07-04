@@ -7,7 +7,7 @@ import { BookOpen } from "lucide-react";
 import BookItem from "./book-list-item";
 
 export default async function RecentReadingBooks() {
-  const bookShelf = await getRecentBooks();
+  const bookShelf = (await getRecentBooks()) ?? [];
   return (
     <div className="container mx-auto mt-12 lg:max-w-[1024px]">
       <Card className="mx-6">

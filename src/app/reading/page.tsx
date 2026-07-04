@@ -15,7 +15,7 @@ import BooksView from "@/components/wereader/books-view";
 export const revalidate = 300;
 
 export default async function ReadingPage() {
-  const allBooks = await getAllBooks();
+  const allBooks = (await getAllBooks()) ?? [];
 
   return (
     <div className="mx-8 mt-8 flex flex-col gap-8">

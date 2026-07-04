@@ -13,11 +13,16 @@ export const verifySession = cache(async () => {
   if (!session?.userId) {
     return { isAuth: false };
   }
-  const user = await prisma.user.findUnique({
-    where: {
-      id: session.userId,
-    },
-  });
+  const user = await prisma.user
+    .findUnique({
+      where: {
+        id: session.userId,
+      },
+    })
+    .catch(error => {
+      console.error("Failed to verify user session:", error);
+      return null;
+    });
   if (!user) {
     return { isAuth: false } as UserType;
   }

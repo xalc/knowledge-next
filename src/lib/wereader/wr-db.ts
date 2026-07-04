@@ -48,6 +48,7 @@ export const getRecentBooks = unstable_cache(
       return bookShelf;
     } catch (e) {
       console.error(e);
+      return [];
     }
   },
   ["wereader-recent-books"],
@@ -65,6 +66,7 @@ export const getAllBooks = unstable_cache(
       return bookShelf;
     } catch (e) {
       console.error(e);
+      return [];
     }
   },
   ["wereader-all-books"],

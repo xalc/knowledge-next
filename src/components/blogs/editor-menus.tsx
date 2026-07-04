@@ -1,24 +1,10 @@
 "use client";
 
-import { BubbleMenu, FloatingMenu } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react";
 import type { Editor } from "@tiptap/react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import {
-  Bold,
-  Italic,
-  Strikethrough,
-  Code,
-  Heading1,
-  Heading2,
-  Heading3,
-  List,
-  ListTodo,
-  Quote,
-  SquareCode,
-  Image,
-  Link as LinkIcon,
-} from "lucide-react";
+import { Bold, Italic, Strikethrough, Code, Heading1, Link as LinkIcon } from "lucide-react";
 
 interface MenuButtonProps {
   onClick: () => void;
@@ -101,69 +87,5 @@ export function EditorBubbleMenu({ editor }: { editor: Editor }) {
         <LinkIcon className="h-4 w-4" />
       </MenuButton>
     </BubbleMenu>
-  );
-}
-
-/** 空行时浮出的快捷插入栏 */
-export function EditorFloatingMenu({ editor }: { editor: Editor }) {
-  return (
-    <FloatingMenu
-      editor={editor}
-      tippyOptions={{ duration: 100 }}
-      className="flex items-center gap-0.5 rounded-lg border bg-background p-1 shadow-md"
-    >
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        isActive={editor.isActive("heading", { level: 1 })}
-        title="一级标题"
-      >
-        <Heading1 className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-        isActive={editor.isActive("heading", { level: 2 })}
-        title="二级标题"
-      >
-        <Heading2 className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-        isActive={editor.isActive("heading", { level: 3 })}
-        title="三级标题"
-      >
-        <Heading3 className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
-        isActive={editor.isActive("bulletList")}
-        title="无序列表"
-      >
-        <List className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleTaskList().run()}
-        isActive={editor.isActive("taskList")}
-        title="任务列表"
-      >
-        <ListTodo className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleCodeBlock().run()}
-        isActive={editor.isActive("codeBlock")}
-        title="代码块"
-      >
-        <SquareCode className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
-        isActive={editor.isActive("blockquote")}
-        title="引用"
-      >
-        <Quote className="h-4 w-4" />
-      </MenuButton>
-      <MenuButton onClick={() => editor.chain().focus().setImageUpload().run()} title="图片">
-        <Image className="h-4 w-4" />
-      </MenuButton>
-    </FloatingMenu>
   );
 }

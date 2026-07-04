@@ -14,7 +14,7 @@ import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing, FileJson, FileCode, Trash2, FileText } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EditorToolbar from "@/components/blogs/editor-toolbar";
-import { EditorBubbleMenu, EditorFloatingMenu } from "@/components/blogs/editor-menus";
+import { EditorBubbleMenu } from "@/components/blogs/editor-menus";
 import { ImageBlockMenu } from "@/components/blogs/image-block-menu";
 
 const Tiptap = () => {
@@ -112,7 +112,6 @@ const Tiptap = () => {
       </div>
 
       <EditorBubbleMenu editor={editor} />
-      <EditorFloatingMenu editor={editor} />
       <ImageBlockMenu editor={editor} />
       <EditorContent editor={editor} />
 

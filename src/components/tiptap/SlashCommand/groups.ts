@@ -91,7 +91,6 @@ export const GROUPS: Group[] = [
         iconName: "SquareCode",
         description: "带语法高亮的代码块",
         aliases: ["code", "codeblock"],
-        shouldBeHidden: editor => editor.isActive("columns"),
         action: editor => {
           editor.chain().focus().setCodeBlock().run();
         },

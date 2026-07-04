@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { saveArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
-import { useState, useCallback, ChangeEvent } from "react";
+import { useState, useCallback, useRef, ChangeEvent } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2, Upload, Image as ImageIcon, X } from "lucide-react";
 import { TagInput } from "./blog-tag-input";
@@ -37,37 +37,54 @@ export const formSchema = z.object({
   id: z.string().optional(),
 });
 
-/* eslint-disable-next-line */
-export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
+export function BlogMetaForm({
+  content,
+  meta,
+  onSaved,
+}: {
+  content: string;
+  meta?: Record<string, unknown>;
+  onSaved?: () => void;
+}) {
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: meta?.title || "",
-      slug: meta?.slug || "",
-      description: meta?.description || "",
-      author: meta?.author || "HunterX",
-      tags: meta?.metadata?.tags || [],
-      cover: meta?.cover || "",
+      title: (meta?.title as string) || "",
+      slug: (meta?.slug as string) || "",
+      description: (meta?.description as string) || "",
+      author: (meta?.author as string) || "HunterX",
+      tags: ((meta?.metadata as Record<string, unknown>)?.tags as string[] | undefined) || [],
+      cover: (meta?.cover as string) || "",
     },
   });
 
   const router = useRouter();
   const [isPending, setPending] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(meta?.cover || "");
+  const [previewUrl, setPreviewUrl] = useState((meta?.cover as string) || "");
+  const uploadAbortRef = useRef<AbortController | null>(null);
+
+  const cancelCoverUpload = useCallback(() => {
+    uploadAbortRef.current?.abort();
+    setIsUploading(false);
+    uploadAbortRef.current = null;
+  }, []);
 
   const handleImageUpload = useCallback(
     async (file: File) => {
       if (!file) return;
+      uploadAbortRef.current = new AbortController();
 
       try {
         setIsUploading(true);
         const result = await upload(`tt_images/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/upload",
+          abortSignal: uploadAbortRef.current?.signal,
         });
 
+        if (uploadAbortRef.current?.signal.aborted) return;
         setPreviewUrl(result.url);
         form.setValue("cover", result.url);
         toast({
@@ -76,12 +93,14 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
+        if (error?.name === "AbortError" || uploadAbortRef.current?.signal.aborted) return;
         toast({
           title: "上传失败",
           description: error.message || "图片上传失败，请重试",
         });
       } finally {
         setIsUploading(false);
+        uploadAbortRef.current = null;
       }
     },
     [form, toast],
@@ -115,6 +134,7 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
         description: resp.message,
       });
       if (resp.code === 200) {
+        onSaved?.();
         router.push("/blogs");
       }
     }
@@ -251,24 +271,36 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
                           <div className="text-sm font-medium text-muted-foreground">
                             {isUploading ? "正在上传..." : "拖放图片或点击上传"}
                           </div>
-                          <input
-                            type="file"
-                            id="cover-upload"
-                            className="hidden"
-                            accept="image/*"
-                            onChange={onFileChange}
-                            disabled={isUploading}
-                          />
-                          <Button
-                            type="button"
-                            variant="secondary"
-                            size="sm"
-                            disabled={isUploading}
-                            onClick={() => document.getElementById("cover-upload")?.click()}
-                          >
-                            <Upload className="mr-1 h-4 w-4" />
-                            选择图片
-                          </Button>
+                          {isUploading ? (
+                            <Button
+                              type="button"
+                              variant="secondary"
+                              size="sm"
+                              onClick={cancelCoverUpload}
+                            >
+                              <X className="mr-1 h-4 w-4" />
+                              取消上传
+                            </Button>
+                          ) : (
+                            <>
+                              <input
+                                type="file"
+                                id="cover-upload"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={onFileChange}
+                              />
+                              <Button
+                                type="button"
+                                variant="secondary"
+                                size="sm"
+                                onClick={() => document.getElementById("cover-upload")?.click()}
+                              >
+                                <Upload className="mr-1 h-4 w-4" />
+                                选择图片
+                              </Button>
+                            </>
+                          )}
                         </div>
                       </div>
                     )}

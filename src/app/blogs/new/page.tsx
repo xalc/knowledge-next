@@ -230,25 +230,33 @@ const Tiptap = () => {
         </Button>
       </div>
 
-      {/* 标题：大号无框，写作焦点 */}
-      <input
-        value={metaValue.title}
-        onChange={e => updateMeta("title", e.target.value)}
-        placeholder="标题"
-        className="w-full bg-transparent text-4xl font-bold leading-tight text-foreground outline-none placeholder:text-muted-foreground/40"
-        autoComplete="off"
-      />
+      {/* 编辑器区域：带边框的写作卡片 */}
+      <div className="rounded-lg border bg-background">
+        {/* 标题 */}
+        <div className="px-6 pt-6">
+          <input
+            value={metaValue.title}
+            onChange={e => updateMeta("title", e.target.value)}
+            placeholder="标题"
+            className="w-full bg-transparent text-3xl font-bold leading-tight text-foreground outline-none placeholder:text-muted-foreground/40"
+            autoComplete="off"
+          />
+        </div>
 
-      {/* 编辑器：紧跟标题，无多余间距 */}
-      <EditorBubbleMenu editor={editor} />
-      <ImageBlockMenu editor={editor} />
+        {/* BubbleMenu / ImageBlockMenu */}
+        <EditorBubbleMenu editor={editor} />
+        <ImageBlockMenu editor={editor} />
 
-      {/* 工具栏：浮动在编辑器上方， sticky */}
-      <div className="sticky top-0 z-30 -mx-6 my-3 border-b bg-background/80 px-6 py-2 backdrop-blur">
-        <EditorToolbar editor={editor} />
+        {/* 工具栏 */}
+        <div className="sticky top-0 z-30 mx-6 my-3 rounded-md border bg-background/80 px-3 py-2 backdrop-blur">
+          <EditorToolbar editor={editor} />
+        </div>
+
+        {/* 正文 */}
+        <div className="px-6 pb-6">
+          <EditorContent editor={editor} />
+        </div>
       </div>
-
-      <EditorContent editor={editor} />
 
       {/* 字数统计 */}
       <div className="mt-8 border-t pt-4 text-sm text-muted-foreground">

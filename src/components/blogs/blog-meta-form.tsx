@@ -81,7 +81,7 @@ export function BlogMetaForm({
         const result = await upload(`tt_images/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/upload",
-          signal: uploadAbortRef.current?.signal,
+          abortSignal: uploadAbortRef.current?.signal,
         });
 
         if (uploadAbortRef.current?.signal.aborted) return;
@@ -93,7 +93,7 @@ export function BlogMetaForm({
         });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
-        if (error.name === "AbortError" || error.code === "ERR_CANCELED") return;
+        if (error?.name === "AbortError" || uploadAbortRef.current?.signal.aborted) return;
         toast({
           title: "上传失败",
           description: error.message || "图片上传失败，请重试",

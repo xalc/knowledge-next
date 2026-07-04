@@ -1,6 +1,7 @@
 import { DragEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { upload } from "@vercel/blob/client";
+
 export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) => {
   const [loading, setLoading] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
@@ -8,28 +9,29 @@ export const useUploader = ({ onUpload }: { onUpload: (url: string) => void }) =
 
   const uploadFile = useCallback(
     async (file: File) => {
+      // 已有上传正在进行时，直接返回
+      if (loading) return;
       abortRef.current = new AbortController();
       setLoading(true);
       try {
         const result = await upload(`tt_images/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/upload",
-          signal: abortRef.current.signal,
+          abortSignal: abortRef.current.signal,
         });
 
         onUpload(result.url);
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (errPayload: any) {
-        if (errPayload.name === "AbortError") return;
-        const error = errPayload.message || "Something went wrong";
-        toast({
-          title: error,
-        });
+        // 主动取消：不弹错误
+        if (errPayload?.name === "AbortError" || abortRef.current?.signal.aborted) return;
+        const error = errPayload?.message || "Something went wrong";
+        toast({ title: error });
       }
       setLoading(false);
       abortRef.current = null;
     },
-    [onUpload, toast],
+    [onUpload, toast, loading],
   );
 
   const cancelUpload = useCallback(() => {

@@ -7,7 +7,7 @@
  * 此脚本递归遍历 PostContent.content JSON，把 type:"image" 转成 type:"imageBlock"，
  * 并保留 src 属性。
  */
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const dryRun = process.argv.includes("--dry-run");
@@ -59,7 +59,7 @@ async function main() {
     if (!dryRun) {
       await prisma.postContent.update({
         where: { id: post.id },
-        data: { content: node },
+        data: { content: node as unknown as Prisma.InputJsonValue },
       });
     }
   }

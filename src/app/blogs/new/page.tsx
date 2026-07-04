@@ -16,12 +16,16 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import EditorToolbar from "@/components/blogs/editor-toolbar";
 
 const Tiptap = () => {
-  const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage("ttcontent", null);
+  const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage<object | null>(
+    "ttcontent-json",
+    null,
+  );
 
   const [deBouncedValue] = useDebounce(storageValue, 1000);
   const debouncedUpdates = editor => {
-    if (deBouncedValue !== editor.getHTML()) {
-      setStorageValue(editor.getHTML());
+    const json = editor.getJSON();
+    if (JSON.stringify(deBouncedValue) !== JSON.stringify(json)) {
+      setStorageValue(json);
     }
   };
   const editor = useEditor({

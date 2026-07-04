@@ -5,7 +5,6 @@ import { extensions } from "@/components/tiptap/extension";
 
 import { useLocalStorage } from "usehooks-ts";
 import { useDebounce } from "use-debounce";
-import Placeholder from "@tiptap/extension-placeholder";
 
 import { Button } from "@/components/ui/button";
 
@@ -26,12 +25,7 @@ const Tiptap = () => {
     }
   };
   const editor = useEditor({
-    extensions: [
-      ...extensions,
-      Placeholder.configure({
-        placeholder: "开始写作... 输入 / 可插入各种内容块",
-      }),
-    ],
+    extensions,
     editorProps: {
       attributes: {
         class: "mx-12 my-8 p-4 focus:outline-none border-2 rounded-lg min-h-[600px]",

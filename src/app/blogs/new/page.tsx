@@ -13,7 +13,6 @@ import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 
 import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing, FileJson, FileCode, Trash2, FileText, X } from "lucide-react";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import EditorToolbar from "@/components/blogs/editor-toolbar";
 import { EditorBubbleMenu } from "@/components/blogs/editor-menus";
 import { ImageBlockMenu } from "@/components/blogs/image-block-menu";
@@ -103,11 +102,11 @@ const Tiptap = () => {
       </div>
 
       {showAutosaveHint && (
-        <Alert className="mx-12 mt-4 flex items-center gap-3 bg-primary/5 py-2 pr-12">
-          <BellRing className="h-4 w-4 shrink-0 self-center" />
-          <AlertDescription className="flex-1 leading-5">
+        <div className="relative mx-12 mt-4 flex items-center gap-3 rounded-lg border bg-primary/5 px-4 py-2 pr-12 text-sm">
+          <BellRing className="h-4 w-4 shrink-0 text-primary" />
+          <span className="flex-1 leading-5 text-muted-foreground">
             内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
-          </AlertDescription>
+          </span>
           <Button
             variant="ghost"
             size="icon"
@@ -118,7 +117,7 @@ const Tiptap = () => {
           >
             <X className="h-3.5 w-3.5" />
           </Button>
-        </Alert>
+        </div>
       )}
 
       <div className="mx-12 mt-4">

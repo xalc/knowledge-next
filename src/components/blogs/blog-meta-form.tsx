@@ -47,22 +47,22 @@ export function BlogMetaForm({
   onSaved?: () => void;
 }) {
   const { toast } = useToast();
-  const form = useForm({
+  const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: meta?.title || "",
-      slug: meta?.slug || "",
-      description: meta?.description || "",
-      author: meta?.author || "HunterX",
-      tags: meta?.metadata?.tags || [],
-      cover: meta?.cover || "",
+      title: (meta?.title as string) || "",
+      slug: (meta?.slug as string) || "",
+      description: (meta?.description as string) || "",
+      author: (meta?.author as string) || "HunterX",
+      tags: ((meta?.metadata as Record<string, unknown>)?.tags as string[] | undefined) || [],
+      cover: (meta?.cover as string) || "",
     },
   });
 
   const router = useRouter();
   const [isPending, setPending] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-  const [previewUrl, setPreviewUrl] = useState(meta?.cover || "");
+  const [previewUrl, setPreviewUrl] = useState((meta?.cover as string) || "");
   const uploadAbortRef = useRef<AbortController | null>(null);
 
   const cancelCoverUpload = useCallback(() => {

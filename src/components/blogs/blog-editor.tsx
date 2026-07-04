@@ -3,7 +3,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import { extensions } from "@/components/tiptap/extension";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { useContext, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import { UserContext } from "@/context/UserContext";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +17,8 @@ import EditorToolbar from "./editor-toolbar";
 import { deleteArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { useDebouncedCallback } from "use-debounce";
+import { useLeaveGuard } from "@/hooks/use-leave-guard";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -34,8 +36,13 @@ const BlogEditor = ({ post }) => {
   const [items, setItems] = useState([]);
   const [editable, setEditable] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
+  const [showDraftRestore, setShowDraftRestore] = useState(false);
+  const [pendingDraft, setPendingDraft] = useState<object | null>(null);
   const router = useRouter();
   const { toast } = useToast();
+  const draftKey = `draft:${post.slug}`;
+  const savedContentRef = useRef(post.postcontent.content);
   const createdAt = post.createdAt instanceof Date ? post.createdAt : new Date(post.createdAt);
   const updatedAt = post.updatedAt instanceof Date ? post.updatedAt : new Date(post.updatedAt);
   const createdDateLabel = Number.isNaN(createdAt.getTime())
@@ -44,6 +51,23 @@ const BlogEditor = ({ post }) => {
   const updatedDateLabel = Number.isNaN(updatedAt.getTime())
     ? "—"
     : updatedAt.toLocaleDateString("zh-CN");
+
+  // 防抖保存草稿到 localStorage
+  const saveDraft = useDebouncedCallback((json: object) => {
+    localStorage.setItem(draftKey, JSON.stringify({ content: json, timestamp: Date.now() }));
+  }, 1000);
+
+  const handleEditorUpdate = ({ editor }) => {
+    const json = editor.getJSON();
+    const dirty = JSON.stringify(json) !== JSON.stringify(savedContentRef.current);
+    setIsDirty(dirty);
+    if (dirty) {
+      saveDraft(json);
+    }
+  };
+
+  // 离开提示（有未保存草稿时）
+  useLeaveGuard(isDirty);
 
   const editor = useEditor({
     editable: editable,
@@ -63,12 +87,51 @@ const BlogEditor = ({ post }) => {
       },
     },
     content: post.postcontent.content,
+    onUpdate: handleEditorUpdate,
   });
+
   const editContent = () => {
     setEditable(e => {
+      if (!e) {
+        // 进入编辑模式：检查是否有草稿
+        const draftRaw = localStorage.getItem(draftKey);
+        if (draftRaw) {
+          try {
+            const { content } = JSON.parse(draftRaw);
+            setPendingDraft(content);
+            setShowDraftRestore(true);
+          } catch {
+            // 草稿解析失败，忽略
+          }
+        }
+      } else {
+        // 退出编辑模式：如果有未保存改动，保留草稿
+      }
       editor.setEditable(!e);
       return !e;
     });
+  };
+
+  const restoreDraft = () => {
+    if (pendingDraft && editor) {
+      editor.commands.setContent(pendingDraft);
+    }
+    setShowDraftRestore(false);
+    setPendingDraft(null);
+  };
+
+  const discardDraft = () => {
+    localStorage.removeItem(draftKey);
+    setShowDraftRestore(false);
+    setPendingDraft(null);
+  };
+
+  const handleSaved = () => {
+    localStorage.removeItem(draftKey);
+    if (editor) {
+      savedContentRef.current = editor.getJSON();
+    }
+    setIsDirty(false);
   };
 
   const handleDelete = async () => {
@@ -151,7 +214,11 @@ const BlogEditor = ({ post }) => {
             </TooltipProvider>
             {editable && (
               <BlogMetaPopup editor={editor}>
-                <BlogMetaForm content={JSON.stringify(editor.getJSON())} meta={post} />
+                <BlogMetaForm
+                  content={JSON.stringify(editor.getJSON())}
+                  meta={post}
+                  onSaved={handleSaved}
+                />
               </BlogMetaPopup>
             )}
             {user.isAuth && (
@@ -218,6 +285,22 @@ const BlogEditor = ({ post }) => {
           <ToC editor={editor} items={items} />
         </div>
       </div>
+
+      {/* 草稿恢复对话框 */}
+      <AlertDialog open={showDraftRestore} onOpenChange={setShowDraftRestore}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>检测到未保存的草稿</AlertDialogTitle>
+            <AlertDialogDescription>
+              此文章有上次编辑未保存的草稿，是否恢复？
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={discardDraft}>丢弃草稿</AlertDialogCancel>
+            <AlertDialogAction onClick={restoreDraft}>恢复草稿</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

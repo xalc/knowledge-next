@@ -37,8 +37,15 @@ export const formSchema = z.object({
   id: z.string().optional(),
 });
 
-/* eslint-disable-next-line */
-export function BlogMetaForm({ content, meta }: { content: string; meta?: any }) {
+export function BlogMetaForm({
+  content,
+  meta,
+  onSaved,
+}: {
+  content: string;
+  meta?: Record<string, unknown>;
+  onSaved?: () => void;
+}) {
   const { toast } = useToast();
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -115,6 +122,7 @@ export function BlogMetaForm({ content, meta }: { content: string; meta?: any })
         description: resp.message,
       });
       if (resp.code === 200) {
+        onSaved?.();
         router.push("/blogs");
       }
     }

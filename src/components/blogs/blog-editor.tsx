@@ -15,6 +15,7 @@ import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck, Trash2 } 
 import { ToC } from "./toc";
 import EditorToolbar from "./editor-toolbar";
 import { EditorBubbleMenu, EditorFloatingMenu } from "./editor-menus";
+import { ImageBlockMenu } from "./image-block-menu";
 import { deleteArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -261,6 +262,7 @@ const BlogEditor = ({ post }) => {
           <>
             <EditorBubbleMenu editor={editor} />
             <EditorFloatingMenu editor={editor} />
+            <ImageBlockMenu editor={editor} />
             <div className="sticky top-16 z-40">
               <EditorToolbar editor={editor} />
             </div>

@@ -24,7 +24,10 @@
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "pnpm run format",
-      "pnpm run lint --no-cache . "
+      "pnpm run lint --no-cache ."
+    ],
+    "*.{test,spec}.{ts,tsx}": [
+      "pnpm run test"
     ]
   },
   "author": "xalc",

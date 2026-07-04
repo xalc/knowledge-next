@@ -12,10 +12,10 @@ import DetailsContent from "@tiptap-pro/extension-details-content";
 import DetailsSummary from "@tiptap-pro/extension-details-summary";
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
-import Image from "@tiptap/extension-image";
 import ImageUpload from "./extensions/ImageUpload/ImageUpload";
 import { ImageBlock } from "./extensions/ImageBlock";
 import CharacterCount from "@tiptap/extension-character-count";
+import Placeholder from "@tiptap/extension-placeholder";
 import Link from "@/components/tiptap/link";
 import { CodeBlock } from "./codeblock";
 const taskList = TaskList.configure({
@@ -96,7 +96,6 @@ export const extensions = [
   }),
   DetailsContent,
   DetailsSummary,
-  Image,
   ImageUpload,
   ImageBlock,
   CharacterCount.configure({
@@ -110,5 +109,9 @@ export const extensions = [
   }),
   CodeBlock,
   Link,
+  Placeholder.configure({
+    placeholder: "开始写作... 输入 / 可插入各种内容块",
+    showOnlyWhenEditable: true,
+  }),
   SlashCommand,
 ];

@@ -18,10 +18,19 @@ export const ImageUpload = ({ getPos, editor }: { getPos: () => number; editor: 
     [getPos, editor],
   );
 
+  const onRemove = useCallback(() => {
+    const pos = getPos();
+    editor
+      .chain()
+      .focus()
+      .deleteRange({ from: pos, to: pos + 1 })
+      .run();
+  }, [getPos, editor]);
+
   return (
     <NodeViewWrapper>
       <div className="m-0 p-0" data-drag-handle>
-        <ImageUploader onUpload={onUpload} />
+        <ImageUploader onUpload={onUpload} onRemove={onRemove} />
       </div>
     </NodeViewWrapper>
   );

@@ -14,6 +14,7 @@ import { getHierarchicalIndexes, TableOfContents } from "@tiptap-pro/extension-t
 import { Pencil, PencilOff, Calendar, Clock, BarChart2, CalendarCheck, Trash2 } from "lucide-react";
 import { ToC } from "./toc";
 import EditorToolbar from "./editor-toolbar";
+import { EditorBubbleMenu, EditorFloatingMenu } from "./editor-menus";
 import { deleteArticleAction } from "@/actions/article";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
@@ -257,9 +258,13 @@ const BlogEditor = ({ post }) => {
         )}
 
         {editable && (
-          <div className="sticky top-16 z-40">
-            <EditorToolbar editor={editor} />
-          </div>
+          <>
+            <EditorBubbleMenu editor={editor} />
+            <EditorFloatingMenu editor={editor} />
+            <div className="sticky top-16 z-40">
+              <EditorToolbar editor={editor} />
+            </div>
+          </>
         )}
 
         {post.cover && (

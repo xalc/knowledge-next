@@ -14,6 +14,7 @@ import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
 import { BellRing, FileJson, FileCode, Trash2, FileText } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EditorToolbar from "@/components/blogs/editor-toolbar";
+import { EditorBubbleMenu, EditorFloatingMenu } from "@/components/blogs/editor-menus";
 
 const Tiptap = () => {
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage<object | null>(
@@ -109,6 +110,8 @@ const Tiptap = () => {
         <EditorToolbar editor={editor} />
       </div>
 
+      <EditorBubbleMenu editor={editor} />
+      <EditorFloatingMenu editor={editor} />
       <EditorContent editor={editor} />
 
       <div className="mx-12 mb-8 flex items-center justify-between border-t pt-4 text-sm text-muted-foreground">

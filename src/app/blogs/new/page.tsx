@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import { extensions } from "@/components/tiptap/extension";
 
@@ -11,13 +12,14 @@ import { Button } from "@/components/ui/button";
 import { BlogMetaForm } from "@/components/blogs/blog-meta-form";
 
 import BlogMetaPopup from "@/components/blogs/blog-meta-popup";
-import { BellRing, FileJson, FileCode, Trash2, FileText } from "lucide-react";
+import { BellRing, FileJson, FileCode, Trash2, FileText, X } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import EditorToolbar from "@/components/blogs/editor-toolbar";
 import { EditorBubbleMenu } from "@/components/blogs/editor-menus";
 import { ImageBlockMenu } from "@/components/blogs/image-block-menu";
 
 const Tiptap = () => {
+  const [showAutosaveHint, setShowAutosaveHint] = useState(true);
   const [storageValue, setStorageValue, removeStorageValue] = useLocalStorage<object | null>(
     "ttcontent-json",
     null,
@@ -100,12 +102,24 @@ const Tiptap = () => {
         </div>
       </div>
 
-      <Alert className="mx-12 mt-4 w-auto bg-primary/5">
-        <BellRing className="h-4 w-4" />
-        <AlertDescription>
-          内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
-        </AlertDescription>
-      </Alert>
+      {showAutosaveHint && (
+        <Alert className="mx-12 mt-4 w-auto bg-primary/5">
+          <BellRing className="h-4 w-4" />
+          <AlertDescription>
+            内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
+          </AlertDescription>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="absolute right-2 top-2 h-7 w-7 rounded-full text-muted-foreground hover:bg-background/60"
+            onClick={() => setShowAutosaveHint(false)}
+            title="关闭提示"
+            aria-label="关闭提示"
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </Alert>
+      )}
 
       <div className="mx-12 mt-4">
         <EditorToolbar editor={editor} />

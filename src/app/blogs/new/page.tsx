@@ -103,7 +103,7 @@ const Tiptap = () => {
       </div>
 
       {showAutosaveHint && (
-        <Alert className="mx-12 mt-4 w-auto bg-primary/5">
+        <Alert className="relative mx-12 mt-4 w-auto bg-primary/5 pr-12">
           <BellRing className="h-4 w-4" />
           <AlertDescription>
             内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
@@ -111,12 +111,12 @@ const Tiptap = () => {
           <Button
             variant="ghost"
             size="icon"
-            className="absolute right-2 top-2 h-7 w-7 rounded-full text-muted-foreground hover:bg-background/60"
+            className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 text-muted-foreground hover:bg-primary/10"
             onClick={() => setShowAutosaveHint(false)}
             title="关闭提示"
             aria-label="关闭提示"
           >
-            <X className="h-4 w-4" />
+            <X className="h-3.5 w-3.5" />
           </Button>
         </Alert>
       )}

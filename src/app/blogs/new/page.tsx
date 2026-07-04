@@ -231,6 +231,27 @@ const Tiptap = () => {
         {Math.max(1, Math.round(editor.storage.characterCount.words() / 200))} 分钟阅读
       </div>
 
+      {/* 底部发布按钮 */}
+      <div className="mt-6 flex items-center justify-end gap-2 pb-12">
+        <Button variant="ghost" size="sm" onClick={reset} className="text-muted-foreground">
+          <Trash2 className="mr-1 h-4 w-4" />
+          清空
+        </Button>
+        <Button onClick={handlePublish} disabled={isPublishing} size="sm">
+          {isPublishing ? (
+            <>
+              <Loader2 className="mr-1 h-4 w-4 animate-spin" />
+              发布中...
+            </>
+          ) : (
+            <>
+              <CloudUpload className="mr-1 h-4 w-4" />
+              发布
+            </>
+          )}
+        </Button>
+      </div>
+
       {/* 可折叠的设置面板 */}
       <div className="mt-8 border-t">
         <button

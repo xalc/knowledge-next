@@ -103,9 +103,9 @@ const Tiptap = () => {
       </div>
 
       {showAutosaveHint && (
-        <Alert className="relative mx-12 mt-4 w-auto bg-primary/5 pr-12">
-          <BellRing className="h-4 w-4" />
-          <AlertDescription>
+        <Alert className="relative mx-12 mt-4 flex items-center gap-3 bg-primary/5 pr-12">
+          <BellRing className="h-4 w-4 shrink-0 self-center" />
+          <AlertDescription className="flex-1 leading-5">
             内容自动保存到本地浏览器，下次访问不会丢失。登录后可发布到线上。
           </AlertDescription>
           <Button

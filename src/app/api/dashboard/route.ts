@@ -1,6 +1,8 @@
 import { verifySession } from "@/lib/dal";
 import { syncWRDataToDB } from "@/lib/wereader/wr-writer";
 
+export const maxDuration = 300;
+
 export async function GET() {
   const user = await verifySession();
   const stream = new ReadableStream({

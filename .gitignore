@@ -4,6 +4,7 @@ node_modules
 .next
 .vscode
 .vercel
+.db-backups/
 
 certificates
 
@@ -11,3 +12,5 @@ certificates
 
 scripts/weread_headers.json
 scripts/weread_cookie.txt
+
+.workbuddy/

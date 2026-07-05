@@ -43,6 +43,7 @@ export type GatewayBookProgressResponse = GatewayEnvelope & {
   book?: {
     progress?: number;
     updateTime?: number;
+    readingTime?: number;
     recordReadingTime?: number;
     finishTime?: number;
     isStartReading?: number;

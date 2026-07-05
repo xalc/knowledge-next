@@ -123,8 +123,17 @@ async function mapWithConcurrency<T, R>(
 function shouldRefreshProgress(book: GatewayShelfBook, existing?: ExistingBook) {
   if (!existing) return true;
   if (Number(existing.readUpdateTime ?? 0) !== Number(book.readUpdateTime ?? 0)) return true;
-  if (Number(book.finishReading ?? existing.finishReading) !== 1) return true;
   if (!existing.readProgress) return true;
+  // Refresh legacy rows that were synced before the gateway readingTime field was mapped.
+  const existingProgress = existing.readProgress as { readingTime?: number } | null;
+  if (
+    !existingProgress ||
+    !Number(existingProgress.readingTime) ||
+    Number(existingProgress.readingTime) <= 0
+  ) {
+    return true;
+  }
+  if (Number(book.finishReading ?? existing.finishReading) !== 1) return true;
   return false;
 }
 
@@ -140,7 +149,7 @@ function normalizeProgress(
     bookId,
     progress: toNumber(book.progress),
     updateTime: toNumber(book.updateTime),
-    readingTime: toNumber(book.recordReadingTime),
+    readingTime: toNumber(book.readingTime ?? book.recordReadingTime),
   };
 }
 

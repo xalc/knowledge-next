@@ -127,6 +127,17 @@ describe("syncWRDataToDB gateway sync", () => {
         readProgress: { progress: 100, updateTime: 100, readingTime: 1000 },
       },
       {
+        id: "legacy-zero-time",
+        bookId: "legacy-zero-time",
+        translator: null,
+        publishTime: null,
+        categories: null,
+        lPushName: null,
+        readUpdateTime: 100,
+        finishReading: 1,
+        readProgress: { progress: 100, updateTime: 100, readingTime: 0 },
+      },
+      {
         id: "unfinished",
         bookId: "unfinished",
         translator: null,
@@ -155,6 +166,13 @@ describe("syncWRDataToDB gateway sync", () => {
           readUpdateTime: 200,
           finishReading: 1,
         },
+        {
+          bookId: "legacy-zero-time",
+          title: "Z",
+          author: "Z",
+          readUpdateTime: 100,
+          finishReading: 1,
+        },
         { bookId: "unfinished", title: "C", author: "C", readUpdateTime: 100, finishReading: 0 },
         { bookId: "new-book", title: "D", author: "D", readUpdateTime: 300, finishReading: 0 },
       ],
@@ -166,7 +184,7 @@ describe("syncWRDataToDB gateway sync", () => {
       book: {
         progress: bookId === "changed-finished" ? 100 : 20,
         updateTime: 999,
-        recordReadingTime: 1234,
+        readingTime: 1234,
       },
     }));
 
@@ -174,6 +192,7 @@ describe("syncWRDataToDB gateway sync", () => {
 
     expect(mocks.getGatewayBookProgress.mock.calls.map(call => call[0]).sort()).toEqual([
       "changed-finished",
+      "legacy-zero-time",
       "new-book",
       "unfinished",
     ]);

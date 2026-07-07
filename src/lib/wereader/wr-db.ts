@@ -1,4 +1,4 @@
-import { COOKIES_TOKENS, READING_TIME_SYNC_KEY } from "./constant";
+import { READING_TIME_SYNC_KEY } from "./constant";
 import { prisma } from "@/lib/prisma";
 import { unstable_cache } from "next/cache";
 
@@ -14,28 +14,6 @@ type ReadingSummaryResult = {
   lastSyncTime: string;
 };
 
-export async function getWRToken(): Promise<string> {
-  try {
-    const cookies = await prisma.wRMeta.findUnique({
-      where: { keyName: COOKIES_TOKENS },
-    });
-    return cookies?.keyValue ?? "";
-  } catch (e) {
-    console.error(e);
-    return "";
-  }
-}
-
-export async function updateWRToken(token: string) {
-  try {
-    await prisma.wRMeta.update({
-      where: { keyName: COOKIES_TOKENS },
-      data: { keyValue: token },
-    });
-  } catch (e) {
-    console.error(e);
-  }
-}
 export const getRecentBooks = unstable_cache(
   async () => {
     try {

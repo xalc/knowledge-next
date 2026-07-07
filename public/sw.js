@@ -111,19 +111,7 @@ define(["./workbox-e9849328"], function (e) {
           revision: "0e44493f505d9ce1",
         },
         {
-          url: "/_next/static/chunks/app/api/update-cookies/route-0e44493f505d9ce1.js",
-          revision: "0e44493f505d9ce1",
-        },
-        {
           url: "/_next/static/chunks/app/api/upload/route-0e44493f505d9ce1.js",
-          revision: "0e44493f505d9ce1",
-        },
-        {
-          url: "/_next/static/chunks/app/api/wereader/summary/route-0e44493f505d9ce1.js",
-          revision: "0e44493f505d9ce1",
-        },
-        {
-          url: "/_next/static/chunks/app/api/wereader/validate/route-0e44493f505d9ce1.js",
           revision: "0e44493f505d9ce1",
         },
         {

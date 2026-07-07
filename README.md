@@ -61,7 +61,7 @@ pnpm format
 
 ## Notes on WeRead Sync
 
-This project is designed for personal use. It may require a valid WeRead web cookie to fetch/sync data. Do not commit cookies or tokens into the repo.
+This project is designed for personal use. WeRead writes use the WeRead skill gateway and require `WEREAD_API_KEY`. Do not commit tokens into the repo.
 
 Dashboard-triggered WeRead database writes are disabled by default to avoid long-running Vercel Hobby serverless executions. Set `WEREAD_DASHBOARD_SYNC_ENABLED=true` only when the deployment can safely finish the sync within the configured function duration.
 

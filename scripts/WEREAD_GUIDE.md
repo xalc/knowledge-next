@@ -11,10 +11,11 @@
 
 ## 1. 核心结论（先看）
 
-1. `i.weread.qq.com`（移动端接口）认证依赖请求头 `vid` + `skey`。
-2. 单纯网页 Cookie 通常不够，需要从手机 App 抓到认证信息。
-3. 项目内已支持从 `cookieToken` 中解析 `wr_vid` / `wr_skey` 并注入请求头。
-4. `reading summary` 建议用脚本同步（见第 6 节）。
+1. Dashboard 的 `GET /api/dashboard` 目前默认不会执行 `syncWRDataToDB` 写库。
+2. 写库同步由 feature flag `WEREAD_DASHBOARD_SYNC_ENABLED` 控制，只有值为 `true`、`1`、`yes` 或 `on` 时才会启用。
+3. 默认禁用原因：Vercel Hobby Serverless Function 当前最多只能配置 60 秒执行时长，完整 WeRead gateway 同步可能超时。
+4. 如需手动写库，优先在本地或长时任务环境执行 `pnpm sync:weread:gateway`，并先运行 `pnpm backup:db`。
+5. 旧移动端接口认证依赖 `vid` + `skey`；skill gateway 写库依赖 `WEREAD_API_KEY`。
 
 ---
 
@@ -25,18 +26,54 @@
   - `src/app/api/wereader/validate/route.ts`：验证 token 是否可用
   - `src/app/api/wereader/summary/route.ts`：代理调用 summary 接口并返回详情
   - `src/app/api/update-cookies/route.ts`：保存 token 到数据库
-  - `src/app/api/dashboard/route.ts`：网页“立即同步”触发入口
+  - `src/app/api/dashboard/route.ts`：网页“立即同步”触发入口，受 `WEREAD_DASHBOARD_SYNC_ENABLED` 控制
 
 - WeRead 逻辑
 
   - `src/lib/wereader/constant.js`：WeRead 相关 URL 常量
   - `src/lib/wereader/singleton-fetch.js`：请求封装（自动识别移动端接口并附带 `vid/skey`）
   - `src/lib/wereader/wr-writer.ts`：同步书架/阅读数据到 DB 的主逻辑
+  - `src/lib/wereader/weread-gateway.ts`：skill gateway 请求封装
   - `src/lib/wereader/wr-db.ts`：读取与更新 `cookieToken`
 
 - 脚本
+
+  - `scripts/backup-database.js`：导出全库原始备份到 `.db-backups/`
+  - `scripts/sync-weread-gateway.js`：通过 skill gateway 同步书架、进度、日级阅读数据
   - `scripts/weread_cookie_capture.py`：mitmproxy 抓包脚本
   - `scripts/sync-reading-summary.ts`：同步 reading summary 到 DB
+
+- 文档
+  - `docs/technical/weread-dashboard-sync-feature-flag.md`：Dashboard 写库开关与部署策略
+
+---
+
+## 2.1 Dashboard 写库 feature flag
+
+环境变量：
+
+```bash
+WEREAD_DASHBOARD_SYNC_ENABLED=true
+```
+
+默认行为：
+
+- 未设置该变量时，`GET /api/dashboard` 会完成登录校验并输出 `[SYNC][SKIPPED]` 日志。
+- 跳过时不会导入或调用 `syncWRDataToDB`，也不会写入 `WRBookShelt`、`WRReadingSummary` 或 `WRMeta`。
+- 返回的 `[SYNC][RESULT]` 中会包含 `skipped: true` 和 `featureFlag: "WEREAD_DASHBOARD_SYNC_ENABLED"`。
+
+启用条件：
+
+- `WEREAD_DASHBOARD_SYNC_ENABLED` 设置为 `true`、`1`、`yes` 或 `on`。
+- 同时需要配置 `WEREAD_API_KEY`，否则 gateway 同步会失败。
+- 在 Vercel Hobby 上启用前必须确认同步能在 60 秒内完成；否则应改用脚本、队列、Vercel Workflows 或外部 worker。
+
+推荐操作：
+
+1. 生产环境保持默认禁用。
+2. 需要刷新数据时，在本地或长时任务环境运行 `pnpm backup:db`。
+3. 备份确认后运行 `pnpm sync:weread:gateway`。
+4. 确认 `/reading`、`/reading/stats` 和 `/api/skills/reading?view=overview` 数据正常。
 
 ---
 
@@ -75,8 +112,9 @@ wr_vid=<VID>; wr_skey=<SKEY>; wr_fp=<WR_FP>; wr_theme=white
 4. 点“立即同步”
    - 调用：`GET /api/dashboard`
 
-- 默认同步书架数据
-- `reading summary` 建议通过 `scripts/sync-reading-summary.ts` 单独同步
+- 默认不会写库，会显示 feature flag 跳过日志
+- 如果设置 `WEREAD_DASHBOARD_SYNC_ENABLED=true`，会调用 `syncWRDataToDB` 执行 gateway 写库同步
+- Vercel Hobby 环境不建议打开该开关，除非确认同步总耗时小于 60 秒
 - 页面会流式显示日志，包含每一步的成功/失败信息及最终结构化结果
 
 ---
@@ -110,6 +148,17 @@ curl -X POST http://localhost:3000/api/wereader/summary \
 ---
 
 ## 6. 同步 reading summary 到数据库（推荐）
+
+当前推荐的完整写库路径是 skill gateway 脚本：
+
+```bash
+pnpm backup:db
+pnpm sync:weread:gateway
+```
+
+该脚本会通过 `POST https://i.weread.qq.com/api/agent/gateway` 写入书架、阅读进度和日级阅读统计。需要先配置 `WEREAD_API_KEY`。
+
+旧移动端 summary 脚本仍保留，主要用于调试或回退：
 
 脚本：`scripts/sync-reading-summary.ts`
 

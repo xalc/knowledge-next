@@ -1,12 +1,21 @@
-import { getWrReadingTimes, getShelf } from "@/lib/wereader/wereader-api";
-import { READING_TIME_SYNC_KEY, BOOKS_SYNC_KEY, REGISTER_TIME_KEY } from "@/lib/wereader/constant";
+import {
+  GatewayShelfBook,
+  WeReadGatewayUpgradeError,
+  getGatewayBookProgress,
+  getGatewayReadingDetail,
+  getGatewayShelf,
+} from "@/lib/wereader/weread-gateway";
+import { BOOKS_SYNC_KEY, READING_TIME_SYNC_KEY, REGISTER_TIME_KEY } from "@/lib/wereader/constant";
 import { prisma } from "@/lib/prisma";
 import { revalidateTag } from "next/cache";
-/* eslint-disable */
+import { Prisma } from "@prisma/client";
 
 type SyncLogger = (...args: unknown[]) => void;
 
 const defaultLogger: SyncLogger = (...args) => console.log(...args);
+const READING_SUMMARY_START_YEAR = 2021;
+const PROGRESS_CONCURRENCY = 5;
+const BOOK_UPSERT_CONCURRENCY = 10;
 
 type SyncStepResult = {
   step: "bookshelf" | "readingSummary";
@@ -21,260 +30,433 @@ type SyncWRResult = {
   message: string;
 };
 
-const getShelfSyncId = async () => {
-  const shelfResult = await prisma.wRMeta.findFirst({
-    where: {
-      keyName: BOOKS_SYNC_KEY,
-    },
-  });
-  const syncId = shelfResult.keyValue;
-  return syncId;
-};
-const updateSyncId = async (syncKey, logger: SyncLogger) => {
-  const syncSyncKeyResult = await prisma.wRMeta.update({
-    where: {
-      keyName: BOOKS_SYNC_KEY,
-    },
-    data: {
-      keyValue: String(syncKey),
-    },
-  });
-  logger("update synckey successfully: " + syncSyncKeyResult.keyValue);
+type SyncOptions = {
+  summaryStartYear?: number;
+  summaryEndYear?: number;
+  progressConcurrency?: number;
 };
 
-const creatManyBooks = async (books, bookProgress, logger: SyncLogger) => {
-  const documents = [];
-  books.forEach(b => {
-    const bp = bookProgress.find(bp => bp.bookId === b.bookId);
-
-    const readProgress = bp
-      ? {
-          id: bp.bookId,
-          bookId: bp.bookId,
-          progress: bp.progress,
-          updateTime: bp.updateTime,
-          readingTime: bp.readingTime,
-        }
-      : null;
-    const {
-      bookId,
-      title,
-      author,
-      translator,
-      cover,
-      publishTime,
-      category,
-      categories,
-      lPushName,
-      readUpdateTime,
-      finishReading,
-    } = b;
-    const ISODate = publishTime ? new Date(publishTime).toISOString() : null;
-    documents.push({
-      id: b.bookId,
-      bookId,
-      title,
-      author,
-      translator,
-      cover,
-      publishTime: ISODate,
-      category,
-      categories,
-      lPushName,
-      readUpdateTime,
-      finishReading,
-      readProgress: readProgress,
-    });
-  });
-  const result = await prisma.wRBookShelt.createMany({
-    data: documents,
-  });
-  logger(result.count + " is insert into db");
-};
-const updateOrInsertBooks = async (books, bookProgress, logger: SyncLogger) => {
-  const documentsMap = new Map();
-
-  books.forEach(b => {
-    const {
-      bookId,
-      title,
-      author,
-      translator,
-      cover,
-      publishTime,
-      category,
-      categories,
-      lPushName,
-      readUpdateTime,
-      finishReading,
-    } = b;
-    const ISODate = publishTime ? new Date(publishTime).toISOString() : null;
-    documentsMap.set(bookId, {
-      bookId,
-      title,
-      author,
-      translator,
-      cover,
-      publishTime: ISODate,
-      category,
-      categories,
-      lPushName,
-      readUpdateTime,
-      finishReading,
-    });
-  });
-
-  bookProgress.forEach(bp => {
-    const { bookId, progress, updateTime, readingTime } = bp;
-    const existing = documentsMap.get(bookId) || { bookId };
-    existing.readProgress = {
-      id: bookId,
-      progress,
-      updateTime,
-      readingTime,
-    };
-    documentsMap.set(bookId, existing);
-  });
-
-  const documents = Array.from(documentsMap.values());
-  const dbResult = await Promise.all(
-    documents.map(doc =>
-      prisma.wRBookShelt.upsert({
-        where: { id: doc.bookId },
-        update: { ...doc },
-        create: { id: doc.bookId, ...doc },
-      }),
-    ),
-  );
-  logger(dbResult.length + " is insert/updated into db");
-};
-const syncWRBookShelf = async (logger: SyncLogger) => {
-  const syncId = await getShelfSyncId();
-
-  const wrResponse = await getShelf(syncId);
-  const { books, bookProgress, synckey } = wrResponse;
-
-  if (!Array.isArray(books) || !Array.isArray(bookProgress)) {
-    throw new Error("Invalid shelf response format");
-  }
-
-  if (syncId === "0") {
-    //create many
-    await creatManyBooks(books, bookProgress, logger);
-  } else {
-    // insert or update books not finished
-    await updateOrInsertBooks(books, bookProgress, logger);
-  }
-  await updateSyncId(synckey, logger);
-
-  return {
-    bookCount: books.length,
-    progressCount: bookProgress.length,
-    synckey: String(synckey),
-  };
-};
-const syncWRReadingtimeSummary = async (logger: SyncLogger) => {
-  const result = await getWrReadingTimes(0);
-  const { registTime, synckey, readTimes } = result;
-
-  if (!readTimes || typeof readTimes !== "object") {
-    throw new Error("Invalid reading summary response format");
-  }
-
-  const readingTimeRecord = await prisma.wRReadingSummary.findMany({});
-  let created = 0;
-  let updated = 0;
-  let skipped = 0;
-
-  for (let [key, value] of Object.entries(readTimes)) {
-    const find = readingTimeRecord.find(record => record.id === key);
-    if (!find) {
-      const result = await prisma.wRReadingSummary.create({
-        data: {
-          id: key,
-          readingSeconds: Number(value),
-        },
-      });
-      created++;
-      logger(`record ${result.id} is added with ${result.readingSeconds}`);
-    } else if (find && find.readingSeconds !== value) {
-      const result = await prisma.wRReadingSummary.update({
-        where: {
-          id: key,
-        },
-        data: {
-          readingSeconds: value,
-        },
-      });
-      updated++;
-      logger(`record ${result.id} is updated with ${result.readingSeconds}`);
-    } else {
-      skipped++;
-    }
-  }
-  const bactchUpdated = await Promise.all([
-    prisma.wRMeta.upsert({
-      where: { keyName: READING_TIME_SYNC_KEY },
-      update: { keyValue: String(synckey) },
-      create: { keyName: READING_TIME_SYNC_KEY, keyValue: String(synckey) },
-    }),
-    prisma.wRMeta.upsert({
-      where: { keyName: REGISTER_TIME_KEY },
-      update: { keyValue: String(registTime) },
-      create: { keyName: REGISTER_TIME_KEY, keyValue: String(registTime) },
-    }),
-  ]);
-
-  bactchUpdated.forEach(result => logger(`update ${result.keyName} with ${result.keyValue}`));
-
-  return {
-    total: Object.keys(readTimes).length,
-    created,
-    updated,
-    skipped,
-    synckey: String(synckey),
-    registTime: String(registTime),
-  };
-};
-
-export const syncWRDataToDB = async (logger: SyncLogger = defaultLogger) => {
-  const steps: SyncStepResult[] = [];
-
-  logger("[SYNC] Start WeRead sync...");
-
-  try {
-    const shelfResult = await syncWRBookShelf(logger);
-    const details = `books=${shelfResult.bookCount}, progress=${shelfResult.progressCount}, synckey=${shelfResult.synckey}`;
-    logger(`[SYNC][bookshelf] success: ${details}`);
-    steps.push({ step: "bookshelf", ok: true, details });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    logger(`[SYNC][bookshelf] failed: ${message}`);
-    steps.push({ step: "bookshelf", ok: false, error: message });
-  }
-
-  try {
-    const readingResult = await syncWRReadingtimeSummary(logger);
-    const details = `total=${readingResult.total}, created=${readingResult.created}, updated=${readingResult.updated}, skipped=${readingResult.skipped}, synckey=${readingResult.synckey}`;
-    logger(`[SYNC][readingSummary] success: ${details}`);
-    steps.push({ step: "readingSummary", ok: true, details });
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    logger(`[SYNC][readingSummary] failed: ${message}`);
-    steps.push({ step: "readingSummary", ok: false, error: message });
-  }
-
+function buildSyncResult(steps: SyncStepResult[]): SyncWRResult {
   const allOk = steps.every(step => step.ok);
-  revalidateTag("wereader");
-
-  const result: SyncWRResult = {
+  return {
     ok: allOk,
     steps,
     message: allOk
       ? "successfully synced wechat reader data"
       : "wechat reader sync completed with partial failures",
   };
+}
 
-  logger(`[SYNC] Done. overall=${allOk ? "success" : "partial-failure"}`);
+type ExistingBook = {
+  id: string;
+  bookId: string;
+  translator: string | null;
+  publishTime: Date | null;
+  categories: unknown;
+  lPushName: string | null;
+  readUpdateTime: number | null;
+  finishReading: number;
+  readProgress: unknown;
+};
+
+type NormalizedProgress = {
+  id: string;
+  bookId: string;
+  progress: number;
+  updateTime: number;
+  readingTime: number;
+};
+
+type BookDocument = {
+  id: string;
+  bookId: string;
+  title: string;
+  author: string;
+  translator: string | null;
+  cover: string;
+  publishTime: Date | null;
+  category: string | null;
+  categories: Prisma.InputJsonValue | null;
+  lPushName: string | null;
+  readUpdateTime: number | null;
+  finishReading: number;
+  readProgress: Prisma.InputJsonValue | null;
+};
+
+function toNumberOrNull(value: unknown) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) && numeric > 0 ? numeric : null;
+}
+
+function toNumber(value: unknown, fallback = 0) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+}
+
+function monthStartUnix(year: number, month: number) {
+  const paddedMonth = String(month).padStart(2, "0");
+  return Math.floor(new Date(`${year}-${paddedMonth}-01T00:00:00+08:00`).getTime() / 1000);
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  mapper: (item: T) => Promise<R>,
+) {
+  const results: R[] = [];
+  let nextIndex = 0;
+  const workerCount = Math.max(1, Math.min(concurrency, items.length));
+
+  await Promise.all(
+    Array.from({ length: workerCount }, async () => {
+      while (nextIndex < items.length) {
+        const currentIndex = nextIndex;
+        nextIndex += 1;
+        results[currentIndex] = await mapper(items[currentIndex]);
+      }
+    }),
+  );
+
+  return results;
+}
+
+function shouldRefreshProgress(book: GatewayShelfBook, existing?: ExistingBook) {
+  if (!existing) return true;
+  if (Number(existing.readUpdateTime ?? 0) !== Number(book.readUpdateTime ?? 0)) return true;
+  if (!existing.readProgress) return true;
+  // Refresh legacy rows that were synced before the gateway readingTime field was mapped.
+  const existingProgress = existing.readProgress as { readingTime?: number } | null;
+  if (
+    !existingProgress ||
+    !Number(existingProgress.readingTime) ||
+    Number(existingProgress.readingTime) <= 0
+  ) {
+    return true;
+  }
+  if (Number(book.finishReading ?? existing.finishReading) !== 1) return true;
+  return false;
+}
+
+function normalizeProgress(
+  bookId: string,
+  response: Awaited<ReturnType<typeof getGatewayBookProgress>>,
+) {
+  const book = response.book;
+  if (!book) return null;
+
+  return {
+    id: bookId,
+    bookId,
+    progress: toNumber(book.progress),
+    updateTime: toNumber(book.updateTime),
+    readingTime: toNumber(book.readingTime ?? book.recordReadingTime),
+  };
+}
+
+async function fetchProgressForBooks(
+  books: GatewayShelfBook[],
+  concurrency: number,
+  logger: SyncLogger,
+) {
+  const progressByBookId = new Map<string, NormalizedProgress>();
+  let failed = 0;
+  let completed = 0;
+
+  await mapWithConcurrency(books, concurrency, async book => {
+    try {
+      const response = await getGatewayBookProgress(book.bookId);
+      const progress = normalizeProgress(book.bookId, response);
+      if (progress) {
+        progressByBookId.set(book.bookId, progress);
+      }
+    } catch (error) {
+      failed += 1;
+      const message = error instanceof Error ? error.message : String(error);
+      logger(`[SYNC][bookshelf(gateway)] progress failed for bookId=${book.bookId}: ${message}`);
+      if (error instanceof WeReadGatewayUpgradeError) {
+        throw error;
+      }
+    } finally {
+      completed += 1;
+      if (books.length > 0 && (completed % 25 === 0 || completed === books.length)) {
+        logger(`[SYNC][bookshelf(gateway)] progress completed ${completed}/${books.length}`);
+      }
+    }
+  });
+
+  return { progressByBookId, failed };
+}
+
+function buildBookDocument(
+  book: GatewayShelfBook,
+  existing: ExistingBook | undefined,
+  progress: NormalizedProgress | undefined,
+): BookDocument {
+  return {
+    id: book.bookId,
+    bookId: book.bookId,
+    title: book.title ?? "",
+    author: book.author ?? "",
+    translator: existing?.translator ?? null,
+    cover: book.cover ?? "",
+    publishTime: existing?.publishTime ?? null,
+    category: book.category ?? null,
+    categories: (existing?.categories ?? null) as Prisma.InputJsonValue | null,
+    lPushName: existing?.lPushName ?? null,
+    readUpdateTime: toNumberOrNull(book.readUpdateTime),
+    finishReading: toNumber(book.finishReading),
+    readProgress: (progress ?? existing?.readProgress ?? null) as Prisma.InputJsonValue | null,
+  };
+}
+
+async function upsertBooks(
+  books: GatewayShelfBook[],
+  existingByBookId: Map<string, ExistingBook>,
+  progressByBookId: Map<string, NormalizedProgress>,
+  logger: SyncLogger,
+) {
+  let created = 0;
+  let updated = 0;
+  let skipped = 0;
+  let completed = 0;
+
+  await mapWithConcurrency(books, BOOK_UPSERT_CONCURRENCY, async book => {
+    try {
+      const existing = existingByBookId.get(book.bookId);
+      const doc = buildBookDocument(book, existing, progressByBookId.get(book.bookId));
+      const updateData = {
+        bookId: doc.bookId,
+        title: doc.title,
+        author: doc.author,
+        translator: doc.translator,
+        cover: doc.cover,
+        publishTime: doc.publishTime,
+        category: doc.category,
+        categories: doc.categories,
+        lPushName: doc.lPushName,
+        readUpdateTime: doc.readUpdateTime,
+        finishReading: doc.finishReading,
+        readProgress: doc.readProgress,
+      };
+
+      if (!existing) {
+        created += 1;
+      } else {
+        updated += 1;
+      }
+
+      const result = await prisma.wRBookShelt.upsert({
+        where: { id: doc.id },
+        update: updateData,
+        create: doc,
+      });
+
+      if (result) return;
+      skipped += 1;
+    } finally {
+      completed += 1;
+      if (books.length > 0 && (completed % 50 === 0 || completed === books.length)) {
+        logger(`[SYNC][bookshelf(gateway)] upsert completed ${completed}/${books.length}`);
+      }
+    }
+  });
+
+  return { created, updated, skipped };
+}
+
+const syncWRBookShelf = async (logger: SyncLogger, options: SyncOptions) => {
+  const shelf = await getGatewayShelf();
+  const books = Array.isArray(shelf.books) ? shelf.books.filter(book => book.bookId) : [];
+  const albumCount = Array.isArray(shelf.albums) ? shelf.albums.length : 0;
+  const hasMp = Boolean(shelf.mp);
+
+  if (!Array.isArray(shelf.books)) {
+    throw new Error("Invalid gateway shelf response: books is missing.");
+  }
+
+  const existingBooks = (await prisma.wRBookShelt.findMany({
+    select: {
+      id: true,
+      bookId: true,
+      translator: true,
+      publishTime: true,
+      categories: true,
+      lPushName: true,
+      readUpdateTime: true,
+      finishReading: true,
+      readProgress: true,
+    },
+  })) as ExistingBook[];
+  const existingByBookId = new Map(existingBooks.map(book => [book.bookId, book]));
+  const progressTargets = books.filter(book =>
+    shouldRefreshProgress(book, existingByBookId.get(book.bookId)),
+  );
+
+  logger(
+    `[SYNC][bookshelf(gateway)] visible books=${books.length}, albums=${albumCount}, mp=${hasMp ? 1 : 0}, progressTargets=${progressTargets.length}`,
+  );
+
+  const { progressByBookId, failed: progressFailed } = await fetchProgressForBooks(
+    progressTargets,
+    options.progressConcurrency ?? PROGRESS_CONCURRENCY,
+    logger,
+  );
+  const upsertResult = await upsertBooks(books, existingByBookId, progressByBookId, logger);
+  const syncTime = String(Math.floor(Date.now() / 1000));
+
+  await prisma.wRMeta.upsert({
+    where: { keyName: BOOKS_SYNC_KEY },
+    update: { keyValue: syncTime },
+    create: { keyName: BOOKS_SYNC_KEY, keyValue: syncTime },
+  });
+
+  return {
+    bookCount: books.length,
+    albumCount,
+    hasMp,
+    progressTargets: progressTargets.length,
+    progressUpdated: progressByBookId.size,
+    progressFailed,
+    created: upsertResult.created,
+    updated: upsertResult.updated,
+    syncTime,
+  };
+};
+
+async function syncWRReadingtimeSummary(logger: SyncLogger, options: SyncOptions) {
+  const currentYear = new Date().getFullYear();
+  const startYear = options.summaryStartYear ?? READING_SUMMARY_START_YEAR;
+  const endYear = options.summaryEndYear ?? currentYear;
+  const existingRecords = await prisma.wRReadingSummary.findMany({});
+  const existingMap = new Map(existingRecords.map(record => [record.id, record.readingSeconds]));
+
+  let created = 0;
+  let updated = 0;
+  let skipped = 0;
+  let total = 0;
+  let monthCount = 0;
+  let registerTime = "";
+
+  for (let year = startYear; year <= endYear; year += 1) {
+    for (let month = 1; month <= 12; month += 1) {
+      const detail = await getGatewayReadingDetail({
+        mode: "monthly",
+        baseTime: monthStartUnix(year, month),
+      });
+      monthCount += 1;
+      if (detail.registTime) {
+        registerTime = String(detail.registTime);
+      }
+
+      const readTimes =
+        detail.readTimes && typeof detail.readTimes === "object" ? detail.readTimes : {};
+      const entries = Object.entries(readTimes);
+      total += entries.length;
+
+      for (const [dayId, seconds] of entries) {
+        const readingSeconds = Number(seconds) || 0;
+        const existing = existingMap.get(dayId);
+        if (existing === undefined) {
+          created += 1;
+          existingMap.set(dayId, readingSeconds);
+          await prisma.wRReadingSummary.upsert({
+            where: { id: dayId },
+            update: { readingSeconds },
+            create: { id: dayId, readingSeconds },
+          });
+        } else if (existing !== readingSeconds) {
+          updated += 1;
+          existingMap.set(dayId, readingSeconds);
+          await prisma.wRReadingSummary.upsert({
+            where: { id: dayId },
+            update: { readingSeconds },
+            create: { id: dayId, readingSeconds },
+          });
+        } else {
+          skipped += 1;
+        }
+      }
+    }
+    logger(`[SYNC][readingSummary(gateway-monthly)] year=${year} processed`);
+  }
+
+  const syncTime = String(Math.floor(Date.now() / 1000));
+  const metaUpdates = [
+    prisma.wRMeta.upsert({
+      where: { keyName: READING_TIME_SYNC_KEY },
+      update: { keyValue: syncTime },
+      create: { keyName: READING_TIME_SYNC_KEY, keyValue: syncTime },
+    }),
+  ];
+
+  if (registerTime) {
+    metaUpdates.push(
+      prisma.wRMeta.upsert({
+        where: { keyName: REGISTER_TIME_KEY },
+        update: { keyValue: registerTime },
+        create: { keyName: REGISTER_TIME_KEY, keyValue: registerTime },
+      }),
+    );
+  }
+
+  await Promise.all(metaUpdates);
+
+  return {
+    years: `${startYear}-${endYear}`,
+    months: monthCount,
+    total,
+    created,
+    updated,
+    skipped,
+    syncTime,
+    registerTime,
+  };
+}
+
+export const syncWRDataToDB = async (
+  logger: SyncLogger = defaultLogger,
+  options: SyncOptions = {},
+) => {
+  const steps: SyncStepResult[] = [];
+
+  logger("[SYNC] Start WeRead sync...");
+  logger(
+    "[SYNC] Backup reminder: keep a fresh raw export under .db-backups/ before data-changing syncs.",
+  );
+
+  try {
+    const shelfResult = await syncWRBookShelf(logger, options);
+    const details = `books=${shelfResult.bookCount}, albums=${shelfResult.albumCount}, mp=${shelfResult.hasMp ? 1 : 0}, created=${shelfResult.created}, updated=${shelfResult.updated}, progressTargets=${shelfResult.progressTargets}, progressUpdated=${shelfResult.progressUpdated}, progressFailed=${shelfResult.progressFailed}, syncTime=${shelfResult.syncTime}`;
+    logger(`[SYNC][bookshelf(gateway)] success: ${details}`);
+    steps.push({ step: "bookshelf", ok: true, details });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger(`[SYNC][bookshelf(gateway)] failed: ${message}`);
+    steps.push({ step: "bookshelf", ok: false, error: message });
+    if (error instanceof WeReadGatewayUpgradeError) {
+      logger("[SYNC] Stopped because the WeRead skill gateway requires an upgrade.");
+      revalidateTag("wereader");
+      return buildSyncResult(steps);
+    }
+  }
+
+  try {
+    const readingResult = await syncWRReadingtimeSummary(logger, options);
+    const details = `years=${readingResult.years}, months=${readingResult.months}, total=${readingResult.total}, created=${readingResult.created}, updated=${readingResult.updated}, skipped=${readingResult.skipped}, syncTime=${readingResult.syncTime}`;
+    logger(`[SYNC][readingSummary(gateway-monthly)] success: ${details}`);
+    steps.push({ step: "readingSummary", ok: true, details });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    logger(`[SYNC][readingSummary(gateway-monthly)] failed: ${message}`);
+    steps.push({ step: "readingSummary", ok: false, error: message });
+    if (error instanceof WeReadGatewayUpgradeError) {
+      logger("[SYNC] Stopped because the WeRead skill gateway requires an upgrade.");
+    }
+  }
+
+  revalidateTag("wereader");
+  const result = buildSyncResult(steps);
+
+  logger(`[SYNC] Done. overall=${result.ok ? "success" : "partial-failure"}`);
   return result;
 };

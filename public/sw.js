@@ -32,11 +32,11 @@ define(["./workbox-e9849328"], function (e) {
     e.precacheAndRoute(
       [
         {
-          url: "/_next/static/Z_BWLTbaW05una5zBEhbC/_buildManifest.js",
+          url: "/_next/static/aq73tiyXh_eOQ9pJn16nC/_buildManifest.js",
           revision: "6a223956e1971b704a419e7b6d35d8e7",
         },
         {
-          url: "/_next/static/Z_BWLTbaW05una5zBEhbC/_ssgManifest.js",
+          url: "/_next/static/aq73tiyXh_eOQ9pJn16nC/_ssgManifest.js",
           revision: "b6652df95db52feb4daf4eca35380933",
         },
         { url: "/_next/static/chunks/1423-92d7071db713b6e4.js", revision: "92d7071db713b6e4" },

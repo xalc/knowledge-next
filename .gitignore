@@ -5,6 +5,8 @@ node_modules
 .vscode
 .vercel
 .db-backups/
+public/sw.js
+public/sw.js.map
 
 certificates
 

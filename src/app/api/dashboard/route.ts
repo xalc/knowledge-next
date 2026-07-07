@@ -1,7 +1,8 @@
 import { verifySession } from "@/lib/dal";
 import { syncWRDataToDB } from "@/lib/wereader/wr-writer";
 
-export const maxDuration = 300;
+// Vercel Hobby only allows 1-60 seconds for Serverless Functions.
+export const maxDuration = 60;
 
 export async function GET() {
   const user = await verifySession();
